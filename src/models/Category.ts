@@ -1,28 +1,36 @@
 import mongoose, { Schema, Document, Model } from 'mongoose'
 
-export interface ICategory extends Document {
+export interface ICategoryDocument extends Document {
+  _id: mongoose.Types.ObjectId
   name: string
   slug: string
-  description?: string
-  image?: string
+  description: string | null
+  image: string | null
   active: boolean
-  parent?: string
   createdAt: Date
   updatedAt: Date
 }
 
-const CategorySchema = new Schema<ICategory>(
+const CategorySchema = new Schema<ICategoryDocument>(
   {
-    name: { type: String, required: true, trim: true },
+    name: { type: String, required: true, unique: true, trim: true },
     slug: { type: String, required: true, unique: true, lowercase: true, trim: true },
-    description: { type: String },
-    image: { type: String },
+    description: { type: String, default: null },
+    image: { type: String, default: null },
     active: { type: Boolean, default: true },
-    parent: { type: String, default: null },
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
+  }
 )
 
-const Category: Model<ICategory> =
-  mongoose.models.Category ?? mongoose.model<ICategory>('Category', CategorySchema)
+CategorySchema.virtual('id').get(function () {
+  return this._id.toHexString()
+})
+
+const Category: Model<ICategoryDocument> =
+  mongoose.models.Category || mongoose.model<ICategoryDocument>('Category', CategorySchema)
+
 export default Category

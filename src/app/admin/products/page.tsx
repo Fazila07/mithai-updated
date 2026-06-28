@@ -5,50 +5,69 @@ import Link from 'next/link'
 import toast from 'react-hot-toast'
 import {
   Plus, Search, Filter, Edit2, Trash2, Copy,
-  Package, ChevronLeft, ChevronRight, Loader2, AlertTriangle
+  Package, ChevronLeft, ChevronRight, Loader2, AlertTriangle, ToggleLeft, ToggleRight
 } from 'lucide-react'
 
 interface Product {
-  _id: string
+  id: string
   name: string
-  category: string
+  slug: string
+  categoryId: string
+  category: { id: string; name: string; slug: string }
   price: number
-  comparePrice?: number
+  comparePrice?: number | null
   stock: number
   active: boolean
   featured: boolean
   bestSeller: boolean
   images: string[]
+  weight?: string
   createdAt: string
 }
 
-const CATEGORIES = ['', 'Cookies', 'Brownies', 'Laddo']
+interface Category {
+  id: string
+  name: string
+  slug: string
+}
 
 export default function AdminProductsPage() {
   const [products, setProducts] = useState<Product[]>([])
+  const [categories, setCategories] = useState<Category[]>([])
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
-  const [category, setCategory] = useState('')
+  const [categoryFilter, setCategoryFilter] = useState('')
   const [page, setPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
+  const [total, setTotal] = useState(0)
   const [selected, setSelected] = useState<string[]>([])
   const [deleteTarget, setDeleteTarget] = useState<string | null>(null)
   const [deleting, setDeleting] = useState(false)
 
+  // Fetch categories for filter dropdown
+  useEffect(() => {
+    fetch('/api/categories')
+      .then((r) => r.json())
+      .then((d) => setCategories(d.categories ?? []))
+      .catch(() => {})
+  }, [])
+
   const fetchProducts = useCallback(async () => {
     setLoading(true)
-    const params = new URLSearchParams({ page: String(page), limit: '15', search, category })
+    const params = new URLSearchParams({ page: String(page), limit: '15', search })
+    if (categoryFilter) params.set('category', categoryFilter)
     try {
       const res = await fetch(`/api/admin/products?${params}`)
       const data = await res.json()
       setProducts(data.products ?? [])
-      setTotalPages(data.pagination?.pages ?? 1)
+      setTotalPages(data.totalPages ?? 1)
+      setTotal(data.total ?? 0)
     } catch {
       toast.error('Failed to load products')
     } finally {
       setLoading(false)
     }
-  }, [page, search, category])
+  }, [page, search, categoryFilter])
 
   useEffect(() => { fetchProducts() }, [fetchProducts])
 
@@ -80,14 +99,43 @@ export default function AdminProductsPage() {
     }
   }
 
+  const toggleField = async (id: string, field: 'active' | 'bestSeller' | 'featured', current: boolean) => {
+    try {
+      const res = await fetch(`/api/admin/products/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ [field]: !current }),
+      })
+      if (!res.ok) throw new Error()
+      toast.success(`${field === 'bestSeller' ? 'Best Seller' : field === 'featured' ? 'Featured' : 'Active'} ${!current ? 'enabled' : 'disabled'}`)
+      fetchProducts()
+    } catch {
+      toast.error('Failed to update')
+    }
+  }
+
   const handleDuplicate = async (product: Product) => {
     try {
-      const { _id, ...rest } = product
-      void _id
       const res = await fetch('/api/admin/products', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...rest, name: `${product.name} (Copy)`, slug: undefined, active: false }),
+        body: JSON.stringify({
+          name: `${product.name} (Copy)`,
+          slug: `${product.slug}-copy-${Date.now()}`,
+          categoryId: product.categoryId,
+          description: '',
+          price: product.price,
+          comparePrice: product.comparePrice,
+          stock: product.stock,
+          weight: product.weight,
+          images: product.images,
+          bestSeller: false,
+          featured: false,
+          active: false,
+          tags: [],
+          ingredients: [],
+          benefits: [],
+        }),
       })
       if (!res.ok) throw new Error()
       toast.success('Product duplicated')
@@ -115,9 +163,10 @@ export default function AdminProductsPage() {
           </div>
           <div className="relative">
             <Filter size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-            <select value={category} onChange={(e) => { setCategory(e.target.value); setPage(1) }}
+            <select value={categoryFilter} onChange={(e) => { setCategoryFilter(e.target.value); setPage(1) }}
               className="pl-8 pr-4 py-2.5 border border-gray-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-[#900c00]/20 bg-white">
-              {CATEGORIES.map((c) => <option key={c} value={c}>{c || 'All Categories'}</option>)}
+              <option value="">All Categories</option>
+              {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
             </select>
           </div>
         </div>
@@ -136,13 +185,16 @@ export default function AdminProductsPage() {
       </div>
 
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+          <p className="text-sm text-gray-500">{total} total products</p>
+        </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead className="bg-gray-50 text-xs text-gray-500 uppercase tracking-wider">
               <tr>
                 <th className="px-4 py-3 text-left">
                   <input type="checkbox" checked={allSelected}
-                    onChange={() => setSelected(allSelected ? [] : products.map((p) => p._id))} className="rounded" />
+                    onChange={() => setSelected(allSelected ? [] : products.map((p) => p.id))} className="rounded" />
                 </th>
                 <th className="px-4 py-3 text-left">Product</th>
                 <th className="px-4 py-3 text-left">Category</th>
@@ -180,9 +232,9 @@ export default function AdminProductsPage() {
                 </tr>
               ) : (
                 products.map((p) => (
-                  <tr key={p._id} className={`hover:bg-gray-50 transition-colors ${selected.includes(p._id) ? 'bg-[#900c00]/5' : ''}`}>
+                  <tr key={p.id} className={`hover:bg-gray-50 transition-colors ${selected.includes(p.id) ? 'bg-[#900c00]/5' : ''}`}>
                     <td className="px-4 py-3">
-                      <input type="checkbox" checked={selected.includes(p._id)} onChange={() => toggleSelect(p._id)} className="rounded" />
+                      <input type="checkbox" checked={selected.includes(p.id)} onChange={() => toggleSelect(p.id)} className="rounded" />
                     </td>
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-3">
@@ -198,14 +250,15 @@ export default function AdminProductsPage() {
                           <div className="flex gap-1 mt-0.5">
                             {p.bestSeller && <span className="text-[10px] px-1.5 py-0.5 bg-yellow-100 text-yellow-700 rounded font-semibold">Best Seller</span>}
                             {p.featured && <span className="text-[10px] px-1.5 py-0.5 bg-blue-100 text-blue-600 rounded font-semibold">Featured</span>}
+                            {p.weight && <span className="text-[10px] px-1.5 py-0.5 bg-gray-100 text-gray-500 rounded">{p.weight}</span>}
                           </div>
                         </div>
                       </div>
                     </td>
-                    <td className="px-4 py-3 text-gray-500">{p.category}</td>
+                    <td className="px-4 py-3 text-gray-500">{p.category?.name ?? '—'}</td>
                     <td className="px-4 py-3 text-right font-semibold">
                       ₹{p.price}
-                      {p.comparePrice && <p className="text-[11px] text-gray-400 line-through">₹{p.comparePrice}</p>}
+                      {p.comparePrice ? <p className="text-[11px] text-gray-400 line-through">₹{p.comparePrice}</p> : null}
                     </td>
                     <td className="px-4 py-3 text-center">
                       <span className={`text-xs font-bold px-2 py-1 rounded-full ${p.stock === 0 ? 'bg-red-100 text-red-600' : p.stock < 10 ? 'bg-orange-100 text-orange-600' : 'bg-green-100 text-green-700'}`}>
@@ -213,21 +266,28 @@ export default function AdminProductsPage() {
                       </span>
                     </td>
                     <td className="px-4 py-3 text-center">
-                      <span className={`text-xs font-semibold px-2 py-1 rounded-full ${p.active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}`}>
+                      <button onClick={() => toggleField(p.id, 'active', p.active)}
+                        className={`inline-flex items-center gap-1 text-xs font-semibold px-2 py-1 rounded-full transition-colors cursor-pointer ${p.active ? 'bg-green-100 text-green-700 hover:bg-green-200' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'}`}>
+                        {p.active ? <ToggleRight size={14} /> : <ToggleLeft size={14} />}
                         {p.active ? 'Active' : 'Inactive'}
-                      </span>
+                      </button>
                     </td>
                     <td className="px-4 py-3">
                       <div className="flex items-center justify-center gap-1">
-                        <Link href={`/admin/products/${p._id}/edit`}
+                        <Link href={`/admin/products/${p.id}/edit`}
                           className="p-2 rounded-lg text-gray-400 hover:text-[#900c00] hover:bg-[#900c00]/10 transition-all" title="Edit">
                           <Edit2 size={15} />
                         </Link>
+                        <button onClick={() => toggleField(p.id, 'bestSeller', p.bestSeller)}
+                          className={`p-2 rounded-lg transition-all ${p.bestSeller ? 'text-yellow-600 bg-yellow-50 hover:bg-yellow-100' : 'text-gray-400 hover:text-yellow-600 hover:bg-yellow-50'}`}
+                          title={p.bestSeller ? 'Remove Best Seller' : 'Mark as Best Seller'}>
+                          ★
+                        </button>
                         <button onClick={() => handleDuplicate(p)}
                           className="p-2 rounded-lg text-gray-400 hover:text-blue-600 hover:bg-blue-50 transition-all" title="Duplicate">
                           <Copy size={15} />
                         </button>
-                        <button onClick={() => setDeleteTarget(p._id)}
+                        <button onClick={() => setDeleteTarget(p.id)}
                           className="p-2 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 transition-all" title="Delete">
                           <Trash2 size={15} />
                         </button>

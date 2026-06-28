@@ -1,0 +1,602 @@
+import { PrismaClient } from '@prisma/client'
+import bcrypt from 'bcryptjs'
+
+const prisma = new PrismaClient()
+
+function generateUniqueId(prefix: string, index: number): string {
+  const letters = prefix.toUpperCase().slice(0, 3).padEnd(3, 'X')
+  const num = String(index).padStart(3, '0')
+  return `${letters}${num}`
+}
+
+async function main() {
+  console.log('🌱 Seeding database...\n')
+
+  // Clear existing data
+  await prisma.wishlist.deleteMany()
+  await prisma.cart.deleteMany()
+  await prisma.orderItem.deleteMany()
+  await prisma.shippingAddress.deleteMany()
+  await prisma.order.deleteMany()
+  await prisma.product.deleteMany()
+  await prisma.category.deleteMany()
+  await prisma.coupon.deleteMany()
+  await prisma.session.deleteMany()
+  await prisma.account.deleteMany()
+  await prisma.user.deleteMany()
+
+  console.log('✅ Cleared existing data')
+
+  // Create admin user
+  const adminPassword = await bcrypt.hash(process.env.ADMIN_PASSWORD || 'Admin@123456', 12)
+  const admin = await prisma.user.create({
+    data: {
+      name: 'Admin',
+      email: process.env.ADMIN_EMAIL || 'admin@mithai.com',
+      password: adminPassword,
+      role: 'ADMIN',
+      phone: '+91 9876543210',
+    },
+  })
+  console.log(`✅ Admin user created: ${admin.email}`)
+
+  // Create categories
+  const categories = await Promise.all([
+    prisma.category.create({
+      data: {
+        name: 'Clay Pot Roasted Seeds & Superfoods',
+        slug: 'clay-pot-roasted-seeds',
+        description: 'Traditionally roasted seeds and superfoods in clay pots for authentic taste',
+        active: true,
+      },
+    }),
+    prisma.category.create({
+      data: {
+        name: 'Protein & Energy Snacks',
+        slug: 'protein-energy-snacks',
+        description: 'High protein and energy-boosting healthy snacks',
+        active: true,
+      },
+    }),
+    prisma.category.create({
+      data: {
+        name: 'Palm Jaggery Millet Biscuits',
+        slug: 'palm-jaggery-millet-biscuits',
+        description: 'Wholesome biscuits made with palm jaggery and millets',
+        active: true,
+      },
+    }),
+    prisma.category.create({
+      data: {
+        name: 'Traditional Millet Savoury Snacks',
+        slug: 'traditional-millet-savoury-snacks',
+        description: 'Traditional savoury snacks crafted with nutritious millets',
+        active: true,
+      },
+    }),
+    prisma.category.create({
+      data: {
+        name: 'Millet & Vegetable Chips',
+        slug: 'millet-vegetable-chips',
+        description: 'Crispy chips made with millets and fresh vegetables',
+        active: true,
+      },
+    }),
+    prisma.category.create({
+      data: {
+        name: 'Premium Healthy Sweets',
+        slug: 'premium-healthy-sweets',
+        description: 'Premium sweets made with clean, healthy ingredients',
+        active: true,
+      },
+    }),
+  ])
+  console.log(`✅ ${categories.length} categories created`)
+
+  // Product counter for uniqueId generation
+  let productIdx = 1
+
+  // Create sample products
+  const products = [
+    // ─── Clay Pot Roasted Seeds ───────────────────────────
+    {
+      uniqueId: generateUniqueId('CRS', productIdx++),
+      name: 'Clay Pot Roasted Pumpkin Seeds',
+      slug: 'clay-pot-roasted-pumpkin-seeds-250g',
+      groupSlug: 'clay-pot-roasted-pumpkin-seeds',
+      categoryId: categories[0].id,
+      foodType: 'Seeds',
+      popularTags: ['Must Try', 'Roasted', 'High Protein'],
+      description: 'Premium pumpkin seeds slow-roasted in traditional clay pots for a rich, nutty flavour. Packed with zinc, magnesium, and plant-based protein. Perfect as a midday snack or salad topping.',
+      shortDescription: 'Clay pot roasted pumpkin seeds, rich in zinc & protein',
+      price: 249,
+      comparePrice: 329,
+      stock: 100,
+      weight: '250g',
+      tags: ['seeds', 'roasted', 'healthy', 'protein'],
+      ingredients: ['Pumpkin Seeds', 'Pink Salt', 'Cold-Pressed Oil'],
+      benefits: ['Rich in Zinc', 'High Protein', 'No Preservatives', 'Roasted in Clay Pot'],
+      images: [],
+      bestSeller: true,
+      featured: true,
+      active: true,
+      rating: 4.8,
+      reviewCount: 142,
+      salesCount: 320,
+    },
+    {
+      uniqueId: generateUniqueId('CRS', productIdx++),
+      name: 'Clay Pot Roasted Pumpkin Seeds',
+      slug: 'clay-pot-roasted-pumpkin-seeds-500g',
+      groupSlug: 'clay-pot-roasted-pumpkin-seeds',
+      categoryId: categories[0].id,
+      foodType: 'Seeds',
+      popularTags: ['Must Try', 'Roasted', 'High Protein'],
+      description: 'Premium pumpkin seeds slow-roasted in traditional clay pots for a rich, nutty flavour. Packed with zinc, magnesium, and plant-based protein. Perfect as a midday snack or salad topping.',
+      shortDescription: 'Clay pot roasted pumpkin seeds, rich in zinc & protein',
+      price: 449,
+      comparePrice: 579,
+      stock: 75,
+      weight: '500g',
+      tags: ['seeds', 'roasted', 'healthy', 'protein'],
+      ingredients: ['Pumpkin Seeds', 'Pink Salt', 'Cold-Pressed Oil'],
+      benefits: ['Rich in Zinc', 'High Protein', 'No Preservatives', 'Roasted in Clay Pot'],
+      images: [],
+      bestSeller: true,
+      featured: false,
+      active: true,
+      rating: 4.8,
+      reviewCount: 142,
+      salesCount: 180,
+    },
+    {
+      uniqueId: generateUniqueId('CRS', productIdx++),
+      name: 'Clay Pot Roasted Sunflower Seeds',
+      slug: 'clay-pot-roasted-sunflower-seeds',
+      groupSlug: null,
+      categoryId: categories[0].id,
+      foodType: 'Seeds',
+      popularTags: ['Roasted', 'No Maida', 'Millet Based'],
+      description: 'Crunchy sunflower seeds roasted to perfection in clay pots. A superfood snack loaded with vitamin E and healthy fats.',
+      shortDescription: 'Slow-roasted sunflower seeds with natural crunch',
+      price: 199,
+      comparePrice: 259,
+      stock: 120,
+      weight: '250g',
+      tags: ['seeds', 'roasted', 'superfood'],
+      ingredients: ['Sunflower Seeds', 'Himalayan Pink Salt'],
+      benefits: ['Rich in Vitamin E', 'Healthy Fats', 'Gluten Free'],
+      images: [],
+      bestSeller: false,
+      featured: true,
+      active: true,
+      rating: 4.6,
+      reviewCount: 89,
+      salesCount: 210,
+    },
+    {
+      uniqueId: generateUniqueId('CRS', productIdx++),
+      name: 'Mixed Seeds Superfood Trail Mix',
+      slug: 'mixed-seeds-superfood-trail-mix',
+      groupSlug: null,
+      categoryId: categories[0].id,
+      foodType: 'Seeds',
+      popularTags: ['Must Try', 'High Protein', 'No Refined Sugar'],
+      description: 'A powerhouse blend of pumpkin, sunflower, flax, chia, and watermelon seeds roasted in clay pots. The ultimate energy snack.',
+      shortDescription: '5-seed superfood trail mix, clay pot roasted',
+      price: 349,
+      comparePrice: 449,
+      stock: 80,
+      weight: '300g',
+      tags: ['seeds', 'trail-mix', 'superfood', 'energy'],
+      ingredients: ['Pumpkin Seeds', 'Sunflower Seeds', 'Flax Seeds', 'Chia Seeds', 'Watermelon Seeds'],
+      benefits: ['5 Superfoods', 'High Protein', 'Rich in Omega-3', 'No Sugar Added'],
+      images: [],
+      bestSeller: true,
+      featured: true,
+      active: true,
+      rating: 4.9,
+      reviewCount: 201,
+      salesCount: 450,
+    },
+
+    // ─── Protein & Energy Snacks ───────────────────────────
+    {
+      uniqueId: generateUniqueId('PES', productIdx++),
+      name: 'Peanut Protein Balls',
+      slug: 'peanut-protein-balls',
+      groupSlug: null,
+      categoryId: categories[1].id,
+      foodType: 'Protein Snacks',
+      popularTags: ['High Protein', 'No Refined Sugar', 'Must Try'],
+      description: 'Handcrafted protein balls made with natural peanut butter, dates, and whey protein. Each ball packs 8g of protein — the perfect post-workout snack.',
+      shortDescription: 'High protein peanut balls with dates & whey',
+      price: 299,
+      comparePrice: 399,
+      stock: 60,
+      weight: '200g',
+      tags: ['protein', 'energy', 'peanut', 'post-workout'],
+      ingredients: ['Peanut Butter', 'Dates', 'Whey Protein', 'Oats', 'Dark Chocolate'],
+      benefits: ['8g Protein per ball', 'No Refined Sugar', 'Post-Workout Friendly'],
+      images: [],
+      bestSeller: true,
+      featured: true,
+      active: true,
+      rating: 4.7,
+      reviewCount: 156,
+      salesCount: 380,
+    },
+    {
+      uniqueId: generateUniqueId('PES', productIdx++),
+      name: 'Almond Energy Bars',
+      slug: 'almond-energy-bars',
+      groupSlug: null,
+      categoryId: categories[1].id,
+      foodType: 'Protein Snacks',
+      popularTags: ['High Protein', 'No Maida', 'Special Item'],
+      description: 'Crunchy almond energy bars sweetened with honey and jaggery. Made with whole almonds, oats, and seeds for sustained energy.',
+      shortDescription: 'Crunchy almond bars with honey & jaggery',
+      price: 279,
+      comparePrice: 349,
+      stock: 45,
+      weight: '180g (6 bars)',
+      tags: ['energy-bar', 'almond', 'honey', 'protein'],
+      ingredients: ['Almonds', 'Oats', 'Honey', 'Jaggery', 'Pumpkin Seeds'],
+      benefits: ['Natural Energy', 'No Maida', 'Rich in Almonds'],
+      images: [],
+      bestSeller: false,
+      featured: true,
+      active: true,
+      rating: 4.5,
+      reviewCount: 67,
+      salesCount: 145,
+    },
+
+    // ─── Palm Jaggery Millet Biscuits ──────────────────────
+    {
+      uniqueId: generateUniqueId('PJB', productIdx++),
+      name: 'Ragi Palm Jaggery Biscuits',
+      slug: 'ragi-palm-jaggery-biscuits',
+      groupSlug: 'ragi-palm-jaggery-biscuits',
+      categoryId: categories[2].id,
+      foodType: 'Biscuits',
+      popularTags: ['No Maida', 'No Refined Sugar', 'Millet Based'],
+      description: 'Wholesome biscuits made with ragi flour and palm jaggery. No maida, no refined sugar — just pure millet goodness with a hint of cardamom.',
+      shortDescription: 'Ragi biscuits sweetened with palm jaggery',
+      price: 189,
+      comparePrice: 249,
+      stock: 150,
+      weight: '200g',
+      tags: ['biscuits', 'ragi', 'millet', 'palm-jaggery'],
+      ingredients: ['Ragi Flour', 'Palm Jaggery', 'Desi Ghee', 'Cardamom', 'Cashews'],
+      benefits: ['100% Millet Based', 'No Maida', 'No Refined Sugar', 'Rich in Calcium'],
+      images: [],
+      bestSeller: true,
+      featured: true,
+      active: true,
+      rating: 4.8,
+      reviewCount: 198,
+      salesCount: 520,
+    },
+    {
+      uniqueId: generateUniqueId('PJB', productIdx++),
+      name: 'Jowar Palm Jaggery Cookies',
+      slug: 'jowar-palm-jaggery-cookies',
+      groupSlug: null,
+      categoryId: categories[2].id,
+      foodType: 'Cookies',
+      popularTags: ['No Maida', 'No Refined Sugar', 'Millet Based'],
+      description: 'Crispy jowar flour cookies with palm jaggery sweetness. A perfect tea-time companion that\'s guilt-free and nutrition-packed.',
+      shortDescription: 'Jowar flour cookies with palm jaggery',
+      price: 199,
+      comparePrice: null,
+      stock: 110,
+      weight: '200g',
+      tags: ['cookies', 'jowar', 'millet', 'palm-jaggery'],
+      ingredients: ['Jowar Flour', 'Palm Jaggery', 'Butter', 'Cardamom'],
+      benefits: ['Millet Based', 'No Maida', 'No Refined Sugar', 'Gluten Friendly'],
+      images: [],
+      bestSeller: false,
+      featured: false,
+      active: true,
+      rating: 4.4,
+      reviewCount: 54,
+      salesCount: 95,
+    },
+
+    // ─── Traditional Millet Savoury Snacks ─────────────────
+    {
+      uniqueId: generateUniqueId('TMS', productIdx++),
+      name: 'Ragi Murukulu',
+      slug: 'ragi-murukulu',
+      groupSlug: null,
+      categoryId: categories[3].id,
+      foodType: 'Murukulu',
+      popularTags: ['No Maida', 'Millet Based', 'Roasted'],
+      description: 'Traditional Andhra-style murukulu made with ragi flour and rice flour. Crispy, crunchy, and perfect for snacking at any time.',
+      shortDescription: 'Traditional ragi murukulu — crispy & crunchy',
+      price: 179,
+      comparePrice: 229,
+      stock: 130,
+      weight: '250g',
+      tags: ['murukulu', 'ragi', 'traditional', 'savoury'],
+      ingredients: ['Ragi Flour', 'Rice Flour', 'Sesame Seeds', 'Cumin', 'Cold-Pressed Oil'],
+      benefits: ['No Maida', 'Millet Based', 'Traditional Recipe'],
+      images: [],
+      bestSeller: true,
+      featured: true,
+      active: true,
+      rating: 4.7,
+      reviewCount: 176,
+      salesCount: 410,
+    },
+    {
+      uniqueId: generateUniqueId('TMS', productIdx++),
+      name: 'Multi Millet Boondi',
+      slug: 'multi-millet-boondi',
+      groupSlug: null,
+      categoryId: categories[3].id,
+      foodType: 'Boondi & Mixtures',
+      popularTags: ['Millet Based', 'No Maida', 'Special Item'],
+      description: 'Light and airy boondi made with a blend of ragi, jowar, and bajra flours. Seasoned with curry leaves and green chillies.',
+      shortDescription: 'Multi-millet boondi with traditional seasoning',
+      price: 159,
+      comparePrice: null,
+      stock: 90,
+      weight: '200g',
+      tags: ['boondi', 'millet', 'savoury', 'mixture'],
+      ingredients: ['Ragi Flour', 'Jowar Flour', 'Bajra Flour', 'Curry Leaves', 'Green Chillies'],
+      benefits: ['3 Millets', 'No Maida', 'Light & Crispy'],
+      images: [],
+      bestSeller: false,
+      featured: false,
+      active: true,
+      rating: 4.3,
+      reviewCount: 42,
+      salesCount: 85,
+    },
+    {
+      uniqueId: generateUniqueId('TMS', productIdx++),
+      name: 'Millet Mixture Special',
+      slug: 'millet-mixture-special',
+      groupSlug: null,
+      categoryId: categories[3].id,
+      foodType: 'Boondi & Mixtures',
+      popularTags: ['Must Try', 'No Maida', 'Gifting'],
+      description: 'A premium mixture made with millet-based sev, boondi, roasted peanuts, curry leaves, and a secret spice blend. The perfect evening tea snack.',
+      shortDescription: 'Premium millet mixture with roasted peanuts',
+      price: 219,
+      comparePrice: 279,
+      stock: 70,
+      weight: '250g',
+      tags: ['mixture', 'millet', 'savoury', 'premium'],
+      ingredients: ['Millet Sev', 'Millet Boondi', 'Roasted Peanuts', 'Curry Leaves', 'Dry Coconut'],
+      benefits: ['No Maida', 'Premium Blend', 'Perfect for Gifting'],
+      images: [],
+      bestSeller: true,
+      featured: true,
+      active: true,
+      rating: 4.8,
+      reviewCount: 134,
+      salesCount: 290,
+    },
+
+    // ─── Millet & Vegetable Chips ──────────────────────────
+    {
+      uniqueId: generateUniqueId('MVC', productIdx++),
+      name: 'Ragi Spinach Chips',
+      slug: 'ragi-spinach-chips',
+      groupSlug: null,
+      categoryId: categories[4].id,
+      foodType: 'Chips',
+      popularTags: ['No Maida', 'Millet Based', 'Must Try'],
+      description: 'Thin, crispy chips made with ragi flour and fresh spinach puree. Baked, not fried — a guilt-free crunchy snack.',
+      shortDescription: 'Baked ragi & spinach chips — guilt-free crunch',
+      price: 169,
+      comparePrice: 219,
+      stock: 100,
+      weight: '150g',
+      tags: ['chips', 'ragi', 'spinach', 'baked'],
+      ingredients: ['Ragi Flour', 'Spinach', 'Rice Flour', 'Herbs', 'Olive Oil'],
+      benefits: ['Baked Not Fried', 'Rich in Iron', 'Millet Based'],
+      images: [],
+      bestSeller: false,
+      featured: true,
+      active: true,
+      rating: 4.5,
+      reviewCount: 78,
+      salesCount: 160,
+    },
+    {
+      uniqueId: generateUniqueId('MVC', productIdx++),
+      name: 'Beetroot Millet Chips',
+      slug: 'beetroot-millet-chips',
+      groupSlug: null,
+      categoryId: categories[4].id,
+      foodType: 'Chips',
+      popularTags: ['No Maida', 'Millet Based', 'Roasted'],
+      description: 'Vibrant beetroot chips made with a millet flour base. Naturally coloured and flavoured — a healthier alternative to regular chips.',
+      shortDescription: 'Natural beetroot millet chips',
+      price: 179,
+      comparePrice: null,
+      stock: 85,
+      weight: '150g',
+      tags: ['chips', 'beetroot', 'millet', 'healthy'],
+      ingredients: ['Millet Flour', 'Beetroot', 'Rice Flour', 'Salt', 'Sunflower Oil'],
+      benefits: ['No Artificial Colors', 'Millet Based', 'Natural Beetroot'],
+      images: [],
+      bestSeller: false,
+      featured: false,
+      active: true,
+      rating: 4.4,
+      reviewCount: 45,
+      salesCount: 90,
+    },
+
+    // ─── Premium Healthy Sweets ────────────────────────────
+    {
+      uniqueId: generateUniqueId('PHS', productIdx++),
+      name: 'Dry Fruit Laddu',
+      slug: 'dry-fruit-laddu',
+      groupSlug: 'dry-fruit-laddu',
+      categoryId: categories[5].id,
+      foodType: 'Laddus',
+      popularTags: ['Must Try', 'No Refined Sugar', 'Gifting', 'Special Item'],
+      description: 'Luxurious laddus packed with almonds, cashews, dates, and pistachios. Sweetened with dates — no sugar added. Each laddu is handcrafted with love.',
+      shortDescription: 'Handcrafted dry fruit laddus, no sugar added',
+      price: 399,
+      comparePrice: 499,
+      stock: 40,
+      weight: '250g',
+      tags: ['laddu', 'dry-fruit', 'premium', 'festive'],
+      ingredients: ['Almonds', 'Cashews', 'Dates', 'Pistachios', 'Desi Ghee', 'Cardamom'],
+      benefits: ['No Refined Sugar', 'Pure Desi Ghee', 'Handcrafted', 'Rich in Dry Fruits'],
+      images: [],
+      bestSeller: true,
+      featured: true,
+      active: true,
+      rating: 4.9,
+      reviewCount: 234,
+      salesCount: 680,
+    },
+    {
+      uniqueId: generateUniqueId('PHS', productIdx++),
+      name: 'Dry Fruit Laddu',
+      slug: 'dry-fruit-laddu-500g',
+      groupSlug: 'dry-fruit-laddu',
+      categoryId: categories[5].id,
+      foodType: 'Laddus',
+      popularTags: ['Must Try', 'No Refined Sugar', 'Gifting', 'Special Item'],
+      description: 'Luxurious laddus packed with almonds, cashews, dates, and pistachios. Sweetened with dates — no sugar added. Each laddu is handcrafted with love.',
+      shortDescription: 'Handcrafted dry fruit laddus, no sugar added',
+      price: 749,
+      comparePrice: 899,
+      stock: 25,
+      weight: '500g',
+      tags: ['laddu', 'dry-fruit', 'premium', 'festive'],
+      ingredients: ['Almonds', 'Cashews', 'Dates', 'Pistachios', 'Desi Ghee', 'Cardamom'],
+      benefits: ['No Refined Sugar', 'Pure Desi Ghee', 'Handcrafted', 'Rich in Dry Fruits'],
+      images: [],
+      bestSeller: true,
+      featured: false,
+      active: true,
+      rating: 4.9,
+      reviewCount: 234,
+      salesCount: 350,
+    },
+    {
+      uniqueId: generateUniqueId('PHS', productIdx++),
+      name: 'Ragi Halwa Bites',
+      slug: 'ragi-halwa-bites',
+      groupSlug: null,
+      categoryId: categories[5].id,
+      foodType: 'Sweets',
+      popularTags: ['No Refined Sugar', 'Millet Based', 'Special Item'],
+      description: 'Rich, melt-in-mouth ragi halwa bites sweetened with palm jaggery. A modern twist on the classic halwa, made healthy with millet.',
+      shortDescription: 'Ragi halwa bites with palm jaggery',
+      price: 329,
+      comparePrice: 399,
+      stock: 35,
+      weight: '200g',
+      tags: ['halwa', 'ragi', 'sweets', 'palm-jaggery'],
+      ingredients: ['Ragi Flour', 'Palm Jaggery', 'Desi Ghee', 'Almonds', 'Cardamom'],
+      benefits: ['Millet Based', 'No Refined Sugar', 'Palm Jaggery Sweetened'],
+      images: [],
+      bestSeller: false,
+      featured: true,
+      active: true,
+      rating: 4.6,
+      reviewCount: 87,
+      salesCount: 195,
+    },
+    {
+      uniqueId: generateUniqueId('PHS', productIdx++),
+      name: 'Coconut Millet Barfi',
+      slug: 'coconut-millet-barfi',
+      groupSlug: null,
+      categoryId: categories[5].id,
+      foodType: 'Sweets',
+      popularTags: ['No Refined Sugar', 'Gifting', 'Special Item'],
+      description: 'Delicate barfi made with fresh coconut and millet flour, sweetened with jaggery. A premium sweet that\'s both healthy and indulgent.',
+      shortDescription: 'Fresh coconut & millet barfi with jaggery',
+      price: 359,
+      comparePrice: 449,
+      stock: 30,
+      weight: '250g',
+      tags: ['barfi', 'coconut', 'millet', 'premium'],
+      ingredients: ['Fresh Coconut', 'Millet Flour', 'Jaggery', 'Ghee', 'Saffron'],
+      benefits: ['No Refined Sugar', 'Fresh Coconut', 'Premium Quality'],
+      images: [],
+      bestSeller: false,
+      featured: false,
+      active: true,
+      rating: 4.7,
+      reviewCount: 63,
+      salesCount: 120,
+    },
+  ]
+
+  for (const product of products) {
+    await prisma.product.create({ data: product })
+  }
+  console.log(`✅ ${products.length} products created`)
+
+  // Create sample coupons
+  const coupons = [
+    {
+      code: 'WELCOME10',
+      description: '10% off on your first order',
+      discountType: 'percentage',
+      value: 10,
+      minOrder: 299,
+      maxDiscount: 150,
+      usageLimit: 1000,
+      perUserLimit: 1,
+      active: true,
+      expiryDate: new Date('2026-12-31'),
+    },
+    {
+      code: 'HEALTHY20',
+      description: '₹20 off on orders above ₹500',
+      discountType: 'flat',
+      value: 20,
+      minOrder: 500,
+      maxDiscount: null,
+      usageLimit: 500,
+      perUserLimit: 3,
+      active: true,
+      expiryDate: new Date('2026-09-30'),
+    },
+    {
+      code: 'MILLET50',
+      description: 'Flat ₹50 off on millet products',
+      discountType: 'flat',
+      value: 50,
+      minOrder: 400,
+      maxDiscount: null,
+      usageLimit: 200,
+      perUserLimit: 2,
+      active: true,
+      expiryDate: new Date('2026-08-15'),
+    },
+  ]
+
+  for (const coupon of coupons) {
+    await prisma.coupon.create({ data: coupon })
+  }
+  console.log(`✅ ${coupons.length} coupons created`)
+
+  console.log('\n🎉 Database seeded successfully!')
+  console.log(`\n📋 Summary:`)
+  console.log(`   Admin: ${admin.email} / Admin@123456`)
+  console.log(`   Categories: ${categories.length}`)
+  console.log(`   Products: ${products.length}`)
+  console.log(`   Coupons: ${coupons.length}`)
+}
+
+main()
+  .catch((e) => {
+    console.error('❌ Seed error:', e)
+    process.exit(1)
+  })
+  .finally(() => prisma.$disconnect())

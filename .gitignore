@@ -1,4 +1,29 @@
-node_modules
-.next
-.env.local
+# ─── Dependencies ──────────────────────────────────────
+node_modules/
 
+# ─── Next.js Build Output ─────────────────────────────
+.next/
+out/
+
+# ─── Environment Variables (NEVER commit secrets) ─────
+.env
+.env.local
+.env.*.local
+
+# ─── IDE / OS ──────────────────────────────────────────
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.vscode/
+.idea/
+
+# ─── Logs ──────────────────────────────────────────────
+*.log
+npm-debug.log*
+
+# ─── TypeScript Build ─────────────────────────────────
+*.tsbuildinfo
+
+# ─── Vercel ────────────────────────────────────────────
+.vercel

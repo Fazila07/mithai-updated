@@ -1,46 +1,19 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
+import type { IProduct, CartItem } from '@/types'
 
-export interface IProduct {
-  _id: string
-  name: string
-  slug: string
-  description: string
-  shortDescription: string
-  price: number
-  comparePrice?: number
-  images: string[]
-  category: string
-  ingredients: string[]
-  stock: number
-  tags: string[]
-  featured: boolean
-  bestSeller: boolean
-  rating: number
-  reviewCount: number
-  weight?: string
-  allergens?: string[]
-  nutritionFacts?: Record<string, string>
-  createdAt: string
-  updatedAt: string
-}
-
-export interface CartItem {
-  product: IProduct
-  quantity: number
-}
-
-export interface CartState {
+interface CartState {
   items: CartItem[]
   isOpen: boolean
+  buyNowItem: CartItem | null
   addItem: (product: IProduct, qty?: number) => void
   removeItem: (productId: string) => void
   updateQty: (productId: string, qty: number) => void
   clearCart: () => void
   openCart: () => void
   closeCart: () => void
-  total: number
-  itemCount: number
+  setBuyNow: (product: IProduct, qty: number) => void
+  clearBuyNow: () => void
 }
 
 export const useCartStore = create<CartState>()(
@@ -48,62 +21,96 @@ export const useCartStore = create<CartState>()(
     (set, get) => ({
       items: [],
       isOpen: false,
+      buyNowItem: null,
 
-      addItem: (product: IProduct, qty = 1) => {
-        const { items } = get()
-        const existing = items.find((item) => item.product._id === product._id)
+      addItem: (product, qty = 1) => {
+        const id = product._id || product.id || ''
+        set((state) => {
+          const existing = state.items.find((i) => (i.product._id || i.product.id) === id)
+          if (existing) {
+            return {
+              items: state.items.map((i) =>
+                (i.product._id || i.product.id) === id
+                  ? { ...i, quantity: i.quantity + qty }
+                  : i
+              ),
+              isOpen: true,
+            }
+          }
+          return {
+            items: [...state.items, { product, quantity: qty }],
+            isOpen: true,
+          }
+        })
 
-        if (existing) {
-          set({
-            items: items.map((item) =>
-              item.product._id === product._id ? { ...item, quantity: item.quantity + qty } : item
-            ),
-          })
-        } else {
-          set({ items: [...items, { product, quantity: qty }] })
-        }
-
-        get().openCart()
+        // Sync to DB in background (don't await)
+        fetch('/api/user/cart', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ productId: id, quantity: qty }),
+        }).catch(() => {})
       },
 
-      removeItem: (productId: string) => {
-        set({ items: get().items.filter((item) => item.product._id !== productId) })
+      removeItem: (productId) => {
+        set((state) => ({
+          items: state.items.filter((i) => (i.product._id || i.product.id) !== productId),
+        }))
+
+        fetch('/api/user/cart', {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ productId }),
+        }).catch(() => {})
       },
 
-      updateQty: (productId: string, qty: number) => {
+      updateQty: (productId, qty) => {
         if (qty <= 0) {
           get().removeItem(productId)
-        } else {
-          set({
-            items: get().items.map((item) =>
-              item.product._id === productId ? { ...item, quantity: qty } : item
-            ),
-          })
+          return
         }
+        set((state) => ({
+          items: state.items.map((i) =>
+            (i.product._id || i.product.id) === productId
+              ? { ...i, quantity: qty }
+              : i
+          ),
+        }))
+
+        fetch('/api/user/cart', {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ productId, quantity: qty }),
+        }).catch(() => {})
       },
 
-      clearCart: () => {
-        set({ items: [], isOpen: false })
+      clearCart: () => set({ items: [] }),
+
+      openCart: () => set({ isOpen: true }),
+      closeCart: () => set({ isOpen: false }),
+
+      setBuyNow: (product, qty) => {
+        set({ buyNowItem: { product, quantity: qty } })
       },
 
-      openCart: () => {
-        set({ isOpen: true })
-      },
-
-      closeCart: () => {
-        set({ isOpen: false })
-      },
-
-      get total() {
-        return get().items.reduce((sum, item) => sum + item.product.price * item.quantity, 0)
-      },
-
-      get itemCount() {
-        return get().items.reduce((sum, item) => sum + item.quantity, 0)
-      },
+      clearBuyNow: () => set({ buyNowItem: null }),
     }),
     {
       name: 'mithai-cart',
+      partialize: (state) => ({
+        items: state.items,
+        buyNowItem: state.buyNowItem,
+      }),
     }
   )
 )
+
+// Derived selectors
+export const useCartTotal = () =>
+  useCartStore((state) =>
+    state.items.reduce((sum, i) => sum + i.product.price * i.quantity, 0)
+  )
+
+export const useCartCount = () =>
+  useCartStore((state) =>
+    state.items.reduce((sum, i) => sum + i.quantity, 0)
+  )

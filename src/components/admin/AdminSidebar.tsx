@@ -3,25 +3,31 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useState } from 'react'
+import { signOut } from 'next-auth/react'
 import {
   LayoutDashboard,
   Package,
   ShoppingBag,
   Users,
-  Tag,
-  BarChart2,
-  Settings,
   ChevronLeft,
   ChevronRight,
   X,
+  LogOut,
+  Ticket,
+  BarChart3,
+  Warehouse,
+  Settings,
+  ArrowLeft,
 } from 'lucide-react'
 
 const NAV_ITEMS = [
   { href: '/admin', label: 'Dashboard', icon: LayoutDashboard, exact: true },
-  { href: '/admin/products', label: 'Products', icon: Package },
   { href: '/admin/orders', label: 'Orders', icon: ShoppingBag },
+  { href: '/admin/products', label: 'Products', icon: Package },
+  { href: '/admin/coupons', label: 'Coupons', icon: Ticket },
   { href: '/admin/customers', label: 'Customers', icon: Users },
-  { href: '/admin/coupons', label: 'Coupons', icon: Tag },
+  { href: '/admin/analytics', label: 'Analytics', icon: BarChart3 },
+  { href: '/admin/inventory', label: 'Inventory', icon: Warehouse },
   { href: '/admin/settings', label: 'Settings', icon: Settings },
 ]
 
@@ -53,7 +59,7 @@ export default function AdminSidebar({ mobileOpen, onClose }: Props) {
       <aside
         className={`
           fixed top-0 left-0 h-full z-50 flex flex-col
-          bg-[#1a0a0a] text-white transition-all duration-300
+          bg-[#3d1c1c] text-white transition-all duration-300
           ${collapsed ? 'w-[72px]' : 'w-64'}
           ${mobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
         `}
@@ -62,18 +68,18 @@ export default function AdminSidebar({ mobileOpen, onClose }: Props) {
         <div className="flex items-center justify-between px-4 py-5 border-b border-white/10 flex-shrink-0">
           {!collapsed && (
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#ffa520] to-[#900c00] flex items-center justify-center flex-shrink-0">
-                <span className="text-white text-sm font-bold">M</span>
+              <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-[#ffa520] to-[#c94420] flex items-center justify-center flex-shrink-0 shadow-lg">
+                <span className="text-white text-base font-bold">M</span>
               </div>
               <div>
-                <p className="font-semibold text-sm leading-tight">Mithai 2.0</p>
-                <p className="text-[10px] text-white/50 leading-tight">Admin Panel</p>
+                <p className="font-bold text-sm leading-tight text-[#faf4e8]">Mithai 2.0</p>
+                <p className="text-[10px] text-[#ffa520] font-semibold tracking-wider uppercase leading-tight">Admin Panel</p>
               </div>
             </div>
           )}
           {collapsed && (
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#ffa520] to-[#900c00] flex items-center justify-center mx-auto">
-              <span className="text-white text-sm font-bold">M</span>
+            <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-[#ffa520] to-[#c94420] flex items-center justify-center mx-auto shadow-lg">
+              <span className="text-white text-base font-bold">M</span>
             </div>
           )}
 
@@ -97,8 +103,8 @@ export default function AdminSidebar({ mobileOpen, onClose }: Props) {
                     className={`
                       flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all
                       ${active
-                        ? 'bg-[#ffa520]/20 text-[#ffa520]'
-                        : 'text-white/60 hover:text-white hover:bg-white/8'
+                        ? 'bg-[#ffa520]/25 text-[#ffa520]'
+                        : 'text-[#e8d0c0] hover:text-white hover:bg-white/8'
                       }
                       ${collapsed ? 'justify-center' : ''}
                     `}
@@ -116,11 +122,43 @@ export default function AdminSidebar({ mobileOpen, onClose }: Props) {
           </ul>
         </nav>
 
+        {/* Back to Store */}
+        <div className="border-t border-white/10 p-2">
+          <Link
+            href="/"
+            className={`
+              flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-medium transition-all w-full
+              text-[#e8d0c0]/70 hover:text-[#ffa520] hover:bg-white/5
+              ${collapsed ? 'justify-center' : ''}
+            `}
+            title={collapsed ? 'Back to Store' : undefined}
+          >
+            <ArrowLeft size={16} className="flex-shrink-0" />
+            {!collapsed && <span>Back to Store</span>}
+          </Link>
+        </div>
+
+        {/* Logout button */}
+        <div className="border-t border-white/10 p-2">
+          <button
+            onClick={() => signOut({ callbackUrl: '/admin/login' })}
+            className={`
+              flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all w-full
+              text-[#e8d0c0]/50 hover:text-red-400 hover:bg-red-500/10
+              ${collapsed ? 'justify-center' : ''}
+            `}
+            title={collapsed ? 'Logout' : undefined}
+          >
+            <LogOut size={18} className="flex-shrink-0" />
+            {!collapsed && <span>Logout</span>}
+          </button>
+        </div>
+
         {/* Collapse toggle (desktop only) */}
         <div className="hidden lg:flex border-t border-white/10 p-3 justify-end">
           <button
             onClick={() => setCollapsed(!collapsed)}
-            className="p-2 rounded-lg text-white/40 hover:text-white hover:bg-white/10 transition-all"
+            className="p-2 rounded-lg text-[#e8d0c0]/40 hover:text-white hover:bg-white/10 transition-all"
             title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
           >
             {collapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}

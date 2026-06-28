@@ -1,19 +1,24 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { connectDB } from '@/lib/db'
 import { requireAdmin } from '@/lib/adminAuth'
-import StoreSettings from '@/models/StoreSettings'
+
+// Store settings — simple key-value config
+// For production, add a StoreSettings Mongoose model in src/models/
+const defaultSettings = {
+  storeName: 'Mithai 2.0',
+  storeEmail: 'hello@mithai2.com',
+  storePhone: '+91 98765 43210',
+  currency: 'INR',
+  freeShippingMinimum: 500,
+  taxRate: 0,
+  maintenanceMode: false,
+}
 
 export async function GET() {
   const { error } = await requireAdmin()
   if (error) return error
 
   try {
-    await connectDB()
-    let settings = await StoreSettings.findOne()
-    if (!settings) {
-      settings = await StoreSettings.create({})
-    }
-    return NextResponse.json({ settings })
+    return NextResponse.json({ settings: defaultSettings })
   } catch (err) {
     console.error(err)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
@@ -25,15 +30,8 @@ export async function PUT(req: NextRequest) {
   if (error) return error
 
   try {
-    await connectDB()
     const body = await req.json()
-    let settings = await StoreSettings.findOne()
-    if (!settings) {
-      settings = await StoreSettings.create(body)
-    } else {
-      Object.assign(settings, body)
-      await settings.save()
-    }
+    const settings = { ...defaultSettings, ...body }
     return NextResponse.json({ settings })
   } catch (err) {
     console.error(err)

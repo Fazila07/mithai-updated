@@ -1,14 +1,20 @@
 'use client'
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import toast from 'react-hot-toast'
 import { Upload, X, Loader2, Plus, Minus } from 'lucide-react'
 
+interface Category {
+  id: string
+  name: string
+  slug: string
+}
+
 interface ProductFormData {
   name: string
   slug: string
-  category: string
+  categoryId: string
   subcategory: string
   description: string
   shortDescription: string
@@ -28,14 +34,13 @@ interface ProductFormData {
 }
 
 interface Props {
-  initialData?: Partial<ProductFormData> & { _id?: string }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  initialData?: any
   mode: 'create' | 'edit'
 }
 
-const CATEGORIES = ['Cookies', 'Brownies', 'Laddo']
-
 const EMPTY: ProductFormData = {
-  name: '', slug: '', category: 'Cookies', subcategory: '',
+  name: '', slug: '', categoryId: '', subcategory: '',
   description: '', shortDescription: '',
   price: '', comparePrice: '', stock: '', sku: '', weight: '',
   tags: '', ingredients: '', benefits: '',
@@ -49,10 +54,52 @@ function slugify(str: string) {
 
 export default function ProductForm({ initialData, mode }: Props) {
   const router = useRouter()
-  const [form, setForm] = useState<ProductFormData>({ ...EMPTY, ...initialData })
+  const [categories, setCategories] = useState<Category[]>([])
+  const [form, setForm] = useState<ProductFormData>(() => {
+    if (initialData) {
+      return {
+        ...EMPTY,
+        name: initialData.name ?? '',
+        slug: initialData.slug ?? '',
+        categoryId: initialData.categoryId ?? initialData.category?.id ?? '',
+        subcategory: initialData.subcategory ?? '',
+        description: initialData.description ?? '',
+        shortDescription: initialData.shortDescription ?? '',
+        price: String(initialData.price ?? ''),
+        comparePrice: String(initialData.comparePrice ?? ''),
+        stock: String(initialData.stock ?? ''),
+        sku: initialData.sku ?? '',
+        weight: initialData.weight ?? '',
+        tags: Array.isArray(initialData.tags) ? initialData.tags.join(', ') : (initialData.tags ?? ''),
+        ingredients: Array.isArray(initialData.ingredients) ? initialData.ingredients.join('\n') : (initialData.ingredients ?? ''),
+        benefits: Array.isArray(initialData.benefits) ? initialData.benefits.join('\n') : (initialData.benefits ?? ''),
+        images: initialData.images ?? [],
+        featuredImage: initialData.featuredImage ?? '',
+        bestSeller: initialData.bestSeller ?? false,
+        featured: initialData.featured ?? false,
+        active: initialData.active ?? true,
+      }
+    }
+    return EMPTY
+  })
   const [uploading, setUploading] = useState(false)
   const [saving, setSaving] = useState(false)
   const [dragOver, setDragOver] = useState(false)
+
+  // Fetch categories from DB
+  useEffect(() => {
+    fetch('/api/categories')
+      .then((r) => r.json())
+      .then((d) => {
+        const cats = d.categories ?? []
+        setCategories(cats)
+        if (!form.categoryId && cats.length > 0) {
+          setForm((f) => ({ ...f, categoryId: cats[0].id }))
+        }
+      })
+      .catch(() => toast.error('Failed to load categories'))
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const set = (key: keyof ProductFormData, value: string | boolean | string[]) =>
     setForm((f) => ({ ...f, [key]: value }))
@@ -95,23 +142,37 @@ export default function ProductForm({ initialData, mode }: Props) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!form.name || !form.category || !form.price) {
+    if (!form.name || !form.categoryId || !form.price) {
       toast.error('Name, category and price are required')
       return
     }
     setSaving(true)
     try {
       const body = {
-        ...form,
+        name: form.name,
+        slug: form.slug,
+        categoryId: form.categoryId,
+        subcategory: form.subcategory || undefined,
+        description: form.description,
+        shortDescription: form.shortDescription || undefined,
         price: parseFloat(form.price),
         comparePrice: form.comparePrice ? parseFloat(form.comparePrice) : undefined,
         stock: parseInt(form.stock) || 0,
+        sku: form.sku || undefined,
+        weight: form.weight || undefined,
         tags: form.tags.split(',').map((t) => t.trim()).filter(Boolean),
         ingredients: form.ingredients.split('\n').map((t) => t.trim()).filter(Boolean),
         benefits: form.benefits.split('\n').map((t) => t.trim()).filter(Boolean),
+        images: form.images,
+        featuredImage: form.featuredImage || undefined,
+        bestSeller: form.bestSeller,
+        featured: form.featured,
+        active: form.active,
       }
 
-      const url = mode === 'edit' ? `/api/admin/products/${initialData?._id}` : '/api/admin/products'
+      const url = mode === 'edit' && initialData?.id
+        ? `/api/admin/products/${initialData.id}`
+        : '/api/admin/products'
       const method = mode === 'edit' ? 'PUT' : 'POST'
 
       const res = await fetch(url, {
@@ -152,8 +213,9 @@ export default function ProductForm({ initialData, mode }: Props) {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className={labelCls}>Category *</label>
-                <select value={form.category} onChange={(e) => set('category', e.target.value)} className={inputCls}>
-                  {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
+                <select value={form.categoryId} onChange={(e) => set('categoryId', e.target.value)} className={inputCls}>
+                  <option value="">Select category</option>
+                  {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
                 </select>
               </div>
               <div>

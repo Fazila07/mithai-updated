@@ -43,28 +43,28 @@ const TABS = [
     label: 'Where It Began',
     title: 'A Journey of Purpose',
     content: 'Started in a small kitchen with a mission to create desserts that don\'t compromise on health. Every recipe is crafted with intention.',
-    image: '/images/founder/founder.jpg',
+    image: '/images/cocoa.jpeg',
   },
   {
     id: 'ingredients',
     label: 'Better Ingredients',
     title: 'No Shortcuts',
     content: 'We source the finest ingredients. No refined sugar. No maida. No artificial preservatives. Just real, wholesome goodness.',
-    image: '/images/ingredients/millets.jpg',
+    image: '/images/jowar.jpg',
   },
   {
     id: 'believe',
     label: 'What We Believe',
     title: 'Mindful Indulgence',
     content: 'Desserts should nourish, not punish. PCOS friendly. Gut friendly. Clean ingredients. Desserts for everyone.',
-    image: '/images/products/cookies.jpg',
+    image: '/images/chocochip cookies.jpg',
   },
   {
     id: 'every',
     label: 'For Every You',
     title: 'Inclusive Sweetness',
     content: 'Whether you\'re managing PCOS, avoiding sugar, or just want better snacks—there\'s something made for you with love.',
-    image: '/images/hero/hero-bg.jpg',
+    image: '/images/banner.jpg',
   },
 ]
 

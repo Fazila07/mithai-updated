@@ -20,23 +20,25 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'No files provided' }, { status: 400 })
     }
 
-    const uploadPromises = files.map(async (file) => {
+    const urls: string[] = []
+
+    for (const file of files) {
       const bytes = await file.arrayBuffer()
       const buffer = Buffer.from(bytes)
       const base64 = buffer.toString('base64')
       const dataUri = `data:${file.type};base64,${base64}`
 
       const result = await cloudinary.uploader.upload(dataUri, {
-        folder: 'mithai/products',
-        transformation: [{ width: 1200, height: 1200, crop: 'limit', quality: 'auto' }],
+        folder: 'mithai-products',
+        transformation: [{ width: 1200, height: 1200, crop: 'limit', quality: 'auto:good' }],
       })
-      return result.secure_url
-    })
 
-    const urls = await Promise.all(uploadPromises)
+      urls.push(result.secure_url)
+    }
+
     return NextResponse.json({ urls })
   } catch (err) {
-    console.error('Upload error:', err)
+    console.error(err)
     return NextResponse.json({ error: 'Upload failed' }, { status: 500 })
   }
 }

@@ -1,109 +1,120 @@
 import mongoose, { Schema, Document, Model } from 'mongoose'
 
-export type OrderStatus =
-  | 'Pending'
-  | 'Confirmed'
-  | 'In Process'
-  | 'Packed'
-  | 'Shipped'
-  | 'Delivered'
-  | 'Cancelled'
-
-export type PaymentStatus = 'Pending' | 'Paid' | 'Failed' | 'Refunded'
+// ─── Subdocument Schemas ───────────────────────────────────
 
 export interface IOrderItem {
-  productId: string
+  productId: mongoose.Types.ObjectId
   name: string
   image: string
   price: number
   quantity: number
 }
 
-export interface IOrder extends Document {
+const OrderItemSchema = new Schema<IOrderItem>(
+  {
+    productId: { type: Schema.Types.ObjectId, ref: 'Product', required: true },
+    name: { type: String, required: true },
+    image: { type: String, default: '' },
+    price: { type: Number, required: true },
+    quantity: { type: Number, required: true, min: 1 },
+  },
+  { _id: false }
+)
+
+export interface IShippingAddress {
+  street: string
+  city: string
+  state: string
+  pincode: string
+}
+
+const ShippingAddressSchema = new Schema<IShippingAddress>(
+  {
+    street: { type: String, required: true },
+    city: { type: String, required: true },
+    state: { type: String, default: 'India' },
+    pincode: { type: String, required: true },
+  },
+  { _id: false }
+)
+
+// ─── Order Document ────────────────────────────────────────
+
+export type OrderStatusType = 'PENDING' | 'CONFIRMED' | 'IN_PROCESS' | 'PACKED' | 'SHIPPED' | 'DELIVERED' | 'CANCELLED'
+export type PaymentStatusType = 'PENDING' | 'PAID' | 'FAILED' | 'REFUNDED'
+
+export interface IOrderDocument extends Document {
+  _id: mongoose.Types.ObjectId
   orderNumber: string
-  customer: {
-    name: string
-    email: string
-    phone: string
-  }
-  shippingAddress: {
-    street: string
-    city: string
-    state: string
-    pincode: string
-  }
-  items: IOrderItem[]
+  userId: mongoose.Types.ObjectId | null
+  customerName: string
+  customerEmail: string
+  customerPhone: string
+  status: OrderStatusType
+  paymentStatus: PaymentStatusType
+  paymentMethod: string
+  razorpayOrderId: string | null
+  razorpayPaymentId: string | null
   subtotal: number
   shippingCharge: number
   tax: number
-  total: number
-  paymentStatus: PaymentStatus
-  paymentMethod: string
-  razorpayOrderId?: string
-  razorpayPaymentId?: string
-  status: OrderStatus
-  couponCode?: string
   discount: number
-  notes?: string
+  total: number
+  couponCode: string | null
+  notes: string | null
+  items: IOrderItem[]
+  shippingAddress: IShippingAddress
   createdAt: Date
   updatedAt: Date
 }
 
-const OrderSchema = new Schema<IOrder>(
+const OrderSchema = new Schema<IOrderDocument>(
   {
     orderNumber: { type: String, required: true, unique: true },
-    customer: {
-      name: { type: String, required: true },
-      email: { type: String, required: true },
-      phone: { type: String, required: true },
+    userId: { type: Schema.Types.ObjectId, ref: 'User', default: null },
+    customerName: { type: String, required: true },
+    customerEmail: { type: String, required: true },
+    customerPhone: { type: String, required: true },
+    status: {
+      type: String,
+      enum: ['PENDING', 'CONFIRMED', 'IN_PROCESS', 'PACKED', 'SHIPPED', 'DELIVERED', 'CANCELLED'],
+      default: 'PENDING',
     },
-    shippingAddress: {
-      street: { type: String, required: true },
-      city: { type: String, required: true },
-      state: { type: String, default: 'India' },
-      pincode: { type: String, required: true },
+    paymentStatus: {
+      type: String,
+      enum: ['PENDING', 'PAID', 'FAILED', 'REFUNDED'],
+      default: 'PENDING',
     },
-    items: [
-      {
-        productId: { type: String, required: true },
-        name: { type: String, required: true },
-        image: { type: String, default: '' },
-        price: { type: Number, required: true },
-        quantity: { type: Number, required: true, min: 1 },
-      },
-    ],
+    paymentMethod: { type: String, default: 'COD' },
+    razorpayOrderId: { type: String, default: null },
+    razorpayPaymentId: { type: String, default: null },
     subtotal: { type: Number, required: true },
     shippingCharge: { type: Number, default: 0 },
     tax: { type: Number, default: 0 },
-    total: { type: Number, required: true },
-    paymentStatus: {
-      type: String,
-      enum: ['Pending', 'Paid', 'Failed', 'Refunded'],
-      default: 'Pending',
-    },
-    paymentMethod: { type: String, default: 'COD' },
-    razorpayOrderId: { type: String },
-    razorpayPaymentId: { type: String },
-    status: {
-      type: String,
-      enum: ['Pending', 'Confirmed', 'In Process', 'Packed', 'Shipped', 'Delivered', 'Cancelled'],
-      default: 'Pending',
-    },
-    couponCode: { type: String },
     discount: { type: Number, default: 0 },
-    notes: { type: String },
+    total: { type: Number, required: true },
+    couponCode: { type: String, default: null },
+    notes: { type: String, default: null },
+    items: { type: [OrderItemSchema], required: true },
+    shippingAddress: { type: ShippingAddressSchema, required: true },
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
+  }
 )
 
-// Auto-generate order number
-OrderSchema.pre('validate', async function (next) {
-  if (this.isNew && !this.orderNumber) {
-    const count = await mongoose.models.Order.countDocuments()
-    this.orderNumber = `MTH${String(count + 1).padStart(5, '0')}`
-  }
-  next()
+OrderSchema.virtual('id').get(function () {
+  return this._id.toHexString()
 })
 
-const Order: Model<IOrder> = mongoose.models.Order ?? mongoose.model<IOrder>('Order', OrderSchema)
+OrderSchema.index({ orderNumber: 1 })
+OrderSchema.index({ userId: 1 })
+OrderSchema.index({ status: 1 })
+OrderSchema.index({ createdAt: -1 })
+
+const Order: Model<IOrderDocument> =
+  mongoose.models.Order || mongoose.model<IOrderDocument>('Order', OrderSchema)
+
 export default Order

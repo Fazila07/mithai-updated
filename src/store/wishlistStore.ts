@@ -1,13 +1,13 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import { IProduct } from './cartStore'
+import type { IProduct } from '@/types'
 
 interface WishlistState {
   items: IProduct[]
   toggle: (product: IProduct) => void
-  removeItem: (productId: string) => void
   isWishlisted: (productId: string) => boolean
-  count: number
+  remove: (productId: string) => void
+  clear: () => void
 }
 
 export const useWishlistStore = create<WishlistState>()(
@@ -16,27 +16,48 @@ export const useWishlistStore = create<WishlistState>()(
       items: [],
 
       toggle: (product) => {
-        const { items } = get()
-        const exists = items.find((p) => p._id === product._id)
-        set({
-          items: exists
-            ? items.filter((p) => p._id !== product._id)
-            : [...items, product],
-        })
-      },
+        const id = product._id || product.id || ''
+        const exists = get().items.find((p) => (p._id || p.id) === id)
 
-      removeItem: (productId) => {
-        set({ items: get().items.filter((p) => p._id !== productId) })
+        if (exists) {
+          set((state) => ({
+            items: state.items.filter((p) => (p._id || p.id) !== id),
+          }))
+        } else {
+          set((state) => ({
+            items: [...state.items, product],
+          }))
+        }
+
+        // Sync to DB (toggle endpoint)
+        fetch('/api/user/wishlist', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ productId: id }),
+        }).catch(() => {})
       },
 
       isWishlisted: (productId) => {
-        return !!get().items.find((p) => p._id === productId)
+        return get().items.some((p) => (p._id || p.id) === productId)
       },
 
-      get count() {
-        return get().items.length
+      remove: (productId) => {
+        set((state) => ({
+          items: state.items.filter((p) => (p._id || p.id) !== productId),
+        }))
+
+        fetch('/api/user/wishlist', {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ productId }),
+        }).catch(() => {})
       },
+
+      clear: () => set({ items: [] }),
     }),
-    { name: 'mithai-wishlist' }
+    {
+      name: 'mithai-wishlist',
+      partialize: (state) => ({ items: state.items }),
+    }
   )
 )

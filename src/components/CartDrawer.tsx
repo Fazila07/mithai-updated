@@ -1,11 +1,13 @@
 'use client'
 
 import Link from 'next/link'
-import { useCartStore } from '@/store/cartStore'
+import { useCartStore, useCartTotal, useCartCount } from '@/store/cartStore'
 import { useEffect, useState } from 'react'
 
 export default function CartDrawer() {
-  const { items, isOpen, closeCart, removeItem, updateQty, total, itemCount } = useCartStore()
+  const { items, isOpen, closeCart, removeItem, updateQty } = useCartStore()
+  const total = useCartTotal()
+  const itemCount = useCartCount()
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {

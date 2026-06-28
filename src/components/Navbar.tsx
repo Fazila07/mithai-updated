@@ -1,15 +1,31 @@
 'use client'
 
 import Link from 'next/link'
-import { useState, useEffect } from 'react'
-import { useCartStore } from '@/store/cartStore'
+import { useState, useEffect, useRef } from 'react'
+import { useSession, signOut } from 'next-auth/react'
+import { useCartCount } from '@/store/cartStore'
+import { User, LogOut, Package, Heart, MapPin, LayoutDashboard } from 'lucide-react'
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const { itemCount } = useCartStore()
+  const itemCount = useCartCount()
   const [mounted, setMounted] = useState(false)
+  const { data: session } = useSession()
+  const [userMenuOpen, setUserMenuOpen] = useState(false)
+  const menuRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => { setMounted(true) }, [])
+
+  // Close user menu on outside click
+  useEffect(() => {
+    const handleClick = (e: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setUserMenuOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClick)
+    return () => document.removeEventListener('mousedown', handleClick)
+  }, [])
 
   return (
     <>
@@ -47,15 +63,67 @@ export default function Navbar() {
             </div>
           </Link>
 
-          {/* ── Right: search + cart ── */}
+          {/* ── Right: user + cart ── */}
           <div className="flex items-center gap-2">
-            {/* Search */}
-            <button className="nav-icon-btn" aria-label="Search">
-              <svg width="17" height="17" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
-                <circle cx="11" cy="11" r="8" />
-                <line x1="21" y1="21" x2="16.65" y2="16.65" />
-              </svg>
-            </button>
+            {/* User icon / account */}
+            <div className="relative" ref={menuRef}>
+              {session?.user ? (
+                <button
+                  onClick={() => setUserMenuOpen(!userMenuOpen)}
+                  className="nav-icon-btn"
+                  aria-label="Account"
+                >
+                  {session.user.image ? (
+                    <img src={session.user.image} alt="" className="w-full h-full rounded-full object-cover" />
+                  ) : (
+                    <span className="text-xs font-bold text-mithai-maroon">
+                      {session.user.name?.charAt(0)?.toUpperCase() || 'U'}
+                    </span>
+                  )}
+                </button>
+              ) : (
+                <Link href="/login" className="nav-icon-btn" aria-label="Login">
+                  <User size={17} strokeWidth={2.2} />
+                </Link>
+              )}
+
+              {/* Dropdown menu */}
+              {userMenuOpen && session?.user && (
+                <div className="absolute right-0 top-[calc(100%+8px)] w-56 bg-white rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.15)] border border-slate-100 overflow-hidden z-50">
+                  <div className="px-4 py-3 border-b border-slate-100">
+                    <p className="text-sm font-semibold text-mithai-charcoal truncate">{session.user.name}</p>
+                    <p className="text-xs text-slate-400 truncate">{session.user.email}</p>
+                  </div>
+                  <div className="py-1">
+                    {session.user.role === 'ADMIN' && (
+                      <Link href="/admin" onClick={() => setUserMenuOpen(false)} className="flex items-center gap-3 px-4 py-2.5 text-sm text-mithai-maroon font-semibold hover:bg-red-50 transition-colors">
+                        <LayoutDashboard size={15} /> Admin Panel
+                      </Link>
+                    )}
+                    <Link href="/account" onClick={() => setUserMenuOpen(false)} className="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-600 hover:bg-slate-50 transition-colors">
+                      <User size={15} /> My Account
+                    </Link>
+                    <Link href="/account/orders" onClick={() => setUserMenuOpen(false)} className="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-600 hover:bg-slate-50 transition-colors">
+                      <Package size={15} /> My Orders
+                    </Link>
+                    <Link href="/wishlist" onClick={() => setUserMenuOpen(false)} className="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-600 hover:bg-slate-50 transition-colors">
+                      <Heart size={15} /> Wishlist
+                    </Link>
+                    <Link href="/account/addresses" onClick={() => setUserMenuOpen(false)} className="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-600 hover:bg-slate-50 transition-colors">
+                      <MapPin size={15} /> Addresses
+                    </Link>
+                  </div>
+                  <div className="border-t border-slate-100 py-1">
+                    <button
+                      onClick={() => { setUserMenuOpen(false); signOut({ callbackUrl: '/' }) }}
+                      className="flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors w-full"
+                    >
+                      <LogOut size={15} /> Sign out
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
 
             {/* Cart */}
             <Link href="/cart" className="nav-icon-btn nav-icon-btn--cart" aria-label="Cart">
@@ -95,10 +163,16 @@ export default function Navbar() {
           { href: '/#categories', label: 'Categories' },
           { href: '/#why-us', label: 'Why Us?' },
           { href: '/coupons', label: '🎟️ Coupons' },
-          { href: '/login', label: 'My Account' },
+          ...(session?.user
+            ? [
+                ...(session.user.role === 'ADMIN' ? [{ href: '/admin', label: '🛠️ Admin Panel' }] : []),
+                { href: '/account', label: '👤 My Account' },
+                { href: '/account/orders', label: '📦 My Orders' },
+              ]
+            : [{ href: '/login', label: '🔑 Login' }]),
         ].map(({ href, label }) => (
           <Link
-            key={href}
+            key={href + label}
             href={href}
             onClick={() => setMobileMenuOpen(false)}
             className="w-full text-center py-[17px] text-lg font-semibold text-mithai-charcoal border-b border-[rgba(107,31,31,0.08)] hover:text-mithai-maroon transition-colors"
@@ -106,6 +180,14 @@ export default function Navbar() {
             {label}
           </Link>
         ))}
+        {session?.user && (
+          <button
+            onClick={() => { setMobileMenuOpen(false); signOut({ callbackUrl: '/' }) }}
+            className="w-full text-center py-[17px] text-lg font-semibold text-red-600 hover:text-red-700 transition-colors"
+          >
+            🚪 Sign Out
+          </button>
+        )}
       </div>
 
       <style>{`
@@ -125,6 +207,7 @@ export default function Navbar() {
           transition: background 0.16s, border-color 0.16s, transform 0.15s;
           text-decoration: none;
           flex-shrink: 0;
+          overflow: hidden;
         }
         .nav-icon-btn:hover {
           background: #f7eae8;

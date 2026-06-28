@@ -24,23 +24,28 @@ interface Order {
   createdAt: string
 }
 
-const ORDER_STATUSES = ['', 'Pending', 'Confirmed', 'In Process', 'Packed', 'Shipped', 'Delivered', 'Cancelled']
+const ORDER_STATUSES = ['', 'PENDING', 'CONFIRMED', 'IN_PROCESS', 'PACKED', 'SHIPPED', 'DELIVERED', 'CANCELLED']
+
+const STATUS_LABELS: Record<string, string> = {
+  PENDING: 'Pending', CONFIRMED: 'Confirmed', IN_PROCESS: 'In Process',
+  PACKED: 'Packed', SHIPPED: 'Shipped', DELIVERED: 'Delivered', CANCELLED: 'Cancelled',
+}
 
 const STATUS_COLORS: Record<string, string> = {
-  Pending: 'bg-yellow-100 text-yellow-700',
-  Confirmed: 'bg-blue-100 text-blue-700',
-  'In Process': 'bg-orange-100 text-orange-700',
-  Packed: 'bg-purple-100 text-purple-700',
-  Shipped: 'bg-cyan-100 text-cyan-700',
-  Delivered: 'bg-green-100 text-green-700',
-  Cancelled: 'bg-red-100 text-red-700',
+  PENDING: 'bg-yellow-100 text-yellow-700',
+  CONFIRMED: 'bg-blue-100 text-blue-700',
+  IN_PROCESS: 'bg-orange-100 text-orange-700',
+  PACKED: 'bg-purple-100 text-purple-700',
+  SHIPPED: 'bg-cyan-100 text-cyan-700',
+  DELIVERED: 'bg-green-100 text-green-700',
+  CANCELLED: 'bg-red-100 text-red-700',
 }
 
 const PAYMENT_COLORS: Record<string, string> = {
-  Pending: 'text-yellow-600',
-  Paid: 'text-green-600',
-  Failed: 'text-red-600',
-  Refunded: 'text-blue-600',
+  PENDING: 'text-yellow-600',
+  PAID: 'text-green-600',
+  FAILED: 'text-red-600',
+  REFUNDED: 'text-blue-600',
 }
 
 export default function AdminOrdersPage() {
@@ -63,8 +68,8 @@ export default function AdminOrdersPage() {
       const res = await fetch(`/api/admin/orders?${params}`)
       const data = await res.json()
       setOrders(data.orders ?? [])
-      setTotalPages(data.pagination?.pages ?? 1)
-      setTotal(data.pagination?.total ?? 0)
+      setTotalPages(data.totalPages ?? 1)
+      setTotal(data.total ?? 0)
     } catch {
       toast.error('Failed to load orders')
     } finally {
@@ -78,7 +83,7 @@ export default function AdminOrdersPage() {
     setUpdatingId(id)
     try {
       const res = await fetch(`/api/admin/orders/${id}`, {
-        method: 'PATCH',
+        method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status }),
       })
@@ -249,7 +254,7 @@ export default function AdminOrdersPage() {
                           <select value={o.status}
                             onChange={(e) => updateStatus(o._id, e.target.value)}
                             className={`text-xs font-semibold px-2 py-1 rounded-full border-0 outline-none cursor-pointer ${STATUS_COLORS[o.status] ?? 'bg-gray-100 text-gray-600'}`}>
-                            {ORDER_STATUSES.filter(Boolean).map((s) => <option key={s} value={s}>{s}</option>)}
+                            {ORDER_STATUSES.filter(Boolean).map((s) => <option key={s} value={s}>{STATUS_LABELS[s] ?? s}</option>)}
                           </select>
                         )}
                       </div>

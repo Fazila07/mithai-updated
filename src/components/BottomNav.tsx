@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useCartStore } from '@/store/cartStore'
+import { useCartCount } from '@/store/cartStore'
 import { useEffect, useState } from 'react'
 
 const navItems = [
@@ -90,7 +90,7 @@ const navItems = [
 
 export default function BottomNav() {
   const pathname = usePathname()
-  const { itemCount } = useCartStore()
+  const itemCount = useCartCount()
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => { setMounted(true) }, [])

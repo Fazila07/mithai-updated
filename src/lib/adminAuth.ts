@@ -12,8 +12,7 @@ export async function requireAdmin() {
     }
   }
 
-  // @ts-expect-error - role is added via callbacks
-  if (session.user?.role !== 'admin') {
+  if (session.user?.role !== 'ADMIN') {
     return {
       error: NextResponse.json({ error: 'Forbidden — admin access only' }, { status: 403 }),
       session: null,

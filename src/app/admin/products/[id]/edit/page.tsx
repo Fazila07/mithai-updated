@@ -17,16 +17,7 @@ export default function EditProductPage() {
       .then((r) => r.json())
       .then((d) => {
         if (d.error) { setError(d.error); return }
-        // Convert arrays to textarea strings for the form
-        setProduct({
-          ...d.product,
-          tags: d.product.tags?.join(', ') ?? '',
-          ingredients: d.product.ingredients?.join('\n') ?? '',
-          benefits: d.product.benefits?.join('\n') ?? '',
-          price: String(d.product.price ?? ''),
-          comparePrice: String(d.product.comparePrice ?? ''),
-          stock: String(d.product.stock ?? ''),
-        })
+        setProduct(d.product)
       })
       .catch(() => setError('Failed to load product'))
       .finally(() => setLoading(false))

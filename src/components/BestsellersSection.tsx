@@ -17,44 +17,11 @@ interface Product {
   description?: string
 }
 
-const FALLBACK_PRODUCTS: Product[] = [
-  {
-    _id: 'ragi-laddu',
-    name: 'Ragi Laddu',
-    description: 'Ancient grain wisdom in every bite. Gluten-free, PCOS-friendly.',
-    price: 420,
-    comparePrice: 0,
-    images: [],
-    bestSeller: true,
-    rating: 4.9,
-    slug: 'ragi-laddu',
-  },
-  {
-    _id: 'walnut-brownie',
-    name: 'Walnut Brownie',
-    description: 'Rich cocoa indulgence with omega-3 goodness. No refined sugar.',
-    price: 300,
-    comparePrice: 0,
-    images: [],
-    bestSeller: true,
-    rating: 4.9,
-    slug: 'walnut-brownie',
-  },
-  {
-    _id: 'millet-cookies',
-    name: 'Millet Cookies',
-    description: 'Crunchy, wholesome, and guilt-free. Pure grain perfection.',
-    price: 380,
-    comparePrice: 0,
-    images: [],
-    bestSeller: true,
-    rating: 4.9,
-    slug: 'millet-cookies',
-  },
-]
+
+
 
 export default function BestsellersSection() {
-  const [products, setProducts] = useState<Product[]>(FALLBACK_PRODUCTS)
+  const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
   const [mounted, setMounted] = useState(false)
   const addItem = useCartStore((state) => state.addItem)
@@ -64,15 +31,20 @@ export default function BestsellersSection() {
     setMounted(true)
     const fetchBestsellers = async () => {
       try {
-        const res = await fetch('/api/products?bestSeller=true&limit=4')
+        const res = await fetch('/api/products?bestSeller=true&limit=8&sort=bestseller')
         const data = await res.json()
-        const fetched = data.data || []
-        const existingSlugs = new Set(FALLBACK_PRODUCTS.map((item) => item.slug))
-        const merged = [
-          ...FALLBACK_PRODUCTS,
-          ...fetched.filter((item: Product) => !existingSlugs.has(item.slug)),
-        ]
-        setProducts(merged)
+        const fetched: Product[] = (data.products || []).map((p: Record<string, unknown>) => ({
+          _id: (p._id || p.id) as string,
+          name: p.name as string,
+          price: p.price as number,
+          comparePrice: p.comparePrice as number | undefined,
+          images: p.images as string[] | undefined,
+          bestSeller: p.bestSeller as boolean | undefined,
+          rating: p.rating as number | undefined,
+          slug: p.slug as string,
+          description: (p.shortDescription || p.description) as string | undefined,
+        }))
+        setProducts(fetched)
       } catch (error) {
         console.error('Failed to fetch bestsellers:', error)
       } finally {

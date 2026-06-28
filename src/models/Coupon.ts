@@ -1,32 +1,48 @@
 import mongoose, { Schema, Document, Model } from 'mongoose'
 
-export interface ICoupon extends Document {
+export interface ICouponDocument extends Document {
+  _id: mongoose.Types.ObjectId
   code: string
-  discountType: 'percentage' | 'fixed'
+  description: string | null
+  discountType: 'percentage' | 'flat'
   value: number
-  minOrderAmount: number
-  expiryDate: Date
-  usageLimit: number
+  minOrder: number
+  maxDiscount: number | null
+  usageLimit: number | null
   usedCount: number
+  perUserLimit: number
   active: boolean
+  expiryDate: Date
   createdAt: Date
   updatedAt: Date
 }
 
-const CouponSchema = new Schema<ICoupon>(
+const CouponSchema = new Schema<ICouponDocument>(
   {
     code: { type: String, required: true, unique: true, uppercase: true, trim: true },
-    discountType: { type: String, enum: ['percentage', 'fixed'], required: true },
+    description: { type: String, default: null },
+    discountType: { type: String, enum: ['percentage', 'flat'], required: true },
     value: { type: Number, required: true, min: 0 },
-    minOrderAmount: { type: Number, default: 0, min: 0 },
-    expiryDate: { type: Date, required: true },
-    usageLimit: { type: Number, default: 0 }, // 0 = unlimited
+    minOrder: { type: Number, default: 0 },
+    maxDiscount: { type: Number, default: null },
+    usageLimit: { type: Number, default: null },
     usedCount: { type: Number, default: 0 },
+    perUserLimit: { type: Number, default: 1 },
     active: { type: Boolean, default: true },
+    expiryDate: { type: Date, required: true },
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
+  }
 )
 
-const Coupon: Model<ICoupon> =
-  mongoose.models.Coupon ?? mongoose.model<ICoupon>('Coupon', CouponSchema)
+CouponSchema.virtual('id').get(function () {
+  return this._id.toHexString()
+})
+
+const Coupon: Model<ICouponDocument> =
+  mongoose.models.Coupon || mongoose.model<ICouponDocument>('Coupon', CouponSchema)
+
 export default Coupon

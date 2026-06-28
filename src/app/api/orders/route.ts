@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { connectDB } from '@/lib/db'
+import connectDB from '@/lib/mongodb'
 import Order from '@/models/Order'
+import { orderSchema } from '@/lib/validators'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth'
 
 export async function GET() {
   return NextResponse.json({ message: 'Orders API — use POST to create an order' })
@@ -9,31 +12,48 @@ export async function GET() {
 export async function POST(req: NextRequest) {
   try {
     await connectDB()
+
     const body = await req.json()
+    const result = orderSchema.safeParse(body)
 
-    const { customer, shippingAddress, items, subtotal, shippingCharge = 0, tax = 0, total, paymentMethod = 'COD', couponCode, discount = 0 } = body
+    if (!result.success) {
+      return NextResponse.json({ error: result.error.issues[0]?.message || 'Validation failed' }, { status: 400 })
+    }
 
-    if (!customer?.name || !customer?.email || !customer?.phone) {
-      return NextResponse.json({ error: 'Customer name, email, and phone are required' }, { status: 400 })
-    }
-    if (!items || items.length === 0) {
-      return NextResponse.json({ error: 'Order must have at least one item' }, { status: 400 })
-    }
-    if (!shippingAddress?.street || !shippingAddress?.city || !shippingAddress?.pincode) {
-      return NextResponse.json({ error: 'Complete shipping address is required' }, { status: 400 })
-    }
+    const data = result.data
+    const session = await getServerSession(authOptions)
+
+    // Generate order number
+    const count = await Order.countDocuments()
+    const orderNumber = `MTH${String(count + 1).padStart(5, '0')}`
 
     const order = await Order.create({
-      customer,
-      shippingAddress,
-      items,
-      subtotal,
-      shippingCharge,
-      tax,
-      total,
-      paymentMethod,
-      couponCode,
-      discount,
+      orderNumber,
+      userId: session?.user?.id || null,
+      customerName: data.customerName,
+      customerEmail: data.customerEmail,
+      customerPhone: data.customerPhone,
+      subtotal: data.subtotal,
+      shippingCharge: data.shippingCharge,
+      tax: data.tax,
+      discount: data.discount,
+      total: data.total,
+      paymentMethod: data.paymentMethod,
+      couponCode: data.couponCode,
+      notes: data.notes,
+      items: data.items.map((item) => ({
+        productId: item.productId,
+        name: item.name,
+        image: item.image,
+        price: item.price,
+        quantity: item.quantity,
+      })),
+      shippingAddress: {
+        street: data.shippingAddress.street,
+        city: data.shippingAddress.city,
+        state: data.shippingAddress.state,
+        pincode: data.shippingAddress.pincode,
+      },
     })
 
     return NextResponse.json({ order }, { status: 201 })
