@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "HOSTNAME=0.0.0.0 node .next/standalone/server.js",
+    "start": "HOSTNAME=0.0.0.0 next start",
     "lint": "next lint",
     "seed": "npx tsx scripts/seed-mongo.ts",
     "seed:admin": "npx tsx scripts/seed-mongo.ts",

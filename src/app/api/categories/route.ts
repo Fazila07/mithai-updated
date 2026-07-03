@@ -30,24 +30,28 @@ async function autoSeedIfEmpty() {
       name: 'Cookies',
       slug: 'cookies',
       description: 'Handcrafted healthy cookies made with premium nuts and cacao',
+      image: '/images/categories/cookies.png',
       active: true,
     },
     {
       name: 'Brownies',
       slug: 'brownies',
       description: 'Rich, fudgy brownies made with clean ingredients and no refined sugar',
+      image: '/images/categories/brownies.jpg',
       active: true,
     },
     {
       name: 'Cacao Bites',
       slug: 'cacao-bites',
       description: 'Bite-sized cacao treats packed with flavor and nutrition',
+      image: '/images/categories/cocoa-bites.jpg',
       active: true,
     },
     {
       name: 'Laddus',
       slug: 'laddus',
       description: 'Traditional Indian laddus reimagined with healthy, wholesome ingredients',
+      image: '/images/categories/laddus.jpg',
       active: true,
     },
     {
@@ -241,6 +245,15 @@ async function autoSeedIfEmpty() {
   console.log(`✅ Auto-seeded ${categories.length} categories and ${productsData.length} products`)
 }
 
+// ─── Slug → local image mapping (for DB records missing the image field) ──
+const CATEGORY_IMAGE_MAP: Record<string, string> = {
+  'cookies': '/images/categories/cookies.png',
+  'brownies': '/images/categories/brownies.jpg',
+  'cacao-bites': '/images/categories/cocoa-bites.jpg',
+  'cocoa-bites': '/images/categories/cocoa-bites.jpg',
+  'laddus': '/images/categories/laddus.jpg',
+}
+
 // ─── GET /api/categories ──────────────────────────────────────
 
 export async function GET() {
@@ -266,6 +279,8 @@ export async function GET() {
         ...cat,
         _id: cat._id.toString(),
         id: cat._id.toString(),
+        // Use DB image if set, otherwise fall back to local image by slug
+        image: cat.image || CATEGORY_IMAGE_MAP[cat.slug] || null,
         _count: { products: countMap.get(cat._id.toString()) ?? 0 },
       })),
     })
