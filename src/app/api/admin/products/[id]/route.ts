@@ -59,6 +59,7 @@ export async function PUT(
           subcategory: body.subcategory,
           description: body.description,
           shortDescription: body.shortDescription,
+          about: body.about,
           price: typeof body.price === 'string' ? parseFloat(body.price) : body.price,
           comparePrice: body.comparePrice ? (typeof body.comparePrice === 'string' ? parseFloat(body.comparePrice) : body.comparePrice) : null,
           stock: typeof body.stock === 'string' ? parseInt(body.stock) : (body.stock ?? 0),
@@ -72,6 +73,13 @@ export async function PUT(
           bestSeller: body.bestSeller ?? false,
           featured: body.featured ?? false,
           active: body.active ?? true,
+          // Product metadata
+          storage: body.storage ?? null,
+          allergens: body.allergens ?? null,
+          nutrition: body.nutrition ?? null,
+          highlights: body.highlights ?? [],
+          fssaiNumber: body.fssaiNumber ?? null,
+          servingSize: body.servingSize ?? null,
         },
       },
       { new: true }

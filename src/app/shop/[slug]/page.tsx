@@ -7,7 +7,7 @@ import { useCartStore } from '@/store/cartStore'
 import { useWishlistStore } from '@/store/wishlistStore'
 import Navbar from '@/components/Navbar'
 import CartDrawer from '@/components/CartDrawer'
-import { Heart, ShoppingBag, Zap, Minus, Plus, ChevronRight, Star, Loader2, Package } from 'lucide-react'
+import { Heart, ShoppingBag, Zap, Minus, Plus, ChevronRight, ChevronDown, Star, Loader2, Package } from 'lucide-react'
 import type { IProduct, IProductVariant } from '@/types'
 
 export default function ProductPage() {
@@ -24,6 +24,7 @@ export default function ProductPage() {
   const [selectedImage, setSelectedImage] = useState(0)
   const [addedToCart, setAddedToCart] = useState(false)
   const [selectedPkgIdx, setSelectedPkgIdx] = useState(0)
+  const [openAccordion, setOpenAccordion] = useState<string>('about')
 
   useEffect(() => {
     async function fetchProduct() {
@@ -299,61 +300,150 @@ export default function ProductPage() {
                 </div>
               )}
 
-              {/* ─── Description ───────────────────────────── */}
+              {/* ─── Premium Accordion Sections ───────────── */}
               <div className="mb-6">
-                <h3 className="font-runiga text-base font-semibold text-mithai-maroonD mb-2">About this product</h3>
-                <p className="text-sm text-mithai-taupe leading-relaxed">{product.description}</p>
+                {/* About */}
+                {(product.about || product.description) && (
+                  <AccordionItem
+                    id="about"
+                    title="About"
+                    open={openAccordion === 'about'}
+                    onToggle={() => setOpenAccordion(openAccordion === 'about' ? '' : 'about')}
+                  >
+                    <p className="text-sm text-mithai-taupe leading-relaxed whitespace-pre-line">
+                      {product.about || product.description}
+                    </p>
+                  </AccordionItem>
+                )}
+
+                {/* Ingredients */}
+                {product.ingredients && product.ingredients.length > 0 && (
+                  <AccordionItem
+                    id="ingredients"
+                    title="Ingredients"
+                    open={openAccordion === 'ingredients'}
+                    onToggle={() => setOpenAccordion(openAccordion === 'ingredients' ? '' : 'ingredients')}
+                  >
+                    <div className="flex flex-wrap gap-2">
+                      {product.ingredients.map((ingredient, idx) => (
+                        <span
+                          key={idx}
+                          className="inline-block bg-mithai-off text-mithai-maroon px-3.5 py-1.5 rounded-full text-xs font-medium border border-mithai-taupe/10"
+                        >
+                          {ingredient}
+                        </span>
+                      ))}
+                    </div>
+                  </AccordionItem>
+                )}
+
+                {/* Storage & Shelf Life */}
+                {product.storage && (
+                  <AccordionItem
+                    id="storage"
+                    title="Storage & Shelf Life"
+                    open={openAccordion === 'storage'}
+                    onToggle={() => setOpenAccordion(openAccordion === 'storage' ? '' : 'storage')}
+                  >
+                    <p className="text-sm text-mithai-taupe leading-relaxed whitespace-pre-line">
+                      {product.storage}
+                    </p>
+                  </AccordionItem>
+                )}
+
+                {/* Allergen Information */}
+                {product.allergens && (
+                  <AccordionItem
+                    id="allergens"
+                    title="Allergen Information"
+                    open={openAccordion === 'allergens'}
+                    onToggle={() => setOpenAccordion(openAccordion === 'allergens' ? '' : 'allergens')}
+                  >
+                    <p className="text-sm text-mithai-taupe leading-relaxed whitespace-pre-line">
+                      {product.allergens}
+                    </p>
+                  </AccordionItem>
+                )}
+
+                {/* Nutritional Information */}
+                {product.nutrition && (
+                  <AccordionItem
+                    id="nutrition"
+                    title="Nutritional Information"
+                    open={openAccordion === 'nutrition'}
+                    onToggle={() => setOpenAccordion(openAccordion === 'nutrition' ? '' : 'nutrition')}
+                  >
+                    <div className="text-sm text-mithai-taupe leading-relaxed">
+                      {product.servingSize && (
+                        <p className="text-xs font-semibold text-mithai-maroon mb-3">Serving size: {product.servingSize}</p>
+                      )}
+                      <p className="whitespace-pre-line">{product.nutrition}</p>
+                    </div>
+                  </AccordionItem>
+                )}
+
+                {/* Product Highlights */}
+                {product.highlights && product.highlights.length > 0 && (
+                  <AccordionItem
+                    id="highlights"
+                    title="Product Highlights"
+                    open={openAccordion === 'highlights'}
+                    onToggle={() => setOpenAccordion(openAccordion === 'highlights' ? '' : 'highlights')}
+                  >
+                    <div className="flex flex-wrap gap-2">
+                      {product.highlights.map((h, idx) => (
+                        <span
+                          key={idx}
+                          className="inline-flex items-center gap-1 bg-green-50 text-green-700 px-3.5 py-1.5 rounded-full text-xs font-medium"
+                        >
+                          <span className="text-green-500">✓</span> {h}
+                        </span>
+                      ))}
+                    </div>
+                  </AccordionItem>
+                )}
+
+                {/* FSSAI Information */}
+                {product.fssaiNumber && (
+                  <AccordionItem
+                    id="fssai"
+                    title="FSSAI Information"
+                    open={openAccordion === 'fssai'}
+                    onToggle={() => setOpenAccordion(openAccordion === 'fssai' ? '' : 'fssai')}
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-green-50 flex items-center justify-center flex-shrink-0">
+                        <span className="text-green-600 font-bold text-xs">FSSAI</span>
+                      </div>
+                      <div>
+                        <p className="text-sm font-semibold text-mithai-maroonD">Lic. No. {product.fssaiNumber}</p>
+                        <p className="text-xs text-mithai-taupe">This product is manufactured in an FSSAI-certified facility.</p>
+                      </div>
+                    </div>
+                  </AccordionItem>
+                )}
+
+                {/* Benefits (legacy fallback — shown if no highlights but benefits exist) */}
+                {(!product.highlights || product.highlights.length === 0) && product.benefits && product.benefits.length > 0 && (
+                  <AccordionItem
+                    id="benefits"
+                    title="Benefits"
+                    open={openAccordion === 'benefits'}
+                    onToggle={() => setOpenAccordion(openAccordion === 'benefits' ? '' : 'benefits')}
+                  >
+                    <div className="flex flex-wrap gap-2">
+                      {product.benefits.map((benefit, idx) => (
+                        <span
+                          key={idx}
+                          className="inline-flex items-center gap-1 bg-green-50 text-green-700 px-3.5 py-1.5 rounded-full text-xs font-medium"
+                        >
+                          <span className="text-green-500">✓</span> {benefit}
+                        </span>
+                      ))}
+                    </div>
+                  </AccordionItem>
+                )}
               </div>
-
-              {/* ─── Ingredients ────────────────────────────── */}
-              {product.ingredients && product.ingredients.length > 0 && (
-                <div className="mb-6">
-                  <h3 className="font-runiga text-base font-semibold text-mithai-maroonD mb-3">Key Ingredients</h3>
-                  <div className="flex flex-wrap gap-2">
-                    {product.ingredients.map((ingredient, idx) => (
-                      <span
-                        key={idx}
-                        className="inline-block bg-mithai-off text-mithai-maroon px-3.5 py-1.5 rounded-full text-xs font-medium border border-mithai-taupe/10"
-                      >
-                        {ingredient}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* ─── Benefits ──────────────────────────────── */}
-              {product.benefits && product.benefits.length > 0 && (
-                <div className="mb-6">
-                  <h3 className="font-runiga text-base font-semibold text-mithai-maroonD mb-3">Benefits</h3>
-                  <div className="flex flex-wrap gap-2">
-                    {product.benefits.map((benefit, idx) => (
-                      <span
-                        key={idx}
-                        className="inline-flex items-center gap-1 bg-green-50 text-green-700 px-3.5 py-1.5 rounded-full text-xs font-medium"
-                      >
-                        <span className="text-green-500">✓</span> {benefit}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* ─── Popular Tags ──────────────────────────── */}
-              {product.popularTags && product.popularTags.length > 0 && (
-                <div className="mb-6">
-                  <div className="flex flex-wrap gap-1.5">
-                    {product.popularTags.map((tag, idx) => (
-                      <span
-                        key={idx}
-                        className="inline-block bg-mithai-goldP text-mithai-gold px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider"
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
 
               {/* ─── Quantity + Actions ─────────────────────── */}
               <div className="border-t border-mithai-taupe/15 pt-6 space-y-4">
@@ -430,5 +520,104 @@ export default function ProductPage() {
       </main>
       <CartDrawer />
     </>
+  )
+}
+
+/* ─── Accordion Item Component ─────────────────────────────── */
+function AccordionItem({
+  id,
+  title,
+  open,
+  onToggle,
+  children,
+}: {
+  id: string
+  title: string
+  open: boolean
+  onToggle: () => void
+  children: React.ReactNode
+}) {
+  return (
+    <div className="acc-item" data-open={open}>
+      <button
+        type="button"
+        className="acc-trigger"
+        onClick={onToggle}
+        aria-expanded={open}
+        aria-controls={`acc-panel-${id}`}
+      >
+        <span className="acc-title">{title}</span>
+        <ChevronDown
+          size={18}
+          className={`acc-chevron ${open ? 'acc-chevron--open' : ''}`}
+        />
+      </button>
+      <div
+        id={`acc-panel-${id}`}
+        className={`acc-panel ${open ? 'acc-panel--open' : ''}`}
+        role="region"
+      >
+        <div className="acc-content">{children}</div>
+      </div>
+
+      <style jsx>{`
+        .acc-item {
+          border-bottom: 1px solid rgba(107,31,31,0.10);
+        }
+        .acc-item:first-child {
+          border-top: 1px solid rgba(107,31,31,0.10);
+        }
+        .acc-trigger {
+          width: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 16px 2px;
+          background: none;
+          border: none;
+          cursor: pointer;
+          text-align: left;
+          transition: color 0.18s;
+        }
+        .acc-trigger:hover {
+          color: #900c00;
+        }
+        .acc-title {
+          font-size: 14px;
+          font-weight: 600;
+          color: #3d1a10;
+          letter-spacing: 0.01em;
+        }
+        .acc-trigger:hover .acc-title {
+          color: #900c00;
+        }
+        .acc-item[data-open="true"] .acc-title {
+          color: #900c00;
+        }
+        .acc-chevron {
+          color: #9B7B6A;
+          transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), color 0.18s;
+          flex-shrink: 0;
+        }
+        .acc-chevron--open {
+          transform: rotate(180deg);
+          color: #900c00;
+        }
+        .acc-panel {
+          max-height: 0;
+          overflow: hidden;
+          transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+                      opacity 0.25s ease;
+          opacity: 0;
+        }
+        .acc-panel--open {
+          max-height: 600px;
+          opacity: 1;
+        }
+        .acc-content {
+          padding: 0 2px 18px;
+        }
+      `}</style>
+    </div>
   )
 }

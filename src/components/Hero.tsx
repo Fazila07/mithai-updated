@@ -46,7 +46,7 @@ export default function Hero() {
               Shop
             </a>
             <a
-              href="#why-us"
+              href="/about"
               className="hero-banner-btn"
             >
               <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" className="btn-icon">

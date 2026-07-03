@@ -92,16 +92,28 @@ export default function CategorySection() {
           <div className="sec-head text-center">
             <h2 className="sec-title">Dive In</h2>
           </div>
-          <div className="cat-grid">
-            {Array.from({ length: 5 }).map((_, i) => (
+          <div className="cat-row cat-row--top">
+            {Array.from({ length: 3 }).map((_, i) => (
               <div key={i} className="cat-card animate-pulse">
                 <div className="cat-image">
                   <div className="cat-image-inner" style={{ background: 'rgba(144,12,0,0.05)' }} />
                 </div>
-                <div className="cat-copy">
-                  <div style={{ height: 20, width: '60%', background: 'rgba(144,12,0,0.08)', borderRadius: 6, marginBottom: 8 }} />
-                  <div style={{ height: 14, width: '80%', background: 'rgba(144,12,0,0.05)', borderRadius: 6, marginBottom: 14 }} />
-                  <div style={{ height: 14, width: '30%', background: 'rgba(144,12,0,0.08)', borderRadius: 6 }} />
+                <div className="cat-label">
+                  <div style={{ height: 18, width: '60%', background: 'rgba(144,12,0,0.08)', borderRadius: 6 }} />
+                  <div style={{ height: 32, width: 32, background: 'rgba(144,12,0,0.05)', borderRadius: '50%' }} />
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="cat-row cat-row--bottom">
+            {Array.from({ length: 2 }).map((_, i) => (
+              <div key={i} className="cat-card animate-pulse">
+                <div className="cat-image">
+                  <div className="cat-image-inner" style={{ background: 'rgba(144,12,0,0.05)' }} />
+                </div>
+                <div className="cat-label">
+                  <div style={{ height: 18, width: '60%', background: 'rgba(144,12,0,0.08)', borderRadius: 6 }} />
+                  <div style={{ height: 32, width: 32, background: 'rgba(144,12,0,0.05)', borderRadius: '50%' }} />
                 </div>
               </div>
             ))}
@@ -119,8 +131,9 @@ export default function CategorySection() {
           <h2 className="sec-title">Dive In</h2>
         </div>
 
-        <div className="cat-grid" data-count={categories.length}>
-          {categories.map((cat) => (
+        {/* Row 1 — 3 categories */}
+        <div className="cat-row cat-row--top">
+          {categories.slice(0, 3).map((cat) => (
             <Link
               key={cat.id || cat._id}
               href={`/shop?category=${cat.slug}`}
@@ -135,19 +148,50 @@ export default function CategorySection() {
                   </div>
                 )}
               </div>
-              <div className="cat-copy">
+              <div className="cat-label">
                 <h3>{cat.name}</h3>
-                <p>{cat.description || `Explore our ${cat.name.toLowerCase()}`}</p>
-                <span>
-                  Shop
-                  {cat._count && cat._count.products > 0 && (
-                    <> · {cat._count.products}</>
-                  )}
+                <span className="cat-arrow">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="7" y1="17" x2="17" y2="7" />
+                    <polyline points="7 7 17 7 17 17" />
+                  </svg>
                 </span>
               </div>
             </Link>
           ))}
         </div>
+
+        {/* Row 2 — remaining categories (2) */}
+        {categories.length > 3 && (
+          <div className="cat-row cat-row--bottom">
+            {categories.slice(3).map((cat) => (
+              <Link
+                key={cat.id || cat._id}
+                href={`/shop?category=${cat.slug}`}
+                className="cat-card group"
+              >
+                <div className={`cat-image ${cat.image ? 'cat-image--has-photo' : ''}`}>
+                  {cat.image ? (
+                    <img src={cat.image} alt={cat.name} className="cat-photo" />
+                  ) : (
+                    <div className="cat-image-inner">
+                      <span>{getCategoryEmoji(cat.name)}</span>
+                    </div>
+                  )}
+                </div>
+                <div className="cat-label">
+                  <h3>{cat.name}</h3>
+                  <span className="cat-arrow">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <line x1="7" y1="17" x2="17" y2="7" />
+                      <polyline points="7 7 17 7 17 17" />
+                    </svg>
+                  </span>
+                </div>
+              </Link>
+            ))}
+          </div>
+        )}
 
         <style jsx>{catStyles}</style>
       </div>
@@ -169,53 +213,51 @@ function getCategoryEmoji(name: string): string {
 }
 
 const catStyles = `
-  .cat-grid {
+  /* ─── Row Layout ─────────────────────────────── */
+  .cat-row {
     display: grid;
-    gap: 18px;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
   }
+  .cat-row--top {
+    grid-template-columns: repeat(2, 1fr);
+    margin-bottom: 16px;
+  }
+  .cat-row--bottom {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* ─── Card ───────────────────────────────────── */
   .cat-card {
     display: block;
-    border-radius: 28px;
+    border-radius: 14px;
     overflow: hidden;
     background: white;
-    border: 1px solid rgba(107, 31, 31, 0.12);
-    box-shadow: 0 12px 32px rgba(107, 31, 31, 0.08);
-    transition: transform 0.28s ease, border-color 0.28s ease, box-shadow 0.28s ease;
+    border: 1px solid rgba(107, 31, 31, 0.09);
+    box-shadow: 0 4px 20px rgba(107, 31, 31, 0.06);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.3s ease;
     text-decoration: none;
     color: inherit;
   }
   .cat-card:hover {
-    transform: translateY(-4px);
-    border-color: rgba(107, 31, 31, 0.2);
-    box-shadow: 0 18px 38px rgba(107, 31, 31, 0.14);
+    transform: translateY(-5px);
+    box-shadow: 0 16px 40px rgba(107, 31, 31, 0.13);
   }
-  .cat-card:hover .cat-photo {
-    transform: scale(1.06);
+  .cat-card:active {
+    transform: translateY(-2px);
   }
+
+  /* ─── Image ──────────────────────────────────── */
   .cat-image {
     position: relative;
-    min-height: 180px;
+    aspect-ratio: 1;
     display: grid;
     place-items: center;
-    background: radial-gradient(circle at top left, rgba(227, 180, 72, 0.18), transparent 40%),
-      linear-gradient(135deg, #f7f3ee 0%, #fbf5ec 100%);
+    background: linear-gradient(135deg, #f7f3ee 0%, #ede3d5 100%);
     overflow: hidden;
   }
   .cat-image--has-photo {
-    min-height: 200px;
     background: #f7f3ee;
-  }
-  .cat-image::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(180deg, rgba(255,255,255,0.1), transparent 70%);
-    pointer-events: none;
-    z-index: 1;
-  }
-  .cat-image--has-photo::after {
-    background: linear-gradient(180deg, transparent 50%, rgba(0,0,0,0.06) 100%);
   }
   .cat-photo {
     position: absolute;
@@ -223,58 +265,104 @@ const catStyles = `
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.4s ease;
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .cat-card:hover .cat-photo {
+    transform: scale(1.06);
   }
   .cat-image-inner {
-    position: relative;
-    width: 96px;
-    height: 96px;
-    border-radius: 24px;
+    width: 72px;
+    height: 72px;
+    border-radius: 20px;
     display: grid;
     place-items: center;
     background: rgba(144, 12, 0, 0.08);
-    color: #900c00;
-    font-size: 2.5rem;
+    font-size: 2.2rem;
   }
-  .cat-copy {
-    padding: 22px;
-  }
-  .cat-copy h3 {
-    font-size: 1.15rem;
-    font-weight: 700;
-    margin-bottom: 8px;
-    color: #6d0900;
-  }
-  .cat-copy p {
-    margin-bottom: 14px;
-    font-size: 0.95rem;
-    color: #6d0900;
-    line-height: 1.7;
-  }
-  .cat-copy span {
-    display: inline-flex;
+
+  /* ─── Label (Name + Arrow) ────────────────── */
+  .cat-label {
+    padding: 16px 18px;
+    display: flex;
     align-items: center;
-    gap: 6px;
-    font-size: 0.85rem;
+    gap: 10px;
+  }
+  .cat-label h3 {
+    flex: 1;
+    font-family: 'Libre Baskerville', serif;
+    font-size: 1rem;
     font-weight: 700;
-    color: #b01600;
-    text-transform: uppercase;
-    letter-spacing: 0.14em;
+    color: #900c00;
+    margin: 0;
+    line-height: 1.2;
   }
+  .cat-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(144, 12, 0, 0.18);
+    color: #900c00;
+    flex-shrink: 0;
+    transition: background 0.2s, border-color 0.2s, transform 0.2s;
+  }
+  .cat-card:hover .cat-arrow {
+    background: rgba(144, 12, 0, 0.08);
+    border-color: rgba(144, 12, 0, 0.3);
+    transform: rotate(0deg);
+  }
+
+  /* ─── Mobile (default: 2 columns) ────────── */
+  @media (max-width: 639px) {
+    .cat-row--top {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    /* Make the 3rd item in row 1 span full width centered */
+    .cat-row--top .cat-card:nth-child(3) {
+      grid-column: 1 / -1;
+      max-width: 50%;
+      justify-self: center;
+    }
+    .cat-row--bottom {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  /* ─── Tablet ──────────────────────────────── */
   @media (min-width: 640px) {
-    .cat-grid {
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    .cat-row--top {
+      grid-template-columns: repeat(3, 1fr);
     }
-    .cat-image--has-photo {
-      min-height: 220px;
+    .cat-row--bottom {
+      grid-template-columns: repeat(2, 1fr);
+      max-width: 66.666%;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .cat-label h3 {
+      font-size: 1.1rem;
+    }
+    .cat-image {
+      aspect-ratio: 4/3;
     }
   }
+
+  /* ─── Desktop ─────────────────────────────── */
   @media (min-width: 1024px) {
-    .cat-grid {
-      grid-template-columns: repeat(4, 1fr);
+    .cat-row {
+      gap: 20px;
     }
-    .cat-image--has-photo {
-      min-height: 240px;
+    .cat-row--top {
+      margin-bottom: 20px;
+    }
+    .cat-label {
+      padding: 18px 22px;
+    }
+    .cat-label h3 {
+      font-size: 1.2rem;
     }
   }
 `
+

@@ -123,6 +123,7 @@ export async function POST(req: NextRequest) {
       popularTags: data.popularTags,
       description: data.description,
       shortDescription: data.shortDescription,
+      about: data.about,
       price: data.price,
       comparePrice: data.comparePrice,
       stock: data.stock,
@@ -136,6 +137,13 @@ export async function POST(req: NextRequest) {
       bestSeller: data.bestSeller,
       featured: data.featured,
       active: data.active,
+      // Product metadata
+      storage: data.storage,
+      allergens: data.allergens,
+      nutrition: data.nutrition,
+      highlights: data.highlights,
+      fssaiNumber: data.fssaiNumber,
+      servingSize: data.servingSize,
     })
 
     const populated = await Product.findById(product._id)

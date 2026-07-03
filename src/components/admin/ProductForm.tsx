@@ -39,6 +39,14 @@ interface ProductFormData {
   bestSeller: boolean
   featured: boolean
   active: boolean
+  // Product metadata
+  about: string
+  storage: string
+  allergens: string
+  nutrition: string
+  highlights: string
+  fssaiNumber: string
+  servingSize: string
 }
 
 interface Props {
@@ -55,6 +63,9 @@ const EMPTY: ProductFormData = {
   tags: '', ingredients: '', benefits: '',
   images: [], featuredImage: '',
   bestSeller: false, featured: false, active: true,
+  // Product metadata
+  about: '', storage: '', allergens: '', nutrition: '',
+  highlights: '', fssaiNumber: '', servingSize: '',
 }
 
 function slugify(str: string) {
@@ -90,6 +101,14 @@ export default function ProductForm({ initialData, mode }: Props) {
         bestSeller: initialData.bestSeller ?? false,
         featured: initialData.featured ?? false,
         active: initialData.active ?? true,
+        // Product metadata
+        about: initialData.about ?? '',
+        storage: initialData.storage ?? '',
+        allergens: initialData.allergens ?? '',
+        nutrition: initialData.nutrition ?? '',
+        highlights: Array.isArray(initialData.highlights) ? initialData.highlights.join('\n') : (initialData.highlights ?? ''),
+        fssaiNumber: initialData.fssaiNumber ?? '',
+        servingSize: initialData.servingSize ?? '',
       }
     }
     return EMPTY
@@ -168,6 +187,7 @@ export default function ProductForm({ initialData, mode }: Props) {
         subcategory: form.subcategory || undefined,
         description: form.description,
         shortDescription: form.shortDescription || undefined,
+        about: form.about || undefined,
         price: parseFloat(form.price),
         comparePrice: form.comparePrice ? parseFloat(form.comparePrice) : undefined,
         stock: parseInt(form.stock) || 0,
@@ -184,6 +204,13 @@ export default function ProductForm({ initialData, mode }: Props) {
         bestSeller: form.bestSeller,
         featured: form.featured,
         active: form.active,
+        // Product metadata
+        storage: form.storage || undefined,
+        allergens: form.allergens || undefined,
+        nutrition: form.nutrition || undefined,
+        highlights: form.highlights.split('\n').map((t) => t.trim()).filter(Boolean),
+        fssaiNumber: form.fssaiNumber || undefined,
+        servingSize: form.servingSize || undefined,
       }
 
       const url = mode === 'edit' && initialData?.id
@@ -323,6 +350,41 @@ export default function ProductForm({ initialData, mode }: Props) {
             <div>
               <label className={labelCls}>Benefits <span className="text-gray-400 font-normal">(one per line)</span></label>
               <textarea value={form.benefits} onChange={(e) => set('benefits', e.target.value)} rows={3} className={inputCls} placeholder={'No refined sugar\nHigh protein\nGut friendly'} />
+            </div>
+          </div>
+
+          {/* Product Information (Accordion Metadata) */}
+          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-5">
+            <h2 className="font-semibold text-gray-800 border-b border-gray-100 pb-3">Product Information <span className="text-xs font-normal text-gray-400">(shown in accordion on product page)</span></h2>
+            <div>
+              <label className={labelCls}>About <span className="text-gray-400 font-normal">(rich product description)</span></label>
+              <textarea value={form.about} onChange={(e) => set('about', e.target.value)} rows={4} className={inputCls} placeholder="Crafted with love using the finest ingredients..." />
+            </div>
+            <div>
+              <label className={labelCls}>Storage & Shelf Life</label>
+              <textarea value={form.storage} onChange={(e) => set('storage', e.target.value)} rows={3} className={inputCls} placeholder="Store in a cool, dry place. Best consumed within 15 days of opening." />
+            </div>
+            <div>
+              <label className={labelCls}>Allergen Information</label>
+              <textarea value={form.allergens} onChange={(e) => set('allergens', e.target.value)} rows={3} className={inputCls} placeholder="Contains tree nuts (almonds, walnuts). Made in a facility that processes milk, soy, and wheat." />
+            </div>
+            <div>
+              <label className={labelCls}>Nutritional Information</label>
+              <textarea value={form.nutrition} onChange={(e) => set('nutrition', e.target.value)} rows={5} className={inputCls} placeholder={'Energy: 450 kcal per 100g\nProtein: 8g\nTotal Fat: 22g\nCarbohydrates: 52g\nSugar: 18g\nFibre: 4g'} />
+            </div>
+            <div>
+              <label className={labelCls}>Product Highlights <span className="text-gray-400 font-normal">(one per line)</span></label>
+              <textarea value={form.highlights} onChange={(e) => set('highlights', e.target.value)} rows={4} className={inputCls} placeholder={'Gluten Free\nNo Refined Sugar\nEgg Free\nHandmade with Love'} />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className={labelCls}>FSSAI Number</label>
+                <input type="text" value={form.fssaiNumber} onChange={(e) => set('fssaiNumber', e.target.value)} className={inputCls} placeholder="10024999000123" />
+              </div>
+              <div>
+                <label className={labelCls}>Serving Size</label>
+                <input type="text" value={form.servingSize} onChange={(e) => set('servingSize', e.target.value)} className={inputCls} placeholder="30g (1 cookie)" />
+              </div>
             </div>
           </div>
         </div>
