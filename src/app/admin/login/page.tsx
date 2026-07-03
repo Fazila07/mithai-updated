@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
-import { motion } from 'framer-motion'
 import { Shield, Loader2 } from 'lucide-react'
 import AdminLoginForm from '@/components/admin/AdminLoginForm'
 
@@ -62,34 +61,13 @@ export default function AdminLoginPage() {
       />
 
       {/* Decorative floating elements */}
-      <motion.div
-        className="absolute top-[15%] right-[15%] w-20 h-20 rounded-full border border-[#ffa520]/10"
-        animate={{ y: [0, -15, 0], rotate: [0, 90, 0] }}
-        transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
-      />
-      <motion.div
-        className="absolute bottom-[20%] left-[10%] w-14 h-14 rounded-2xl border border-[#900c00]/10 rotate-45"
-        animate={{ y: [0, 12, 0], rotate: [45, 135, 45] }}
-        transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
-      />
-      <motion.div
-        className="absolute top-[40%] left-[5%] w-3 h-3 rounded-full bg-[#ffa520]/20"
-        animate={{ y: [0, -20, 0], opacity: [0.2, 0.5, 0.2] }}
-        transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
-      />
-      <motion.div
-        className="absolute top-[25%] right-[30%] w-2 h-2 rounded-full bg-[#ffa520]/15"
-        animate={{ y: [0, 15, 0], opacity: [0.15, 0.4, 0.15] }}
-        transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
-      />
+      <div className="absolute top-[15%] right-[15%] w-20 h-20 rounded-full border border-[#ffa520]/10 animate-float" />
+      <div className="absolute bottom-[20%] left-[10%] w-14 h-14 rounded-2xl border border-[#900c00]/10 rotate-45 animate-float" style={{ animationDelay: '2s' }} />
+      <div className="absolute top-[40%] left-[5%] w-3 h-3 rounded-full bg-[#ffa520]/20 animate-pulse" />
+      <div className="absolute top-[25%] right-[30%] w-2 h-2 rounded-full bg-[#ffa520]/15 animate-pulse" style={{ animationDelay: '1s' }} />
 
       {/* ── Main Card ── */}
-      <motion.div
-        className="relative w-full max-w-[420px] z-10"
-        initial={{ opacity: 0, y: 30, scale: 0.96 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-      >
+      <div className="relative w-full max-w-[420px] z-10 animate-fadeUp">
         {/* Glassmorphism card */}
         <div className="relative rounded-3xl overflow-hidden">
           {/* Card glow effect */}
@@ -97,12 +75,7 @@ export default function AdminLoginPage() {
 
           <div className="relative bg-[#fdf6ec]/[0.92] backdrop-blur-xl rounded-3xl p-8 sm:p-10 shadow-2xl shadow-black/40">
             {/* ── Logo & Title ── */}
-            <motion.div
-              className="text-center mb-8"
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.15, duration: 0.5 }}
-            >
+            <div className="text-center mb-8">
               {/* Logo badge */}
               <div className="relative inline-flex mb-5">
                 <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#ffa520] to-[#900c00] flex items-center justify-center shadow-xl shadow-[#900c00]/30">
@@ -128,17 +101,13 @@ export default function AdminLoginPage() {
               <p className="text-sm text-[#3d1f1f]/50">
                 Mithai 2.0 — Sign in to manage your store
               </p>
-            </motion.div>
+            </div>
 
             {/* Forbidden warning */}
             {forbidden && (
-              <motion.div
-                initial={{ opacity: 0, y: -8 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="mb-5 bg-amber-50/80 backdrop-blur-sm text-amber-800 text-sm px-4 py-3 rounded-xl border border-amber-200/50"
-              >
+              <div className="mb-5 bg-amber-50/80 backdrop-blur-sm text-amber-800 text-sm px-4 py-3 rounded-xl border border-amber-200/50">
                 Access denied. Only administrators can access this area.
-              </motion.div>
+              </div>
             )}
 
             {/* Divider line */}
@@ -152,12 +121,7 @@ export default function AdminLoginPage() {
             <AdminLoginForm />
 
             {/* Footer */}
-            <motion.div
-              className="mt-8 pt-6 border-t border-[#900c00]/8"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.5, duration: 0.5 }}
-            >
+            <div className="mt-8 pt-6 border-t border-[#900c00]/[0.08]">
               <p className="text-center text-xs text-[#3d1f1f]/40">
                 This portal is for authorized administrators only.
               </p>
@@ -169,13 +133,13 @@ export default function AdminLoginPage() {
                   ← Back to Mithai 2.0 Store
                 </a>
               </p>
-            </motion.div>
+            </div>
           </div>
         </div>
 
         {/* Bottom glow accent */}
         <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 w-[70%] h-12 bg-[#ffa520]/10 blur-2xl rounded-full" />
-      </motion.div>
+      </div>
     </div>
   )
 }

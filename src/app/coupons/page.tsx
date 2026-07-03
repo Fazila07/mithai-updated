@@ -1,67 +1,45 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { Loader2 } from 'lucide-react'
 
-const COUPONS = [
-  {
-    code: 'MITHAI10',
-    discount: '10% OFF',
-    description: 'Get 10% off on your first order',
-    minOrder: 299,
-    expiry: '31 Dec 2026',
-    color: '#900c00',
-    badge: '🎉 New User',
-  },
-  {
-    code: 'HEALTHY20',
-    discount: '20% OFF',
-    description: '20% off on orders above ₹599',
-    minOrder: 599,
-    expiry: '30 Jun 2026',
-    color: '#5A7A2B',
-    badge: '🌿 Wellness',
-  },
-  {
-    code: 'SWEET50',
-    discount: '₹50 OFF',
-    description: 'Flat ₹50 off on orders above ₹399',
-    minOrder: 399,
-    expiry: '31 Aug 2026',
-    color: '#b87333',
-    badge: '🍬 Sweet Deal',
-  },
-  {
-    code: 'FESTIVE15',
-    discount: '15% OFF',
-    description: '15% off on all festive hampers',
-    minOrder: 499,
-    expiry: '31 Oct 2026',
-    color: '#7B3FA0',
-    badge: '✨ Festive',
-  },
-  {
-    code: 'PCOS30',
-    discount: '30% OFF',
-    description: '30% off on PCOS-friendly range',
-    minOrder: 349,
-    expiry: '30 Sep 2026',
-    color: '#C0547A',
-    badge: '💪 Wellness',
-  },
-  {
-    code: 'RAGI25',
-    discount: '25% OFF',
-    description: '25% off on Ragi collection',
-    minOrder: 299,
-    expiry: '31 Jul 2026',
-    color: '#8B5E3C',
-    badge: '🌾 Grain Love',
-  },
+interface CouponData {
+  id: string
+  code: string
+  description?: string
+  discountType: 'percentage' | 'flat'
+  value: number
+  minOrder: number
+  maxDiscount?: number
+  expiryDate: string
+}
+
+const TAG_COLORS = [
+  '#900c00', '#5A7A2B', '#b87333', '#7B3FA0', '#C0547A', '#8B5E3C',
+  '#2563EB', '#0D9488', '#B45309',
 ]
 
+function formatDiscount(c: CouponData): string {
+  return c.discountType === 'percentage' ? `${c.value}% OFF` : `₹${c.value} OFF`
+}
+
+function getColor(idx: number): string {
+  return TAG_COLORS[idx % TAG_COLORS.length]
+}
+
 export default function CouponsPage() {
+  const [coupons, setCoupons] = useState<CouponData[]>([])
+  const [loading, setLoading] = useState(true)
   const [copied, setCopied] = useState<string | null>(null)
+
+  useEffect(() => {
+    fetch('/api/coupons')
+      .then((r) => r.json())
+      .then((d) => setCoupons(d.coupons ?? []))
+      .catch(() => {})
+      .finally(() => setLoading(false))
+  }, [])
 
   const handleCopy = (code: string) => {
     navigator.clipboard.writeText(code).then(() => {
@@ -80,10 +58,12 @@ export default function CouponsPage() {
           </svg>
         </Link>
         <div>
-          <h1 className="cp-title">Coupons & Offers</h1>
+          <h1 className="cp-title">Coupons &amp; Offers</h1>
           <p className="cp-sub">Save more on every order</p>
         </div>
-        <span className="cp-badge-count">{COUPONS.length} Active</span>
+        <span className="cp-badge-count">
+          {loading ? '...' : `${coupons.length} Active`}
+        </span>
       </div>
 
       {/* Info strip */}
@@ -94,52 +74,73 @@ export default function CouponsPage() {
         Tap any coupon to copy the code. Apply it at checkout.
       </div>
 
-      {/* Coupon cards */}
-      <div className="cp-list">
-        {COUPONS.map((c) => (
-          <button
-            key={c.code}
-            className={`cp-card ${copied === c.code ? 'cp-card--copied' : ''}`}
-            onClick={() => handleCopy(c.code)}
-            aria-label={`Copy coupon ${c.code}`}
-          >
-            {/* Left colour stripe */}
-            <div className="cp-stripe" style={{ background: c.color }} />
+      {/* Loading state */}
+      {loading ? (
+        <div className="cp-loading">
+          <Loader2 size={28} className="animate-spin" style={{ color: '#900c00' }} />
+          <p>Loading coupons...</p>
+        </div>
+      ) : coupons.length === 0 ? (
+        <div className="cp-loading">
+          <p>No active coupons right now. Check back soon!</p>
+        </div>
+      ) : (
+        /* Coupon cards */
+        <div className="cp-list">
+          {coupons.map((c, idx) => {
+            const color = getColor(idx)
+            return (
+              <button
+                key={c.id}
+                className={`cp-card ${copied === c.code ? 'cp-card--copied' : ''}`}
+                onClick={() => handleCopy(c.code)}
+                aria-label={`Copy coupon ${c.code}`}
+              >
+                {/* Left colour stripe */}
+                <div className="cp-stripe" style={{ background: color }} />
 
-            {/* Main content */}
-            <div className="cp-body">
-              <div className="cp-top">
-                <span className="cp-tag" style={{ background: `${c.color}18`, color: c.color }}>
-                  {c.badge}
-                </span>
-                <span className="cp-discount" style={{ color: c.color }}>{c.discount}</span>
-              </div>
-              <p className="cp-desc">{c.description}</p>
-              <p className="cp-min">Min. order ₹{c.minOrder} &nbsp;·&nbsp; Expires {c.expiry}</p>
-            </div>
+                {/* Main content */}
+                <div className="cp-body">
+                  <div className="cp-top">
+                    <span className="cp-tag" style={{ background: `${color}18`, color }}>
+                      {c.description || 'Discount'}
+                    </span>
+                    <span className="cp-discount" style={{ color }}>{formatDiscount(c)}</span>
+                  </div>
+                  <p className="cp-desc">{c.description || `Get ${formatDiscount(c).toLowerCase()} on your order`}</p>
+                  <p className="cp-min">
+                    Min. order ₹{c.minOrder}&nbsp;·&nbsp;Expires{' '}
+                    {new Date(c.expiryDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
+                    {c.maxDiscount && c.discountType === 'percentage' && (
+                      <>&nbsp;·&nbsp;Max ₹{c.maxDiscount}</>
+                    )}
+                  </p>
+                </div>
 
-            {/* Code pill + copy feedback */}
-            <div className="cp-right">
-              <div className="cp-code-pill" style={{ borderColor: c.color, color: c.color }}>
-                {c.code}
-              </div>
-              <span className="cp-copy-label">
-                {copied === c.code ? (
-                  <>
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                      <polyline points="20 6 9 17 4 12" />
-                    </svg>
-                    Copied!
-                  </>
-                ) : 'Tap to copy'}
-              </span>
-            </div>
+                {/* Code pill + copy feedback */}
+                <div className="cp-right">
+                  <div className="cp-code-pill" style={{ borderColor: color, color }}>
+                    {c.code}
+                  </div>
+                  <span className="cp-copy-label">
+                    {copied === c.code ? (
+                      <>
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                          <polyline points="20 6 9 17 4 12" />
+                        </svg>
+                        Copied!
+                      </>
+                    ) : 'Tap to copy'}
+                  </span>
+                </div>
 
-            {/* Dashed divider */}
-            <div className="cp-divider" />
-          </button>
-        ))}
-      </div>
+                {/* Dashed divider */}
+                <div className="cp-divider" />
+              </button>
+            )
+          })}
+        </div>
+      )}
 
       {/* Footer CTA */}
       <div className="cp-footer">
@@ -223,6 +224,18 @@ export default function CouponsPage() {
           border-bottom: 1px solid rgba(144,12,0,0.07);
         }
 
+        /* ── Loading ── */
+        .cp-loading {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          gap: 12px;
+          padding: 60px 18px;
+          color: #9B7B6A;
+          font-size: 0.9rem;
+        }
+
         /* ── List ── */
         .cp-list {
           display: flex;
@@ -270,23 +283,30 @@ export default function CouponsPage() {
         .cp-body {
           flex: 1;
           padding: 14px 12px;
+          min-width: 0;
         }
         .cp-top {
           display: flex;
           align-items: center;
           justify-content: space-between;
           margin-bottom: 6px;
+          gap: 8px;
         }
         .cp-tag {
           font-size: 0.7rem;
           font-weight: 700;
           padding: 3px 9px;
           border-radius: 100px;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          max-width: 140px;
         }
         .cp-discount {
           font-family: 'Libre Baskerville', serif;
           font-size: 1.1rem;
           font-weight: 700;
+          flex-shrink: 0;
         }
         .cp-desc {
           font-size: 0.82rem;

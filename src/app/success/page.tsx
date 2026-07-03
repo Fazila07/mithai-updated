@@ -20,7 +20,7 @@ function SuccessContent() {
           </div>
         )}
         <p className="mt-6 text-sm text-slate-500 max-w-md mx-auto">
-          Thank you for choosing Mithai 2.0! You&apos;ll receive a confirmation email shortly with your order details.
+          Thank you for choosing Mithai 2.0!
         </p>
 
         <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:justify-center">

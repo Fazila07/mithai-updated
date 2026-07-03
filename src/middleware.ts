@@ -10,6 +10,15 @@ export async function middleware(request: NextRequest) {
     secret: process.env.NEXTAUTH_SECRET,
   })
 
+  // ── Customer login page: redirect away if already authenticated ──
+  if (pathname === '/login') {
+    if (token) {
+      const callbackUrl = request.nextUrl.searchParams.get('callbackUrl') || '/'
+      return NextResponse.redirect(new URL(callbackUrl, request.url))
+    }
+    return NextResponse.next()
+  }
+
   // ── Admin login page: redirect away if already authenticated as admin ──
   if (pathname === '/admin/login') {
     if (token && token.role === 'ADMIN') {
@@ -44,5 +53,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/admin/:path*', '/account/:path*'],
+  matcher: ['/login', '/admin/:path*', '/account/:path*'],
 }

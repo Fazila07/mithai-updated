@@ -3,6 +3,8 @@ import crypto from 'crypto'
 import connectDB from '@/lib/mongodb'
 import Order from '@/models/Order'
 import Product from '@/models/Product'
+import Coupon from '@/models/Coupon'
+import CouponUsage from '@/models/CouponUsage'
 import { orderSchema } from '@/lib/validators'
 
 export async function POST(req: NextRequest) {
@@ -79,6 +81,24 @@ export async function POST(req: NextRequest) {
         { _id: item.productId },
         { $inc: { stock: -item.quantity, salesCount: item.quantity } }
       )
+    }
+
+    // Increment coupon usage count and record per-user usage
+    if (data.couponCode) {
+      const coupon = await Coupon.findOneAndUpdate(
+        { code: data.couponCode.toUpperCase() },
+        { $inc: { usedCount: 1 } },
+        { new: true }
+      )
+
+      if (coupon && body.userId) {
+        await CouponUsage.create({
+          userId: body.userId,
+          couponId: coupon._id,
+          couponCode: coupon.code,
+          orderId: order._id,
+        })
+      }
     }
 
     return NextResponse.json({

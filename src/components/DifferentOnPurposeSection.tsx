@@ -2,7 +2,6 @@
 
 import Image from 'next/image'
 import { useState } from 'react'
-import { motion } from 'framer-motion'
 
 const FEATURES = [
   {
@@ -82,18 +81,19 @@ export default function DifferentOnPurposeSection() {
 
         <div className="feature-grid">
           {FEATURES.map((feature) => (
-            <motion.div
+            <div
               key={feature.title}
               className="feature-card"
-              whileHover={{ y: -6 }}
-              transition={{ duration: 0.25, ease: 'easeOut' }}
+              style={{ transition: 'transform 0.25s ease-out' }}
+              onMouseEnter={(e) => (e.currentTarget.style.transform = 'translateY(-6px)')}
+              onMouseLeave={(e) => (e.currentTarget.style.transform = 'translateY(0)')}
             >
               <div className="feature-icon">
                 <span>{feature.icon}</span>
               </div>
               <h3>{feature.title}</h3>
               <p>{feature.description}</p>
-            </motion.div>
+            </div>
           ))}
         </div>
 

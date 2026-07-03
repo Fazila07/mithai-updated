@@ -8,7 +8,10 @@
     "start": "next start",
     "lint": "next lint",
     "seed": "npx tsx scripts/seed-mongo.ts",
-    "seed:admin": "npx tsx scripts/seed-mongo.ts"
+    "seed:admin": "npx tsx scripts/seed-mongo.ts",
+    "backup": "npx tsx scripts/backup-db.ts",
+    "add-coupons": "npx tsx scripts/add-coupons.ts",
+    "dedup": "npx tsx scripts/dedup-products.ts"
   },
   "dependencies": {
     "@auth/mongodb-adapter": "^3.11.2",

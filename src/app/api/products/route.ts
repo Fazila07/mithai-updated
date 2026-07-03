@@ -28,13 +28,21 @@ export async function GET(req: NextRequest) {
     const filter: any = { active: true }
 
     // Category filter (by slug, supports comma-separated)
+    // Normalizes input: lowercase, trim, replace spaces with hyphens
+    // Uses case-insensitive regex so Cookies/cookies/COOKIES all work
     if (category) {
-      const categorySlugs = category.split(',').map((s) => s.trim())
+      const categorySlugs = category.split(',').map((s) =>
+        s.trim().toLowerCase().replace(/\s+/g, '-')
+      )
       // Ensure Category model is registered
-      const cats = await Category.find({ slug: { $in: categorySlugs } }).select('_id')
+      const slugRegexes = categorySlugs.map((s) => new RegExp(`^${s}$`, 'i'))
+      const cats = await Category.find({ slug: { $in: slugRegexes } }).select('_id')
       const catIds = cats.map((c) => c._id)
       if (catIds.length > 0) {
         filter.categoryId = catIds.length === 1 ? catIds[0] : { $in: catIds }
+      } else {
+        // No matching categories found — return empty set by using impossible filter
+        filter.categoryId = null
       }
     }
 

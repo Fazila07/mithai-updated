@@ -7,6 +7,7 @@ export interface IProduct {
   groupSlug?: string | null
   description: string
   shortDescription?: string
+  about?: string
   price: number
   comparePrice?: number | null
   images: string[]
@@ -28,12 +29,26 @@ export interface IProduct {
   reviewCount: number
   salesCount?: number
   weight?: string
-  allergens?: string[]
+  allergens?: string
   nutritionFacts?: Record<string, string>
+  packageSizes?: IPackageSize[]
+  // Product metadata (accordion sections)
+  storage?: string
+  nutrition?: string
+  highlights?: string[]
+  fssaiNumber?: string
+  servingSize?: string
   createdAt: string
   updatedAt: string
   // Size variants (populated from groupSlug)
   sizeVariants?: IProductVariant[]
+}
+
+export interface IPackageSize {
+  label: string
+  price: number
+  comparePrice?: number | null
+  stock: number
 }
 
 export interface IProductVariant {

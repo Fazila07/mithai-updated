@@ -99,6 +99,54 @@ export async function PUT(
   }
 }
 
+export async function PATCH(
+  req: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  const { error } = await requireAdmin()
+  if (error) return error
+
+  try {
+    await connectDB()
+
+    const body = await req.json()
+
+    // Only allow specific fields for partial update
+    const allowedFields = ['active', 'bestSeller', 'featured', 'stock', 'price']
+    const updateObj: Record<string, any> = {}
+    for (const key of allowedFields) {
+      if (body[key] !== undefined) {
+        updateObj[key] = body[key]
+      }
+    }
+
+    if (Object.keys(updateObj).length === 0) {
+      return NextResponse.json({ error: 'No valid fields to update' }, { status: 400 })
+    }
+
+    const product = await Product.findByIdAndUpdate(
+      params.id,
+      { $set: updateObj },
+      { new: true }
+    ).lean()
+
+    if (!product) {
+      return NextResponse.json({ error: 'Product not found' }, { status: 404 })
+    }
+
+    return NextResponse.json({
+      product: {
+        ...product,
+        _id: product._id.toString(),
+        id: product._id.toString(),
+      },
+    })
+  } catch (err) {
+    console.error(err)
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+  }
+}
+
 export async function DELETE(
   req: NextRequest,
   { params }: { params: { id: string } }

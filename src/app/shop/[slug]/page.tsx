@@ -23,6 +23,7 @@ export default function ProductPage() {
   const [quantity, setQuantity] = useState(1)
   const [selectedImage, setSelectedImage] = useState(0)
   const [addedToCart, setAddedToCart] = useState(false)
+  const [selectedPkgIdx, setSelectedPkgIdx] = useState(0)
 
   useEffect(() => {
     async function fetchProduct() {
@@ -45,15 +46,24 @@ export default function ProductPage() {
 
   const handleAddToCart = () => {
     if (!product) return
-    addItem(product, quantity)
+    // If package sizes exist, override price with selected size
+    const pkg = product.packageSizes?.[selectedPkgIdx]
+    const cartProduct = pkg
+      ? { ...product, price: pkg.price, comparePrice: pkg.comparePrice ?? product.comparePrice, weight: pkg.label }
+      : product
+    addItem(cartProduct, quantity)
     setAddedToCart(true)
     setTimeout(() => setAddedToCart(false), 2000)
   }
 
   const handleBuyNow = () => {
     if (!product) return
+    const pkg = product.packageSizes?.[selectedPkgIdx]
+    const cartProduct = pkg
+      ? { ...product, price: pkg.price, comparePrice: pkg.comparePrice ?? product.comparePrice, weight: pkg.label }
+      : product
     const store = useCartStore.getState()
-    store.setBuyNow(product, quantity)
+    store.setBuyNow(cartProduct, quantity)
     router.push('/checkout?mode=buynow')
   }
 
@@ -208,22 +218,56 @@ export default function ProductPage() {
                   </div>
                 )}
 
-                {/* Price */}
-                <div className="flex items-baseline gap-3 mb-2">
-                  <span className="text-3xl font-bold text-mithai-maroon">₹{product.price}</span>
-                  {product.comparePrice && product.comparePrice > product.price && (
+                {/* Price — use selected package size price if available */}
+                {(() => {
+                  const pkg = product.packageSizes?.[selectedPkgIdx]
+                  const displayPrice = pkg?.price ?? product.price
+                  const displayCompare = pkg?.comparePrice ?? product.comparePrice
+                  return (
                     <>
-                      <span className="text-lg text-mithai-taupe line-through">₹{product.comparePrice}</span>
-                      <span className="px-2 py-0.5 rounded bg-green-100 text-green-700 text-xs font-bold">
-                        Save ₹{product.comparePrice - product.price}
-                      </span>
+                      <div className="flex items-baseline gap-3 mb-2">
+                        <span className="text-3xl font-bold text-mithai-maroon">₹{displayPrice}</span>
+                        {displayCompare && displayCompare > displayPrice && (
+                          <>
+                            <span className="text-lg text-mithai-taupe line-through">₹{displayCompare}</span>
+                            <span className="px-2 py-0.5 rounded bg-green-100 text-green-700 text-xs font-bold">
+                              Save ₹{displayCompare - displayPrice}
+                            </span>
+                          </>
+                        )}
+                      </div>
+                      {(pkg?.label || product.weight) && (
+                        <p className="text-sm text-mithai-taupe">Pack size: {pkg?.label || product.weight}</p>
+                      )}
                     </>
-                  )}
-                </div>
-                {product.weight && (
-                  <p className="text-sm text-mithai-taupe">Pack size: {product.weight}</p>
-                )}
+                  )
+                })()}
               </div>
+
+              {/* ─── Package Size Selector ──────────────────── */}
+              {product.packageSizes && product.packageSizes.length > 0 && (
+                <div className="mb-6">
+                  <h3 className="text-xs font-bold tracking-[0.12em] uppercase text-mithai-maroonD mb-3">Choose Size</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {product.packageSizes.map((pkg: any, idx: number) => (
+                      <button
+                        key={idx}
+                        onClick={() => setSelectedPkgIdx(idx)}
+                        className={`px-4 py-2.5 rounded-2xl border-2 text-sm font-semibold transition-all duration-200 ${
+                          selectedPkgIdx === idx
+                            ? 'border-mithai-maroon bg-mithai-maroonP text-mithai-maroon shadow-[0_0_0_2px_rgba(144,12,0,0.12)]'
+                            : 'border-mithai-taupe/20 text-mithai-charcoal hover:border-mithai-maroon/40 bg-white'
+                        }`}
+                      >
+                        <span className="block">{pkg.label}</span>
+                        <span className={`block text-xs mt-0.5 ${selectedPkgIdx === idx ? 'text-mithai-maroon' : 'text-mithai-taupe'}`}>
+                          ₹{pkg.price}
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               {/* ─── Size Variant Switcher ─────────────────── */}
               {sizeVariants.length > 1 && (

@@ -13,6 +13,50 @@ interface CategoryData {
   _count?: { products: number }
 }
 
+/* ─── Static fallback categories (shown when DB is unreachable) ── */
+const FALLBACK_CATEGORIES: CategoryData[] = [
+  {
+    _id: 'fallback-cookies',
+    id: 'fallback-cookies',
+    name: 'Cookies',
+    slug: 'cookies',
+    description: 'Handcrafted healthy cookies made with premium nuts and cacao',
+    image: '/images/categories/cookies.png',
+  },
+  {
+    _id: 'fallback-brownies',
+    id: 'fallback-brownies',
+    name: 'Brownies',
+    slug: 'brownies',
+    description: 'Rich, fudgy brownies made with clean ingredients and no refined sugar',
+    image: '/images/categories/brownies.jpg',
+  },
+  {
+    _id: 'fallback-cacao-bites',
+    id: 'fallback-cacao-bites',
+    name: 'Cacao Bites',
+    slug: 'cacao-bites',
+    description: 'Bite-sized cacao treats packed with flavor and nutrition',
+    image: '/images/categories/cacao-bites.jpg',
+  },
+  {
+    _id: 'fallback-laddus',
+    id: 'fallback-laddus',
+    name: 'Laddus',
+    slug: 'laddus',
+    description: 'Traditional Indian laddus reimagined with healthy, wholesome ingredients',
+    image: '/images/categories/laddus.jpg',
+  },
+  {
+    _id: 'fallback-crackers',
+    id: 'fallback-crackers',
+    name: 'Crackers',
+    slug: 'crackers',
+    description: 'Crunchy, savory crackers made with nutritious grains and seeds',
+    image: '/images/categories/crackers.jpg',
+  },
+]
+
 export default function CategorySection() {
   const [categories, setCategories] = useState<CategoryData[]>([])
   const [loading, setLoading] = useState(true)
@@ -20,11 +64,20 @@ export default function CategorySection() {
   useEffect(() => {
     async function fetchCategories() {
       try {
-        const res = await fetch('/api/categories')
+        // 6-second timeout to avoid hanging forever when DB is unreachable
+        const controller = new AbortController()
+        const timeout = setTimeout(() => controller.abort(), 6000)
+
+        const res = await fetch('/api/categories', { signal: controller.signal })
+        clearTimeout(timeout)
+
         const data = await res.json()
-        setCategories(data.categories || [])
+        const fetched = data.categories || []
+        // Use DB data if available, otherwise fall back to static
+        setCategories(fetched.length > 0 ? fetched : FALLBACK_CATEGORIES)
       } catch {
-        setCategories([])
+        // Network error, timeout, or DB unreachable → use static fallback
+        setCategories(FALLBACK_CATEGORIES)
       } finally {
         setLoading(false)
       }
@@ -40,7 +93,7 @@ export default function CategorySection() {
             <h2 className="sec-title">Dive In</h2>
           </div>
           <div className="cat-grid">
-            {Array.from({ length: 3 }).map((_, i) => (
+            {Array.from({ length: 5 }).map((_, i) => (
               <div key={i} className="cat-card animate-pulse">
                 <div className="cat-image">
                   <div className="cat-image-inner" style={{ background: 'rgba(144,12,0,0.05)' }} />
@@ -59,8 +112,6 @@ export default function CategorySection() {
     )
   }
 
-  if (categories.length === 0) return null
-
   return (
     <section id="categories" className="sec bg-mithai-off">
       <div className="container">
@@ -75,14 +126,14 @@ export default function CategorySection() {
               href={`/shop?category=${cat.slug}`}
               className="cat-card group"
             >
-              <div className="cat-image">
-                <div className="cat-image-inner">
-                  {cat.image ? (
-                    <img src={cat.image} alt={cat.name} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 24 }} />
-                  ) : (
+              <div className={`cat-image ${cat.image ? 'cat-image--has-photo' : ''}`}>
+                {cat.image ? (
+                  <img src={cat.image} alt={cat.name} className="cat-photo" />
+                ) : (
+                  <div className="cat-image-inner">
                     <span>{getCategoryEmoji(cat.name)}</span>
-                  )}
-                </div>
+                  </div>
+                )}
               </div>
               <div className="cat-copy">
                 <h3>{cat.name}</h3>
@@ -110,6 +161,7 @@ function getCategoryEmoji(name: string): string {
     cookies: '🍪',
     brownies: '🍫',
     'cacao bites': '🟤',
+    'cocoa bites': '🟤',
     laddus: '🧁',
     crackers: '🥨',
   }
@@ -138,6 +190,9 @@ const catStyles = `
     border-color: rgba(107, 31, 31, 0.2);
     box-shadow: 0 18px 38px rgba(107, 31, 31, 0.14);
   }
+  .cat-card:hover .cat-photo {
+    transform: scale(1.06);
+  }
   .cat-image {
     position: relative;
     min-height: 180px;
@@ -145,12 +200,30 @@ const catStyles = `
     place-items: center;
     background: radial-gradient(circle at top left, rgba(227, 180, 72, 0.18), transparent 40%),
       linear-gradient(135deg, #f7f3ee 0%, #fbf5ec 100%);
+    overflow: hidden;
+  }
+  .cat-image--has-photo {
+    min-height: 200px;
+    background: #f7f3ee;
   }
   .cat-image::after {
     content: '';
     position: absolute;
     inset: 0;
     background: linear-gradient(180deg, rgba(255,255,255,0.1), transparent 70%);
+    pointer-events: none;
+    z-index: 1;
+  }
+  .cat-image--has-photo::after {
+    background: linear-gradient(180deg, transparent 50%, rgba(0,0,0,0.06) 100%);
+  }
+  .cat-photo {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
   }
   .cat-image-inner {
     position: relative;
@@ -190,12 +263,18 @@ const catStyles = `
   }
   @media (min-width: 640px) {
     .cat-grid {
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    }
+    .cat-image--has-photo {
+      min-height: 220px;
     }
   }
   @media (min-width: 1024px) {
     .cat-grid {
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      grid-template-columns: repeat(4, 1fr);
+    }
+    .cat-image--has-photo {
+      min-height: 240px;
     }
   }
 `

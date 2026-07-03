@@ -1,45 +1,64 @@
 'use client'
 
-const TESTIMONIALS = [
+import { useEffect, useState } from 'react'
+
+interface Review {
+  _id: string
+  userName: string
+  userImage?: string
+  rating: number
+  title?: string
+  text: string
+  createdAt: string
+}
+
+const FALLBACK_TESTIMONIALS = [
   {
-    name: 'Priya M.',
-    role: 'PCOS Warrior',
+    _id: 'f1', userName: 'Priya M.', rating: 5,
     text: 'Finally a dessert that doesn\'t make me feel guilty! The brownies are amazing and my blood sugar is stable.',
-    rating: 5,
+    createdAt: '', title: 'PCOS Warrior',
   },
   {
-    name: 'Rahul K.',
-    role: 'Fitness Enthusiast',
+    _id: 'f2', userName: 'Rahul K.', rating: 5,
     text: 'No refined sugar but tastes so good. Been buying for 6 months now. Great quality!',
-    rating: 5,
+    createdAt: '', title: 'Fitness Enthusiast',
   },
   {
-    name: 'Anjali S.',
-    role: 'Mother of Two',
+    _id: 'f3', userName: 'Anjali S.', rating: 5,
     text: 'My kids love these snacks and I love knowing exactly what goes into them. Best purchase ever!',
-    rating: 5,
+    createdAt: '', title: 'Mother of Two',
   },
   {
-    name: 'Vikram P.',
-    role: 'Health Coach',
+    _id: 'f4', userName: 'Vikram P.', rating: 5,
     text: 'Recommend Mithai 2.0 to all my clients. The cookies are nutritious and delicious!',
-    rating: 5,
+    createdAt: '', title: 'Health Coach',
   },
   {
-    name: 'Deepa R.',
-    role: 'Dietician',
+    _id: 'f5', userName: 'Deepa R.', rating: 5,
     text: 'Clean ingredients, no hidden sugars. This is what mindful desserts should look like.',
-    rating: 5,
+    createdAt: '', title: 'Dietician',
   },
   {
-    name: 'Arjun N.',
-    role: 'Sweet Tooth',
+    _id: 'f6', userName: 'Arjun N.', rating: 5,
     text: 'Didn\'t think healthy desserts could taste this good. Mind blown!',
-    rating: 5,
+    createdAt: '', title: 'Sweet Tooth',
   },
 ]
 
 export default function TestimonialsSection() {
+  const [reviews, setReviews] = useState<Review[]>(FALLBACK_TESTIMONIALS)
+
+  useEffect(() => {
+    fetch('/api/reviews?limit=20')
+      .then((r) => r.json())
+      .then((d) => {
+        if (d.reviews && d.reviews.length > 0) {
+          setReviews(d.reviews)
+        }
+      })
+      .catch(() => {})
+  }, [])
+
   return (
     <section id="testimonials" className="testimonials">
       <div className="container">
@@ -50,12 +69,12 @@ export default function TestimonialsSection() {
 
         <div className="testi-scroll">
           <div className="testi-track">
-            {[...TESTIMONIALS, ...TESTIMONIALS].map((testi, idx) => (
+            {[...reviews, ...reviews].map((testi, idx) => (
               <div key={idx} className="testi-card">
                 <div className="tstar">{'★'.repeat(testi.rating)}</div>
-                <p className="ttext">"{testi.text}"</p>
-                <div className="tauth">{testi.name}</div>
-                <div className="trole">{testi.role}</div>
+                <p className="ttext">&quot;{testi.text}&quot;</p>
+                <div className="tauth">{testi.userName}</div>
+                {testi.title && <div className="trole">{testi.title}</div>}
               </div>
             ))}
           </div>

@@ -62,6 +62,7 @@ export const productSchema = z.object({
   popularTags: z.array(z.string()).default([]),
   description: z.string().min(10, 'Description must be at least 10 characters'),
   shortDescription: z.string().max(160).optional(),
+  about: z.string().optional(),
   price: z.number().min(0, 'Price must be positive'),
   comparePrice: z.number().min(0).optional().nullable(),
   stock: z.number().int().min(0).default(0),
@@ -75,6 +76,13 @@ export const productSchema = z.object({
   bestSeller: z.boolean().default(false),
   featured: z.boolean().default(false),
   active: z.boolean().default(true),
+  // Product metadata (accordion sections)
+  storage: z.string().optional(),
+  allergens: z.string().optional(),
+  nutrition: z.string().optional(),
+  highlights: z.array(z.string()).default([]),
+  fssaiNumber: z.string().optional(),
+  servingSize: z.string().optional(),
 })
 
 export const orderSchema = z.object({

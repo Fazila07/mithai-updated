@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { useSession } from 'next-auth/react'
 import { useCartCount } from '@/store/cartStore'
 import { useEffect, useState } from 'react'
 
@@ -72,7 +73,7 @@ const navItems = [
   },
   {
     label: 'My account',
-    href: '/login',
+    href: '/account', // dynamically overridden below for logged-out users
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
@@ -90,6 +91,7 @@ const navItems = [
 
 export default function BottomNav() {
   const pathname = usePathname()
+  const { data: session } = useSession()
   const itemCount = useCartCount()
   const [mounted, setMounted] = useState(false)
 
@@ -107,9 +109,10 @@ export default function BottomNav() {
 
       <nav className="bottom-nav md:hidden">
         {navItems.map((item) => {
-          const active = isActive(item.href)
+          const href = item.label === 'My account' && !session ? '/login' : item.href
+          const active = isActive(href)
           return (
-            <Link key={item.href} href={item.href} className={`bottom-nav-item ${active ? 'bottom-nav-item--active' : ''}`}>
+            <Link key={item.label} href={href} className={`bottom-nav-item ${active ? 'bottom-nav-item--active' : ''}`}>
               <span className="bottom-nav-icon">
                 {active ? item.iconFilled : item.icon}
                 {/* Cart badge on Shop item */}

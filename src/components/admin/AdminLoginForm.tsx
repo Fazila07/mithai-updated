@@ -5,7 +5,6 @@ import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { Eye, EyeOff, Lock, Mail, Loader2, AlertCircle } from 'lucide-react'
 import { adminLoginSchema } from '@/lib/validators'
-import { motion } from 'framer-motion'
 
 export default function AdminLoginForm() {
   const router = useRouter()
@@ -74,12 +73,9 @@ export default function AdminLoginForm() {
   }
 
   return (
-    <motion.form
+    <form
       onSubmit={handleSubmit}
-      className="space-y-5"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ delay: 0.3, duration: 0.5 }}
+      className="space-y-5 animate-fadeUp"
     >
       {/* Email */}
       <div>
@@ -167,14 +163,12 @@ export default function AdminLoginForm() {
 
       {/* Error Message */}
       {error && (
-        <motion.div
-          initial={{ opacity: 0, y: -8 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="bg-red-50/80 backdrop-blur-sm text-red-700 text-sm px-4 py-3 rounded-xl border border-red-200/50 flex items-start gap-2"
+        <div
+          className="bg-red-50/80 backdrop-blur-sm text-red-700 text-sm px-4 py-3 rounded-xl border border-red-200/50 flex items-start gap-2 animate-fadeUp"
         >
           <AlertCircle size={16} className="flex-shrink-0 mt-0.5" />
           <span>{error}</span>
-        </motion.div>
+        </div>
       )}
 
       {/* Submit Button */}
@@ -192,6 +186,6 @@ export default function AdminLoginForm() {
           'Sign In to Dashboard'
         )}
       </button>
-    </motion.form>
+    </form>
   )
 }

@@ -1,15 +1,13 @@
 import mongoose from 'mongoose'
-import dns from 'dns'
-import { Resolver } from 'dns/promises'
 
-// ─── Google DNS Resolver ──────────────────────────────────────
-// Institutional/college WiFi blocks MongoDB SRV DNS lookups.
-// Use Google DNS (8.8.8.8) to resolve SRV records manually.
-const resolver = new Resolver()
-resolver.setServers(['8.8.8.8', '8.8.4.4'])
-
-// Also set system-wide DNS as fallback
-dns.setServers(['8.8.8.8', '8.8.4.4', '1.1.1.1'])
+// ═══════════════════════════════════════════════════════════════
+//  Production-Ready MongoDB Connection Layer
+//  - Single cached connection with readyState validation
+//  - Survives Next.js hot-reload (global cache)
+//  - Auto-reconnects on mobile hotspot IP changes
+//  - Proper timeouts for flaky networks
+//  - No manual SRV resolution — uses native Mongoose driver
+// ═══════════════════════════════════════════════════════════════
 
 const MONGODB_URI = process.env.MONGODB_URI!
 
@@ -21,122 +19,180 @@ if (!MONGODB_URI) {
   )
 }
 
-/**
- * Resolve a mongodb+srv:// URI to a standard mongodb:// URI
- * using Google DNS to bypass institutional DNS blocking.
- */
-async function resolveSrvUri(srvUri: string): Promise<string> {
-  // Only process mongodb+srv:// URIs
-  if (!srvUri.startsWith('mongodb+srv://')) {
-    return srvUri
-  }
+// ─── Connection Options (tuned for Atlas M0 + mobile hotspot) ──
 
-  try {
-    // Parse the SRV URI: mongodb+srv://user:pass@hostname/...
-    const url = new URL(srvUri.replace('mongodb+srv://', 'https://'))
-    const hostname = url.hostname
-    const userInfo = url.username ? `${url.username}:${url.password}@` : ''
+const CONNECTION_OPTIONS: mongoose.ConnectOptions = {
+  // ── Pool ────────────────────────────────────────────────────
+  maxPoolSize: 5,               // M0 free tier has 500 limit; keep it lean
+  minPoolSize: 1,               // Keep at least 1 connection alive
+  maxIdleTimeMS: 30_000,        // Close idle sockets after 30s
 
-    // Resolve SRV records
-    const srvRecords = await resolver.resolveSrv(`_mongodb._tcp.${hostname}`)
-    const hosts = srvRecords.map(r => `${r.name}:${r.port}`).join(',')
+  // ── Timeouts (generous for mobile hotspot) ─────────────────
+  serverSelectionTimeoutMS: 15_000,  // 15s to find a healthy server
+  socketTimeoutMS: 45_000,           // 45s socket inactivity timeout
+  connectTimeoutMS: 15_000,          // 15s to establish TCP connection
+  heartbeatFrequencyMS: 10_000,      // 10s heartbeat to detect dead connections
 
-    // Resolve TXT records for connection options
-    let txtOptions = ''
-    try {
-      const txtRecords = await resolver.resolveTxt(hostname)
-      txtOptions = txtRecords.flat().join('')
-    } catch {
-      // TXT records are optional
-    }
+  // ── Resilience ─────────────────────────────────────────────
+  retryWrites: true,            // Retry failed writes automatically
+  retryReads: true,             // Retry failed reads automatically
 
-    // Build the standard connection string
-    const existingParams = url.search ? url.search.substring(1) : ''
-    const allParams = [txtOptions, existingParams, 'tls=true'].filter(Boolean).join('&')
+  // ── Buffering ──────────────────────────────────────────────
+  bufferCommands: false,        // Fail fast instead of buffering operations
 
-    const resolvedUri = `mongodb://${userInfo}${hosts}/?${allParams}`
-    console.log(`✅ Resolved SRV to ${srvRecords.length} hosts via Google DNS`)
-    return resolvedUri
-  } catch (err) {
-    console.error('⚠️ SRV resolution failed, using original URI:', (err as Error).message)
-    return srvUri
-  }
+  // ── Auto-reconnect ─────────────────────────────────────────
+  // Mongoose 7+ / MongoDB driver 6+: the driver handles reconnection
+  // automatically. We just need proper timeouts above.
 }
 
-/**
- * Global cache to prevent multiple connections in development
- * (Next.js hot-reloads cause module re-evaluation)
- */
+// ─── Global Cache (survives Next.js hot-reload) ────────────────
+
 interface MongooseCache {
   conn: typeof mongoose | null
   promise: Promise<typeof mongoose> | null
-  resolvedUri: string | null
+  listenersRegistered: boolean
 }
 
 declare global {
   // eslint-disable-next-line no-var
-  var mongooseCache: MongooseCache | undefined
+  var __mongooseCache: MongooseCache | undefined
 }
 
-const cached: MongooseCache = global.mongooseCache ?? { conn: null, promise: null, resolvedUri: null }
-
-if (!global.mongooseCache) {
-  global.mongooseCache = cached
+const cached: MongooseCache = global.__mongooseCache ?? {
+  conn: null,
+  promise: null,
+  listenersRegistered: false,
 }
+
+if (!global.__mongooseCache) {
+  global.__mongooseCache = cached
+}
+
+// ─── Timestamp Helper ──────────────────────────────────────────
+
+function ts(): string {
+  return new Date().toLocaleTimeString('en-IN', { hour12: true })
+}
+
+// ─── Connection State Names ────────────────────────────────────
+
+const STATE_NAMES: Record<number, string> = {
+  0: 'disconnected',
+  1: 'connected',
+  2: 'connecting',
+  3: 'disconnecting',
+  99: 'uninitialized',
+}
+
+function getStateName(state: number): string {
+  return STATE_NAMES[state] ?? `unknown(${state})`
+}
+
+// ─── Register Event Listeners (once per process) ───────────────
+
+function registerListeners(): void {
+  if (cached.listenersRegistered) return
+  cached.listenersRegistered = true
+
+  const conn = mongoose.connection
+
+  conn.on('connected', () => {
+    console.log(`✅ [${ts()}] MongoDB Atlas connected`)
+  })
+
+  conn.on('connecting', () => {
+    console.log(`🔌 [${ts()}] MongoDB connecting...`)
+  })
+
+  conn.on('disconnected', () => {
+    console.warn(`⚠️  [${ts()}] MongoDB disconnected — will auto-reconnect on next request`)
+    // Clear the cache so the next connectDB() call creates a fresh connection
+    cached.conn = null
+    cached.promise = null
+  })
+
+  conn.on('disconnecting', () => {
+    console.log(`🔌 [${ts()}] MongoDB disconnecting...`)
+  })
+
+  conn.on('reconnected', () => {
+    console.log(`✅ [${ts()}] MongoDB reconnected successfully`)
+  })
+
+  conn.on('error', (err: Error) => {
+    console.error(`❌ [${ts()}] MongoDB connection error: ${err.message}`)
+    // Don't clear cache here — let the driver attempt reconnection.
+    // Only clear if the connection is fully dead (handled by 'disconnected').
+  })
+
+  conn.on('close', () => {
+    console.log(`🔒 [${ts()}] MongoDB connection closed`)
+    cached.conn = null
+    cached.promise = null
+  })
+}
+
+// ─── Main Connection Function ──────────────────────────────────
 
 export async function connectDB(): Promise<typeof mongoose> {
+  // Register listeners on first call (idempotent)
+  registerListeners()
+
+  // ── Fast path: return cached connection if it's still alive ──
   if (cached.conn) {
-    return cached.conn
-  }
+    const state = mongoose.connection.readyState
 
-  if (!cached.promise) {
-    // Resolve SRV on first connection
-    if (!cached.resolvedUri) {
-      cached.resolvedUri = await resolveSrvUri(MONGODB_URI)
+    // State 1 = connected → good to go
+    if (state === 1) {
+      return cached.conn
     }
 
-    const opts: mongoose.ConnectOptions = {
-      bufferCommands: false,
-      maxPoolSize: 10,
+    // State 2 = connecting → wait for the existing promise
+    if (state === 2 && cached.promise) {
+      return cached.promise
     }
 
-    console.log('🔌 Connecting to MongoDB...')
-
-    cached.promise = mongoose
-      .connect(cached.resolvedUri, opts)
-      .then((m) => {
-        console.log('✅ MongoDB connected successfully')
-        return m
-      })
-      .catch((err) => {
-        console.error('❌ MongoDB connection failed:', err.message)
-        cached.promise = null
-        cached.resolvedUri = null // Reset so it re-resolves next time
-        throw err
-      })
-  }
-
-  try {
-    cached.conn = await cached.promise
-  } catch (e) {
+    // State 0 or 3 = disconnected/disconnecting → stale cache, clear it
+    console.warn(
+      `⚠️  [${ts()}] Cached connection is stale (state: ${getStateName(state)}). Reconnecting...`
+    )
+    cached.conn = null
     cached.promise = null
-    throw e
   }
 
+  // ── If there's already a pending connection promise, reuse it ──
+  if (cached.promise) {
+    try {
+      cached.conn = await cached.promise
+      return cached.conn
+    } catch {
+      // Previous attempt failed, clear and retry below
+      cached.promise = null
+    }
+  }
+
+  // ── Create a new connection ──────────────────────────────────
+  console.log(`🔌 [${ts()}] Initiating MongoDB connection...`)
+
+  cached.promise = mongoose
+    .connect(MONGODB_URI, CONNECTION_OPTIONS)
+    .then((m) => {
+      console.log(`✅ [${ts()}] MongoDB Atlas connected — readyState: ${getStateName(m.connection.readyState)}`)
+      cached.conn = m
+      return m
+    })
+    .catch((err: Error) => {
+      console.error(`❌ [${ts()}] MongoDB connection failed: ${err.message}`)
+      cached.promise = null
+      cached.conn = null
+      throw err
+    })
+
+  cached.conn = await cached.promise
   return cached.conn
 }
 
-// ─── Connection Event Logging ──────────────────────────────
-
-mongoose.connection.on('disconnected', () => {
-  console.warn('⚠️  MongoDB disconnected')
-  cached.conn = null
-  cached.promise = null
-})
-
-mongoose.connection.on('error', (err) => {
-  console.error('❌ MongoDB connection error:', err.message)
-})
+// ─── MongoClient Accessors (for NextAuth) ──────────────────────
 
 /**
  * Get the native MongoClient for NextAuth MongoDB Adapter.
@@ -156,4 +212,3 @@ export function getMongoClientPromise() {
 }
 
 export default connectDB
-

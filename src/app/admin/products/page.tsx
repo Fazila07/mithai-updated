@@ -102,7 +102,7 @@ export default function AdminProductsPage() {
   const toggleField = async (id: string, field: 'active' | 'bestSeller' | 'featured', current: boolean) => {
     try {
       const res = await fetch(`/api/admin/products/${id}`, {
-        method: 'PUT',
+        method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ [field]: !current }),
       })

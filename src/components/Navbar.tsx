@@ -32,7 +32,7 @@ export default function Navbar() {
       <nav className="fixed top-0 left-0 right-0 z-50 h-[60px] bg-white/95 backdrop-blur-[14px] border-b border-[rgba(107,31,31,0.10)] transition-all duration-300">
         <div className="relative h-full flex items-center justify-between px-[14px]">
 
-          {/* ── Left: hamburger (mobile) / nav links (desktop) ── */}
+          {/* ── Left: hamburger (mobile only) ── */}
           <div className="flex items-center gap-6">
             <button
               className="hamburger flex flex-col gap-[5px] p-1 md:hidden"
@@ -43,13 +43,6 @@ export default function Navbar() {
               <span className="block w-[22px] h-[2px] bg-mithai-maroon rounded transition-all duration-200" />
               <span className="block w-[22px] h-[2px] bg-mithai-maroon rounded transition-all duration-200" />
             </button>
-
-            {/* Desktop nav links */}
-            <div className="hidden md:flex items-center gap-6 text-sm font-semibold text-mithai-warmGray">
-              <Link href="/" className="hover:text-mithai-maroon transition-colors">Home</Link>
-              <Link href="/shop" className="hover:text-mithai-maroon transition-colors">Shop</Link>
-              <Link href="/coupons" className="hover:text-mithai-maroon transition-colors">Coupons</Link>
-            </div>
           </div>
 
           {/* ── Centre: logo ── */}

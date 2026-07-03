@@ -11,6 +11,13 @@ interface Category {
   slug: string
 }
 
+interface PackageSize {
+  label: string
+  price: string
+  comparePrice: string
+  stock: string
+}
+
 interface ProductFormData {
   name: string
   slug: string
@@ -23,6 +30,7 @@ interface ProductFormData {
   stock: string
   sku: string
   weight: string
+  packageSizes: PackageSize[]
   tags: string
   ingredients: string
   benefits: string
@@ -43,6 +51,7 @@ const EMPTY: ProductFormData = {
   name: '', slug: '', categoryId: '', subcategory: '',
   description: '', shortDescription: '',
   price: '', comparePrice: '', stock: '', sku: '', weight: '',
+  packageSizes: [],
   tags: '', ingredients: '', benefits: '',
   images: [], featuredImage: '',
   bestSeller: false, featured: false, active: true,
@@ -70,6 +79,9 @@ export default function ProductForm({ initialData, mode }: Props) {
         stock: String(initialData.stock ?? ''),
         sku: initialData.sku ?? '',
         weight: initialData.weight ?? '',
+        packageSizes: (initialData.packageSizes ?? []).map((s: any) => ({
+          label: s.label ?? '', price: String(s.price ?? ''), comparePrice: String(s.comparePrice ?? ''), stock: String(s.stock ?? ''),
+        })),
         tags: Array.isArray(initialData.tags) ? initialData.tags.join(', ') : (initialData.tags ?? ''),
         ingredients: Array.isArray(initialData.ingredients) ? initialData.ingredients.join('\n') : (initialData.ingredients ?? ''),
         benefits: Array.isArray(initialData.benefits) ? initialData.benefits.join('\n') : (initialData.benefits ?? ''),
@@ -106,7 +118,8 @@ export default function ProductForm({ initialData, mode }: Props) {
 
   const handleNameChange = (val: string) => {
     set('name', val)
-    if (mode === 'create') set('slug', slugify(val))
+    // Auto-generate slug from name in both create and edit mode
+    set('slug', slugify(val))
   }
 
   const uploadImages = useCallback(async (files: FileList | null) => {
@@ -160,6 +173,9 @@ export default function ProductForm({ initialData, mode }: Props) {
         stock: parseInt(form.stock) || 0,
         sku: form.sku || undefined,
         weight: form.weight || undefined,
+        packageSizes: form.packageSizes.filter(s => s.label && s.price).map(s => ({
+          label: s.label, price: parseFloat(s.price), comparePrice: s.comparePrice ? parseFloat(s.comparePrice) : undefined, stock: parseInt(s.stock) || 0,
+        })),
         tags: form.tags.split(',').map((t) => t.trim()).filter(Boolean),
         ingredients: form.ingredients.split('\n').map((t) => t.trim()).filter(Boolean),
         benefits: form.benefits.split('\n').map((t) => t.trim()).filter(Boolean),
@@ -260,6 +276,37 @@ export default function ProductForm({ initialData, mode }: Props) {
                 <input type="text" value={form.weight} onChange={(e) => set('weight', e.target.value)} className={inputCls} placeholder="250g" />
               </div>
             </div>
+          </div>
+
+          {/* Package Sizes */}
+          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-4">
+            <div className="flex items-center justify-between border-b border-gray-100 pb-3">
+              <h2 className="font-semibold text-gray-800">Package Sizes</h2>
+              <button
+                type="button"
+                onClick={() => setForm(f => ({ ...f, packageSizes: [...f.packageSizes, { label: '', price: '', comparePrice: '', stock: '0' }] }))}
+                className="flex items-center gap-1 text-xs font-semibold text-[#900c00] hover:text-[#b01600] transition-colors"
+              >
+                <Plus size={14} /> Add Size
+              </button>
+            </div>
+            {form.packageSizes.length === 0 ? (
+              <p className="text-xs text-gray-400 text-center py-3">No package sizes added. The default price/stock above will be used.</p>
+            ) : (
+              <div className="space-y-3">
+                {form.packageSizes.map((size, idx) => (
+                  <div key={idx} className="flex items-center gap-2 p-3 bg-gray-50 rounded-xl">
+                    <input type="text" value={size.label} onChange={(e) => { const s = [...form.packageSizes]; s[idx] = { ...s[idx], label: e.target.value }; setForm(f => ({ ...f, packageSizes: s })) }} className="w-20 px-2 py-1.5 border border-gray-200 rounded-lg text-xs" placeholder="250g" />
+                    <input type="number" value={size.price} onChange={(e) => { const s = [...form.packageSizes]; s[idx] = { ...s[idx], price: e.target.value }; setForm(f => ({ ...f, packageSizes: s })) }} className="w-20 px-2 py-1.5 border border-gray-200 rounded-lg text-xs" placeholder="₹Price" min="0" />
+                    <input type="number" value={size.comparePrice} onChange={(e) => { const s = [...form.packageSizes]; s[idx] = { ...s[idx], comparePrice: e.target.value }; setForm(f => ({ ...f, packageSizes: s })) }} className="w-20 px-2 py-1.5 border border-gray-200 rounded-lg text-xs" placeholder="₹MRP" min="0" />
+                    <input type="number" value={size.stock} onChange={(e) => { const s = [...form.packageSizes]; s[idx] = { ...s[idx], stock: e.target.value }; setForm(f => ({ ...f, packageSizes: s })) }} className="w-16 px-2 py-1.5 border border-gray-200 rounded-lg text-xs" placeholder="Qty" min="0" />
+                    <button type="button" onClick={() => setForm(f => ({ ...f, packageSizes: f.packageSizes.filter((_, i) => i !== idx) }))} className="p-1.5 rounded-lg hover:bg-red-50 text-red-400 hover:text-red-600 transition-colors">
+                      <Minus size={14} />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Details */}

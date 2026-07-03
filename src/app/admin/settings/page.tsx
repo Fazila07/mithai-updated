@@ -13,15 +13,13 @@ interface Settings {
   shippingCharge: string
   freeShippingThreshold: string
   taxPercentage: string
-  razorpayKeyId: string
-  razorpayKeySecret: string
 }
 
 const EMPTY: Settings = {
   storeName: 'Mithai 2.0',
   logoUrl: '', supportEmail: '', phone: '', whatsapp: '',
   shippingCharge: '50', freeShippingThreshold: '500',
-  taxPercentage: '0', razorpayKeyId: '', razorpayKeySecret: '',
+  taxPercentage: '0',
 }
 
 export default function AdminSettingsPage() {
@@ -44,8 +42,6 @@ export default function AdminSettingsPage() {
             shippingCharge: String(s.shippingCharge ?? 50),
             freeShippingThreshold: String(s.freeShippingThreshold ?? 500),
             taxPercentage: String(s.taxPercentage ?? 0),
-            razorpayKeyId: s.razorpayKeyId ?? '',
-            razorpayKeySecret: s.razorpayKeySecret ?? '',
           })
         }
       })
@@ -135,24 +131,6 @@ export default function AdminSettingsPage() {
             <input type="number" value={form.taxPercentage} onChange={(e) => set('taxPercentage', e.target.value)} min="0" max="100" step="0.01" className={inputCls} />
           </div>
         </div>
-      </div>
-
-      {/* Razorpay */}
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-5">
-        <h2 className="font-semibold text-gray-800 border-b border-gray-100 pb-3">Payment Gateway (Razorpay)</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div>
-            <label className={labelCls}>Razorpay Key ID</label>
-            <input type="text" value={form.razorpayKeyId} onChange={(e) => set('razorpayKeyId', e.target.value)} className={inputCls} placeholder="rzp_live_..." />
-          </div>
-          <div>
-            <label className={labelCls}>Razorpay Key Secret</label>
-            <input type="password" value={form.razorpayKeySecret} onChange={(e) => set('razorpayKeySecret', e.target.value)} className={inputCls} placeholder="••••••••••••" />
-          </div>
-        </div>
-        <p className="text-xs text-yellow-600 bg-yellow-50 rounded-lg px-3 py-2">
-          ⚠️ Store your Razorpay secrets in .env.local for production. This form stores them in the database — use only in development.
-        </p>
       </div>
 
       <div className="flex justify-end">

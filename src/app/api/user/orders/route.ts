@@ -20,10 +20,31 @@ export async function GET() {
         _id: o._id.toString(),
         orderNumber: o.orderNumber,
         total: o.total,
+        subtotal: o.subtotal,
+        shippingCharge: o.shippingCharge,
+        tax: o.tax,
+        discount: o.discount,
         status: o.status,
         paymentStatus: o.paymentStatus,
+        paymentMethod: o.paymentMethod,
+        couponCode: o.couponCode,
+        notes: o.notes,
         createdAt: o.createdAt.toISOString(),
-        items: o.items.map((i) => ({ name: i.name, quantity: i.quantity })),
+        items: o.items.map((i: any) => ({
+          name: i.name,
+          quantity: i.quantity,
+          price: i.price,
+          image: i.image,
+          productId: i.productId?.toString(),
+        })),
+        shippingAddress: o.shippingAddress
+          ? {
+              street: o.shippingAddress.street,
+              city: o.shippingAddress.city,
+              state: o.shippingAddress.state,
+              pincode: o.shippingAddress.pincode,
+            }
+          : null,
       })),
     })
   } catch (err) {

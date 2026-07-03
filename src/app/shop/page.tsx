@@ -128,16 +128,25 @@ function ShopBody() {
   const [products, setProducts] = useState<IProduct[]>([])
   const [categories, setCategories] = useState<ICategory[]>([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
   const [searchQuery, setSearchQuery] = useState('')
   const [activeCategory, setActiveCategory] = useState<string>('all')
+  const [activeSort, setActiveSort] = useState<string>('recommended')
 
-  // Initialize from URL params
+  // Sync state FROM URL params whenever searchParams changes
+  // This is the critical fix — previously used [] dependency which meant
+  // navigating from homepage category cards updated the URL but the
+  // component never re-read the new params.
   useEffect(() => {
-    const q = searchParams.get('search')
-    if (q) setSearchQuery(q)
     const cat = searchParams.get('category')
-    if (cat) setActiveCategory(cat)
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+    setActiveCategory(cat || 'all')
+
+    const q = searchParams.get('search')
+    setSearchQuery(q || '')
+
+    const s = searchParams.get('sort')
+    if (s) setActiveSort(s)
+  }, [searchParams])
 
   // Fetch categories from DB
   useEffect(() => {
@@ -156,35 +165,52 @@ function ShopBody() {
   // Fetch products from DB
   const fetchProducts = useCallback(async () => {
     setLoading(true)
+    setError('')
     try {
       const params = new URLSearchParams()
       if (searchQuery) params.set('search', searchQuery)
       if (activeCategory !== 'all') params.set('category', activeCategory)
+      if (activeSort !== 'recommended') params.set('sort', activeSort)
       params.set('limit', '100')
 
       const res = await fetch(`/api/products?${params.toString()}`)
       const data = await res.json()
-      setProducts(data.products || [])
+      if (!res.ok) {
+        setError(data.error || 'Failed to load products')
+        setProducts([])
+      } else {
+        setProducts(data.products || [])
+      }
     } catch {
+      setError('Could not connect to the server. Please try again.')
       setProducts([])
     } finally {
       setLoading(false)
     }
-  }, [searchQuery, activeCategory])
+  }, [searchQuery, activeCategory, activeSort])
 
   useEffect(() => {
     fetchProducts()
   }, [fetchProducts])
 
-  // Handle category click
+  // Handle category click — update URL which triggers re-sync via useEffect
   const handleCategoryClick = (slug: string) => {
-    setActiveCategory(slug)
-    // Update URL without full page reload
     const params = new URLSearchParams(searchParams.toString())
     if (slug === 'all') {
       params.delete('category')
     } else {
       params.set('category', slug)
+    }
+    router.push(`/shop?${params.toString()}`, { scroll: false })
+  }
+
+  // Handle sort change
+  const handleSortChange = (sort: string) => {
+    const params = new URLSearchParams(searchParams.toString())
+    if (sort === 'recommended') {
+      params.delete('sort')
+    } else {
+      params.set('sort', sort)
     }
     router.push(`/shop?${params.toString()}`, { scroll: false })
   }
@@ -254,18 +280,36 @@ function ShopBody() {
             </p>
           </div>
 
-          {/* Search Bar */}
-          <div className="mb-6">
-            <div className="relative max-w-md">
+          {/* Search + Sort */}
+          <div className="mb-6 flex flex-col sm:flex-row gap-3">
+            <div className="relative flex-1 max-w-md">
               <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-mithai-taupe/60" />
               <input
                 type="text"
-                placeholder="Search products..."
+                placeholder={activeCategory !== 'all' ? `Search in ${categories.find(c => c.slug === activeCategory)?.name || activeCategory}...` : 'Search products...'}
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={(e) => {
+                  const val = e.target.value
+                  setSearchQuery(val)
+                  // Update URL with debounced-style approach
+                  const params = new URLSearchParams(searchParams.toString())
+                  if (val) { params.set('search', val) } else { params.delete('search') }
+                  router.push(`/shop?${params.toString()}`, { scroll: false })
+                }}
                 className="w-full pl-10 pr-4 py-3 bg-white border border-mithai-taupe/20 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-mithai-gold/40 focus:border-mithai-gold transition-all"
               />
             </div>
+            <select
+              value={activeSort}
+              onChange={(e) => handleSortChange(e.target.value)}
+              className="px-4 py-3 bg-white border border-mithai-taupe/20 rounded-2xl text-sm text-mithai-maroonD font-medium focus:outline-none focus:ring-2 focus:ring-mithai-gold/40 focus:border-mithai-gold transition-all cursor-pointer"
+            >
+              <option value="recommended">Recommended</option>
+              <option value="newest">Newest</option>
+              <option value="price-asc">Price: Low → High</option>
+              <option value="price-desc">Price: High → Low</option>
+              <option value="bestseller">Best Sellers</option>
+            </select>
           </div>
 
           {/* ─── Category Filter Tabs ─────────────────────── */}
@@ -326,19 +370,34 @@ function ShopBody() {
                 </div>
               ))}
             </div>
+          ) : error ? (
+            /* Error state */
+            <div className="rounded-[22px] bg-white border border-red-200 p-16 text-center">
+              <div className="w-16 h-16 rounded-full bg-red-50 flex items-center justify-center mx-auto mb-4">
+                <ShoppingBag size={32} className="text-red-400" />
+              </div>
+              <h3 className="font-runiga text-xl font-semibold text-mithai-maroonD mb-2">Something went wrong</h3>
+              <p className="text-sm text-mithai-taupe mb-6 max-w-md mx-auto">{error}</p>
+              <button
+                onClick={() => fetchProducts()}
+                className="px-6 py-2.5 bg-mithai-maroon text-white rounded-full text-sm font-semibold hover:bg-mithai-maroonL transition-all"
+              >
+                Try Again
+              </button>
+            </div>
           ) : products.length === 0 && activeCategory !== 'all' ? (
             /* No products in this category */
             <div className="rounded-[22px] bg-white border border-[rgba(107,31,31,0.08)] p-16 text-center">
               <ShoppingBag size={48} className="mx-auto mb-4 text-mithai-taupe/30" />
-              <h3 className="font-runiga text-xl font-semibold text-mithai-maroonD mb-2">No products yet</h3>
+              <h3 className="font-runiga text-xl font-semibold text-mithai-maroonD mb-2">No products available in this category.</h3>
               <p className="text-sm text-mithai-taupe mb-6 max-w-md mx-auto">
-                This category doesn&apos;t have any products yet. Check back soon!
+                We&apos;re working on adding products here. Check back soon!
               </p>
               <button
                 onClick={() => handleCategoryClick('all')}
                 className="px-6 py-2.5 bg-mithai-maroon text-white rounded-full text-sm font-semibold hover:bg-mithai-maroonL transition-all"
               >
-                View All Products
+                Continue Shopping
               </button>
             </div>
           ) : activeCategory === 'all' && groupedProducts ? (

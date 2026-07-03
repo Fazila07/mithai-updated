@@ -378,47 +378,53 @@ function CheckoutBody() {
                   ))}
                 </div>
 
-                {/* ─── Coupon Section ────────────────────── */}
-                <div className="border-t border-mithai-taupe/10 pt-5 mb-5">
+                {/* ─── Coupon Section (Compact) ────────── */}
+                <div className="border-t border-mithai-taupe/10 pt-4 mb-4">
                   {appliedCoupon ? (
-                    <div className="flex items-center justify-between bg-green-50 border border-green-200 rounded-2xl px-4 py-3">
+                    <div className="flex items-center justify-between bg-green-50 border border-green-200 rounded-xl px-3 py-2.5">
                       <div className="flex items-center gap-2">
-                        <Tag size={16} className="text-green-600" />
+                        <Tag size={14} className="text-green-600 flex-shrink-0" />
                         <div>
-                          <p className="text-sm font-semibold text-green-700">{appliedCoupon.code}</p>
+                          <p className="text-xs font-bold text-green-700 font-mono">{appliedCoupon.code}</p>
                           {appliedCoupon.description && (
-                            <p className="text-[10px] text-green-600">{appliedCoupon.description}</p>
+                            <p className="text-[10px] text-green-600 leading-tight">{appliedCoupon.description}</p>
                           )}
                         </div>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm font-bold text-green-700">-₹{appliedCoupon.discount}</span>
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-xs font-bold text-green-700">-₹{appliedCoupon.discount}</span>
                         <button onClick={removeCoupon} className="p-1 rounded-full hover:bg-green-200 transition">
-                          <X size={14} className="text-green-600" />
+                          <X size={12} className="text-green-600" />
                         </button>
                       </div>
                     </div>
                   ) : (
-                    <div className="flex gap-2">
-                      <div className="relative flex-1">
-                        <Tag size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-mithai-taupe/50" />
+                    <details className="group">
+                      <summary className="flex items-center gap-2 cursor-pointer text-sm font-medium text-mithai-maroon hover:text-mithai-maroonL transition-colors list-none [&::-webkit-details-marker]:hidden">
+                        <Tag size={14} />
+                        <span>Have a coupon code?</span>
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="ml-auto transition-transform group-open:rotate-180">
+                          <path d="M6 9l6 6 6-6" />
+                        </svg>
+                      </summary>
+                      <div className="flex gap-2 mt-3">
                         <input
                           type="text"
                           value={couponCode}
                           onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
                           onKeyDown={(e) => e.key === 'Enter' && handleApplyCoupon()}
-                          placeholder="Enter coupon code"
-                          className="w-full pl-9 pr-4 py-3 border border-mithai-taupe/20 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-mithai-gold/40 focus:border-mithai-gold transition-all uppercase font-mono tracking-wider"
+                          placeholder="Enter code"
+                          className="flex-1 px-3 py-2 border border-mithai-taupe/20 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-mithai-gold/40 focus:border-mithai-gold transition-all uppercase font-mono tracking-wider"
                         />
+                        <button
+                          onClick={handleApplyCoupon}
+                          disabled={couponLoading || !couponCode.trim()}
+                          className="px-4 py-2 bg-mithai-maroon text-white rounded-xl text-xs font-semibold hover:bg-mithai-maroonL transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1 whitespace-nowrap"
+                        >
+                          {couponLoading ? <Loader2 size={12} className="animate-spin" /> : 'Apply'}
+                        </button>
                       </div>
-                      <button
-                        onClick={handleApplyCoupon}
-                        disabled={couponLoading || !couponCode.trim()}
-                        className="px-5 py-3 bg-mithai-maroon text-white rounded-2xl text-sm font-semibold hover:bg-mithai-maroonL transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1.5 whitespace-nowrap"
-                      >
-                        {couponLoading ? <Loader2 size={14} className="animate-spin" /> : 'Apply'}
-                      </button>
-                    </div>
+                    </details>
                   )}
                 </div>
 

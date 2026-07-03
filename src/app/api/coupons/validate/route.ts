@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth'
 import connectDB from '@/lib/mongodb'
 import Coupon from '@/models/Coupon'
+import CouponUsage from '@/models/CouponUsage'
 
 export async function POST(req: NextRequest) {
   try {
@@ -34,6 +37,21 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({
         error: `Minimum order value of ₹${coupon.minOrder} required for this coupon`,
       }, { status: 400 })
+    }
+
+    // Per-user usage check
+    const session = await getServerSession(authOptions)
+    if (session?.user?.id && coupon.perUserLimit) {
+      const userUsageCount = await CouponUsage.countDocuments({
+        userId: session.user.id,
+        couponCode: coupon.code,
+      })
+
+      if (userUsageCount >= coupon.perUserLimit) {
+        return NextResponse.json({
+          error: `You've already used this coupon ${coupon.perUserLimit === 1 ? '' : `${coupon.perUserLimit} times`}. Limit reached.`,
+        }, { status: 400 })
+      }
     }
 
     // Calculate discount

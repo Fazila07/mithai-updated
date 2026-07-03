@@ -1,5 +1,12 @@
 import mongoose, { Schema, Document, Model } from 'mongoose'
 
+export interface IPackageSize {
+  label: string
+  price: number
+  comparePrice?: number | null
+  stock: number
+}
+
 export interface IProductDocument extends Document {
   _id: mongoose.Types.ObjectId
   uniqueId: string
@@ -12,11 +19,13 @@ export interface IProductDocument extends Document {
   popularTags: string[]
   description: string
   shortDescription: string | null
+  about: string | null
   price: number
   comparePrice: number | null
   stock: number
   sku: string | null
   weight: string | null
+  packageSizes: IPackageSize[]
   tags: string[]
   ingredients: string[]
   benefits: string[]
@@ -28,6 +37,13 @@ export interface IProductDocument extends Document {
   rating: number
   reviewCount: number
   salesCount: number
+  // Product metadata (accordion sections)
+  storage: string | null
+  allergens: string | null
+  nutrition: string | null
+  highlights: string[]
+  fssaiNumber: string | null
+  servingSize: string | null
   createdAt: Date
   updatedAt: Date
 }
@@ -44,11 +60,21 @@ const ProductSchema = new Schema<IProductDocument>(
     popularTags: { type: [String], default: [] },
     description: { type: String, required: true },
     shortDescription: { type: String, default: null },
+    about: { type: String, default: null },
     price: { type: Number, required: true, min: 0 },
     comparePrice: { type: Number, default: null },
     stock: { type: Number, default: 0, min: 0 },
     sku: { type: String, default: null },
     weight: { type: String, default: null },
+    packageSizes: {
+      type: [{
+        label: { type: String, required: true },
+        price: { type: Number, required: true, min: 0 },
+        comparePrice: { type: Number, default: null },
+        stock: { type: Number, default: 0, min: 0 },
+      }],
+      default: [],
+    },
     tags: { type: [String], default: [] },
     ingredients: { type: [String], default: [] },
     benefits: { type: [String], default: [] },
@@ -60,6 +86,13 @@ const ProductSchema = new Schema<IProductDocument>(
     rating: { type: Number, default: 0 },
     reviewCount: { type: Number, default: 0 },
     salesCount: { type: Number, default: 0 },
+    // Product metadata (accordion sections)
+    storage: { type: String, default: null },
+    allergens: { type: String, default: null },
+    nutrition: { type: String, default: null },
+    highlights: { type: [String], default: [] },
+    fssaiNumber: { type: String, default: null },
+    servingSize: { type: String, default: null },
   },
   {
     timestamps: true,
