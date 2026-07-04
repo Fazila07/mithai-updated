@@ -7,7 +7,8 @@ import { useCartStore } from '@/store/cartStore'
 import { useWishlistStore } from '@/store/wishlistStore'
 import Navbar from '@/components/Navbar'
 import CartDrawer from '@/components/CartDrawer'
-import { Heart, ShoppingBag, Zap, Minus, Plus, ChevronRight, ChevronDown, Star, Loader2, Package } from 'lucide-react'
+import ProductReviewsSection from '@/components/ProductReviewsSection'
+import { Heart, ShoppingBag, Zap, Minus, Plus, ChevronRight, ChevronDown, Star, Package } from 'lucide-react'
 import type { IProduct, IProductVariant } from '@/types'
 
 export default function ProductPage() {
@@ -47,7 +48,6 @@ export default function ProductPage() {
 
   const handleAddToCart = () => {
     if (!product) return
-    // If package sizes exist, override price with selected size
     const pkg = product.packageSizes?.[selectedPkgIdx]
     const cartProduct = pkg
       ? { ...product, price: pkg.price, comparePrice: pkg.comparePrice ?? product.comparePrice, weight: pkg.label }
@@ -75,13 +75,13 @@ export default function ProductPage() {
         <main className="min-h-screen bg-mithai-off pt-[72px]">
           <div className="mx-auto max-w-[1160px] px-4 sm:px-6 lg:px-8 py-8">
             <div className="grid lg:grid-cols-2 gap-10 animate-pulse">
-              <div className="rounded-[28px] bg-mithai-cream h-[460px]" />
+              <div className="rounded-2xl bg-mithai-cream h-[460px]" />
               <div className="space-y-4">
                 <div className="h-4 bg-mithai-cream rounded w-1/4" />
                 <div className="h-8 bg-mithai-cream rounded w-2/3" />
                 <div className="h-6 bg-mithai-cream rounded w-1/3" />
                 <div className="h-24 bg-mithai-cream rounded" />
-                <div className="h-12 bg-mithai-cream rounded-full" />
+                <div className="h-12 bg-mithai-cream rounded" />
               </div>
             </div>
           </div>
@@ -111,14 +111,18 @@ export default function ProductPage() {
   const wishlisted = isWishlisted(product._id || product.id || '')
   const categoryName = typeof product.category === 'object' ? product.category.name : product.foodType || 'Snack'
   const categorySlug = typeof product.category === 'object' ? product.category.slug : ''
+  const pkg = product.packageSizes?.[selectedPkgIdx]
+  const displayPrice = pkg?.price ?? product.price
+  const displayCompare = pkg?.comparePrice ?? product.comparePrice
+  const tagline = product.highlights?.[0] || product.benefits?.[0] || categoryName
 
   return (
     <>
       <Navbar />
-      <main className="min-h-screen bg-mithai-off pt-[72px]">
-        <div className="mx-auto max-w-[1160px] px-4 sm:px-6 lg:px-8 py-8">
+      <main className="min-h-screen bg-mithai-off pt-[60px] pb-8">
+        <div className="mx-auto max-w-[1160px] px-4 sm:px-6 lg:px-8 py-6 lg:py-10">
           {/* Breadcrumb */}
-          <nav className="mb-6 flex items-center gap-1.5 text-sm">
+          <nav className="mb-5 flex items-center gap-1.5 text-sm">
             <Link href="/shop" className="text-mithai-maroon hover:underline font-medium">Shop</Link>
             <ChevronRight size={14} className="text-mithai-taupe/50" />
             {categorySlug && (
@@ -132,149 +136,104 @@ export default function ProductPage() {
             <span className="text-mithai-taupe truncate max-w-[200px]">{product.name}</span>
           </nav>
 
-          <div className="grid lg:grid-cols-2 gap-10 mb-12">
-            {/* ─── Image Gallery ───────────────────────────── */}
-            <div>
-              <div className="rounded-[28px] bg-white border border-[rgba(107,31,31,0.08)] overflow-hidden mb-4 relative group">
+          <div className="product-layout">
+            {/* Image Gallery */}
+            <div className="product-gallery">
+              <div className="product-main-image">
                 {product.images?.[selectedImage] ? (
                   <img
                     src={product.images[selectedImage]}
                     alt={product.name}
-                    className="w-full h-[460px] object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+                    className="product-image"
                   />
                 ) : (
-                  <div className="w-full h-[460px] flex items-center justify-center bg-mithai-cream">
+                  <div className="product-image-placeholder">
                     <ShoppingBag size={64} className="text-mithai-taupe/20" />
                   </div>
                 )}
 
-                {/* Badges */}
-                <div className="absolute top-4 left-4 flex flex-col gap-2">
-                  {product.bestSeller && (
-                    <span className="px-3 py-1.5 rounded-full bg-mithai-gold text-[10px] font-bold uppercase tracking-wider text-white shadow-md">
-                      Bestseller
-                    </span>
-                  )}
-                  {product.comparePrice && product.comparePrice > product.price && (
-                    <span className="px-3 py-1.5 rounded-full bg-green-500 text-[10px] font-bold uppercase tracking-wider text-white shadow-md">
-                      {Math.round(((product.comparePrice - product.price) / product.comparePrice) * 100)}% Off
-                    </span>
-                  )}
-                </div>
+                <span className="product-ships-badge">Ships Pan India</span>
 
-                {/* Product ID badge */}
-                {product.uniqueId && (
-                  <span className="absolute top-4 right-4 px-3 py-1.5 rounded-full bg-white/90 text-[10px] font-mono font-bold text-mithai-taupe shadow-sm">
-                    #{product.uniqueId}
-                  </span>
+                {product.bestSeller && (
+                  <span className="product-bestseller-badge">Bestseller</span>
                 )}
               </div>
 
-              {/* Thumbnail strip */}
               {product.images && product.images.length > 1 && (
-                <div className="flex gap-3 overflow-x-auto pb-2">
+                <div className="product-thumbnails">
                   {product.images.map((img, idx) => (
                     <button
                       key={idx}
                       onClick={() => setSelectedImage(idx)}
-                      className={`w-20 h-20 rounded-xl overflow-hidden border-2 flex-shrink-0 transition-all duration-200 ${
-                        selectedImage === idx
-                          ? 'border-mithai-maroon shadow-[0_0_0_2px_rgba(144,12,0,0.15)]'
-                          : 'border-transparent opacity-60 hover:opacity-100'
-                      }`}
+                      className={`product-thumb ${selectedImage === idx ? 'product-thumb--active' : ''}`}
                     >
-                      <img src={img} alt={`View ${idx + 1}`} className="w-full h-full object-cover" />
+                      <img src={img} alt={`View ${idx + 1}`} />
                     </button>
                   ))}
                 </div>
               )}
             </div>
 
-            {/* ─── Product Details ─────────────────────────── */}
-            <div>
-              {/* Category & Name */}
-              <div className="mb-5">
-                <p className="text-[10px] font-bold tracking-[0.14em] uppercase text-mithai-gold mb-2">
-                  {categoryName}
-                </p>
-                <h1 className="font-medino text-[clamp(28px,4vw,38px)] font-normal text-mithai-maroonD tracking-[-0.01em] leading-[0.95] mb-4">
-                  {product.name}
-                </h1>
+            {/* Product Info */}
+            <div className="product-info">
+              <p className="product-tagline">{tagline}</p>
+              <h1 className="product-name">{product.name}</h1>
 
-                {/* Rating */}
-                {product.rating > 0 && (
-                  <div className="flex items-center gap-2 mb-4">
-                    <div className="flex items-center gap-0.5">
-                      {Array.from({ length: 5 }).map((_, i) => (
-                        <Star
-                          key={i}
-                          size={16}
-                          fill={i < Math.round(product.rating) ? '#ffa520' : 'none'}
-                          className={i < Math.round(product.rating) ? 'text-mithai-gold' : 'text-mithai-taupe/30'}
-                        />
-                      ))}
-                    </div>
-                    <span className="text-sm font-semibold text-mithai-maroon">{product.rating.toFixed(1)}</span>
-                    <span className="text-xs text-mithai-taupe">({product.reviewCount} reviews)</span>
+              {product.rating > 0 && (
+                <div className="product-rating">
+                  <div className="flex items-center gap-0.5">
+                    {Array.from({ length: 5 }).map((_, i) => (
+                      <Star
+                        key={i}
+                        size={14}
+                        fill={i < Math.round(product.rating) ? '#ffa520' : 'none'}
+                        className={i < Math.round(product.rating) ? 'text-mithai-gold' : 'text-mithai-taupe/30'}
+                      />
+                    ))}
                   </div>
-                )}
+                  <span className="text-sm font-semibold text-mithai-maroon">{product.rating.toFixed(1)}</span>
+                  <span className="text-xs text-mithai-taupe">({product.reviewCount} reviews)</span>
+                </div>
+              )}
 
-                {/* Price — use selected package size price if available */}
-                {(() => {
-                  const pkg = product.packageSizes?.[selectedPkgIdx]
-                  const displayPrice = pkg?.price ?? product.price
-                  const displayCompare = pkg?.comparePrice ?? product.comparePrice
-                  return (
-                    <>
-                      <div className="flex items-baseline gap-3 mb-2">
-                        <span className="text-3xl font-bold text-mithai-maroon">₹{displayPrice}</span>
-                        {displayCompare && displayCompare > displayPrice && (
-                          <>
-                            <span className="text-lg text-mithai-taupe line-through">₹{displayCompare}</span>
-                            <span className="px-2 py-0.5 rounded bg-green-100 text-green-700 text-xs font-bold">
-                              Save ₹{displayCompare - displayPrice}
-                            </span>
-                          </>
-                        )}
-                      </div>
-                      {(pkg?.label || product.weight) && (
-                        <p className="text-sm text-mithai-taupe">Pack size: {pkg?.label || product.weight}</p>
-                      )}
-                    </>
-                  )
-                })()}
+              <div className="product-pricing">
+                {displayCompare && displayCompare > displayPrice && (
+                  <span className="product-price-old">₹ {displayCompare}</span>
+                )}
+                <span className="product-price">₹ {displayPrice}</span>
+                {displayCompare && displayCompare > displayPrice && (
+                  <span className="product-save">
+                    Save ₹{displayCompare - displayPrice}
+                  </span>
+                )}
               </div>
 
-              {/* ─── Package Size Selector ──────────────────── */}
+              {(pkg?.label || product.weight) && (
+                <p className="product-pack">Pack size: {pkg?.label || product.weight}</p>
+              )}
+
               {product.packageSizes && product.packageSizes.length > 0 && (
-                <div className="mb-6">
-                  <h3 className="text-xs font-bold tracking-[0.12em] uppercase text-mithai-maroonD mb-3">Choose Size</h3>
-                  <div className="flex flex-wrap gap-2">
-                    {product.packageSizes.map((pkg: any, idx: number) => (
+                <div className="product-sizes">
+                  <h3 className="product-section-label">Choose Size</h3>
+                  <div className="product-size-options">
+                    {product.packageSizes.map((pkgOption: { label: string; price: number }, idx: number) => (
                       <button
                         key={idx}
                         onClick={() => setSelectedPkgIdx(idx)}
-                        className={`px-4 py-2.5 rounded-2xl border-2 text-sm font-semibold transition-all duration-200 ${
-                          selectedPkgIdx === idx
-                            ? 'border-mithai-maroon bg-mithai-maroonP text-mithai-maroon shadow-[0_0_0_2px_rgba(144,12,0,0.12)]'
-                            : 'border-mithai-taupe/20 text-mithai-maroon hover:border-mithai-maroon/40 bg-white'
-                        }`}
+                        className={`product-size-btn ${selectedPkgIdx === idx ? 'product-size-btn--active' : ''}`}
                       >
-                        <span className="block">{pkg.label}</span>
-                        <span className={`block text-xs mt-0.5 ${selectedPkgIdx === idx ? 'text-mithai-maroon' : 'text-mithai-taupe'}`}>
-                          ₹{pkg.price}
-                        </span>
+                        <span>{pkgOption.label}</span>
+                        <span className="product-size-price">₹{pkgOption.price}</span>
                       </button>
                     ))}
                   </div>
                 </div>
               )}
 
-              {/* ─── Size Variant Switcher ─────────────────── */}
               {sizeVariants.length > 1 && (
-                <div className="mb-6">
-                  <h3 className="text-xs font-bold tracking-[0.12em] uppercase text-mithai-maroonD mb-3">Select Size</h3>
-                  <div className="flex flex-wrap gap-2">
+                <div className="product-sizes">
+                  <h3 className="product-section-label">Select Size</h3>
+                  <div className="product-size-options">
                     {sizeVariants.map((variant) => {
                       const isActive = variant.slug === product.slug
                       return (
@@ -283,16 +242,10 @@ export default function ProductPage() {
                           onClick={() => {
                             if (!isActive) router.push(`/shop/${variant.slug}`)
                           }}
-                          className={`px-5 py-3 rounded-2xl border-2 text-sm font-semibold transition-all duration-200 ${
-                            isActive
-                              ? 'border-mithai-maroon bg-mithai-maroonP text-mithai-maroon shadow-[0_0_0_2px_rgba(144,12,0,0.12)]'
-                              : 'border-mithai-taupe/20 text-mithai-maroon hover:border-mithai-maroon/40 bg-white'
-                          }`}
+                          className={`product-size-btn ${isActive ? 'product-size-btn--active' : ''}`}
                         >
-                          <span className="block">{variant.weight || 'Standard'}</span>
-                          <span className={`block text-xs mt-0.5 ${isActive ? 'text-mithai-maroon' : 'text-mithai-taupe'}`}>
-                            ₹{variant.price}
-                          </span>
+                          <span>{variant.weight || 'Standard'}</span>
+                          <span className="product-size-price">₹{variant.price}</span>
                         </button>
                       )
                     })}
@@ -300,9 +253,65 @@ export default function ProductPage() {
                 </div>
               )}
 
-              {/* ─── Premium Accordion Sections ───────────── */}
-              <div className="mb-6">
-                {/* About */}
+              {/* Stock */}
+              {product.stock <= 0 ? (
+                <p className="product-stock product-stock--out">Out of Stock</p>
+              ) : product.stock <= 10 ? (
+                <p className="product-stock product-stock--low">Only {product.stock} left in stock!</p>
+              ) : null}
+
+              {/* Quantity + Add to Cart */}
+              <div className="product-actions">
+                <div className="product-qty-row">
+                  <span className="product-qty-label">Qty</span>
+                  <div className="product-qty-control">
+                    <button
+                      onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                      className="product-qty-btn"
+                      aria-label="Decrease quantity"
+                    >
+                      <Minus size={14} />
+                    </button>
+                    <span className="product-qty-value">{quantity}</span>
+                    <button
+                      onClick={() => setQuantity(Math.min(product.stock || 99, quantity + 1))}
+                      className="product-qty-btn"
+                      aria-label="Increase quantity"
+                    >
+                      <Plus size={14} />
+                    </button>
+                  </div>
+                </div>
+
+                <div className="product-btn-row">
+                  <button
+                    onClick={handleAddToCart}
+                    disabled={product.stock <= 0}
+                    className={`product-add-btn ${addedToCart ? 'product-add-btn--success' : ''}`}
+                  >
+                    {addedToCart ? '✓ ADDED TO CART' : 'ADD TO CART'}
+                  </button>
+                  <button
+                    onClick={() => toggle(product)}
+                    className={`product-wishlist-btn ${wishlisted ? 'product-wishlist-btn--active' : ''}`}
+                    title={wishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
+                  >
+                    <Heart size={20} fill={wishlisted ? 'currentColor' : 'none'} />
+                  </button>
+                </div>
+
+                <button
+                  onClick={handleBuyNow}
+                  disabled={product.stock <= 0}
+                  className="product-buynow-btn"
+                >
+                  <Zap size={16} />
+                  Buy Now — ₹{(displayPrice * quantity).toLocaleString('en-IN')}
+                </button>
+              </div>
+
+              {/* Accordions */}
+              <div className="product-accordions">
                 {(product.about || product.description) && (
                   <AccordionItem
                     id="about"
@@ -316,7 +325,6 @@ export default function ProductPage() {
                   </AccordionItem>
                 )}
 
-                {/* Ingredients */}
                 {product.ingredients && product.ingredients.length > 0 && (
                   <AccordionItem
                     id="ingredients"
@@ -337,7 +345,6 @@ export default function ProductPage() {
                   </AccordionItem>
                 )}
 
-                {/* Storage & Shelf Life */}
                 {product.storage && (
                   <AccordionItem
                     id="storage"
@@ -351,7 +358,6 @@ export default function ProductPage() {
                   </AccordionItem>
                 )}
 
-                {/* Allergen Information */}
                 {product.allergens && (
                   <AccordionItem
                     id="allergens"
@@ -365,7 +371,6 @@ export default function ProductPage() {
                   </AccordionItem>
                 )}
 
-                {/* Nutritional Information */}
                 {product.nutrition && (
                   <AccordionItem
                     id="nutrition"
@@ -382,7 +387,6 @@ export default function ProductPage() {
                   </AccordionItem>
                 )}
 
-                {/* Product Highlights */}
                 {product.highlights && product.highlights.length > 0 && (
                   <AccordionItem
                     id="highlights"
@@ -403,7 +407,6 @@ export default function ProductPage() {
                   </AccordionItem>
                 )}
 
-                {/* FSSAI Information */}
                 {product.fssaiNumber && (
                   <AccordionItem
                     id="fssai"
@@ -423,7 +426,6 @@ export default function ProductPage() {
                   </AccordionItem>
                 )}
 
-                {/* Benefits (legacy fallback — shown if no highlights but benefits exist) */}
                 {(!product.highlights || product.highlights.length === 0) && product.benefits && product.benefits.length > 0 && (
                   <AccordionItem
                     id="benefits"
@@ -444,86 +446,382 @@ export default function ProductPage() {
                   </AccordionItem>
                 )}
               </div>
-
-              {/* ─── Quantity + Actions ─────────────────────── */}
-              <div className="border-t border-mithai-taupe/15 pt-6 space-y-4">
-                {/* Stock status */}
-                {product.stock <= 0 ? (
-                  <p className="text-sm font-semibold text-red-500">Out of Stock</p>
-                ) : product.stock <= 10 ? (
-                  <p className="text-sm font-semibold text-orange-500">Only {product.stock} left in stock!</p>
-                ) : null}
-
-                {/* Quantity Selector */}
-                <div className="flex items-center gap-4">
-                  <span className="text-sm font-semibold text-mithai-maroonD">Quantity:</span>
-                  <div className="flex items-center gap-1 bg-mithai-off rounded-full p-1">
-                    <button
-                      onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                      className="w-9 h-9 rounded-full bg-white text-mithai-maroon flex items-center justify-center hover:bg-mithai-cream transition-colors shadow-sm"
-                    >
-                      <Minus size={14} />
-                    </button>
-                    <span className="w-10 text-center text-base font-semibold text-mithai-maroon">{quantity}</span>
-                    <button
-                      onClick={() => setQuantity(Math.min(product.stock || 99, quantity + 1))}
-                      className="w-9 h-9 rounded-full bg-white text-mithai-maroon flex items-center justify-center hover:bg-mithai-cream transition-colors shadow-sm"
-                    >
-                      <Plus size={14} />
-                    </button>
-                  </div>
-                </div>
-
-                {/* Action Buttons */}
-                <div className="flex gap-3">
-                  <button
-                    onClick={handleAddToCart}
-                    disabled={product.stock <= 0}
-                    className={`flex-1 flex items-center justify-center gap-2 py-4 rounded-full font-semibold text-sm transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed ${
-                      addedToCart
-                        ? 'bg-green-500 text-white shadow-[0_4px_18px_rgba(34,197,94,0.35)]'
-                        : 'bg-mithai-maroon text-white hover:bg-mithai-maroonL shadow-[0_4px_18px_rgba(144,12,0,0.32)] hover:shadow-[0_8px_28px_rgba(144,12,0,0.4)]'
-                    }`}
-                  >
-                    {addedToCart ? (
-                      <>✓ Added to Cart</>
-                    ) : (
-                      <><ShoppingBag size={16} /> Add to Cart — ₹{(product.price * quantity).toLocaleString('en-IN')}</>
-                    )}
-                  </button>
-                  <button
-                    onClick={() => toggle(product)}
-                    className={`w-14 h-14 rounded-full flex items-center justify-center border-2 transition-all duration-200 ${
-                      wishlisted
-                        ? 'bg-mithai-maroon border-mithai-maroon text-white'
-                        : 'bg-white border-mithai-taupe/20 text-mithai-maroon hover:border-mithai-maroon/40'
-                    }`}
-                    title={wishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
-                  >
-                    <Heart size={20} fill={wishlisted ? 'currentColor' : 'none'} />
-                  </button>
-                </div>
-
-                {/* Buy Now */}
-                <button
-                  onClick={handleBuyNow}
-                  disabled={product.stock <= 0}
-                  className="w-full flex items-center justify-center gap-2 py-4 rounded-full font-semibold text-sm bg-mithai-gold text-white hover:bg-[#e69400] transition-all shadow-[0_4px_18px_rgba(255,165,32,0.32)] hover:shadow-[0_8px_28px_rgba(255,165,32,0.4)] disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  <Zap size={16} />
-                  Buy Now — ₹{(product.price * quantity).toLocaleString('en-IN')}
-                </button>
-              </div>
             </div>
           </div>
+
+          <ProductReviewsSection productId={product._id || product.id} />
         </div>
       </main>
       <CartDrawer />
+
+      <style jsx>{`
+        .product-layout {
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: 28px;
+        }
+
+        .product-gallery {
+          width: 100%;
+        }
+
+        .product-main-image {
+          position: relative;
+          background: #f0ebe3;
+          border-radius: 16px;
+          overflow: hidden;
+          aspect-ratio: 1;
+          max-height: 520px;
+        }
+
+        .product-image {
+          width: 100%;
+          height: 100%;
+          object-fit: contain;
+          padding: 24px;
+        }
+
+        .product-image-placeholder {
+          width: 100%;
+          height: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: #f7f3ee;
+        }
+
+        .product-ships-badge {
+          position: absolute;
+          top: 12px;
+          right: 12px;
+          background: #e8f4fc;
+          color: #1a5f8a;
+          font-size: 10px;
+          font-weight: 700;
+          letter-spacing: 0.04em;
+          padding: 5px 10px;
+          border-radius: 4px;
+        }
+
+        .product-bestseller-badge {
+          position: absolute;
+          top: 12px;
+          left: 12px;
+          background: #ffa520;
+          color: white;
+          font-size: 10px;
+          font-weight: 700;
+          letter-spacing: 0.06em;
+          text-transform: uppercase;
+          padding: 5px 10px;
+          border-radius: 4px;
+        }
+
+        .product-thumbnails {
+          display: flex;
+          gap: 10px;
+          margin-top: 12px;
+          overflow-x: auto;
+          padding-bottom: 4px;
+        }
+
+        .product-thumb {
+          width: 72px;
+          height: 72px;
+          border-radius: 10px;
+          overflow: hidden;
+          border: 2px solid transparent;
+          flex-shrink: 0;
+          opacity: 0.65;
+          transition: opacity 0.2s, border-color 0.2s;
+          background: #f0ebe3;
+          cursor: pointer;
+        }
+
+        .product-thumb img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+
+        .product-thumb--active {
+          border-color: #900c00;
+          opacity: 1;
+        }
+
+        .product-info {
+          display: flex;
+          flex-direction: column;
+        }
+
+        .product-tagline {
+          font-family: 'Libre Baskerville', serif;
+          font-style: italic;
+          font-size: 14px;
+          color: #900c00;
+          margin-bottom: 6px;
+        }
+
+        .product-name {
+          font-family: 'Libre Baskerville', serif;
+          font-size: clamp(22px, 5vw, 32px);
+          font-weight: 700;
+          color: #2d1810;
+          line-height: 1.15;
+          margin-bottom: 12px;
+        }
+
+        .product-rating {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          margin-bottom: 16px;
+        }
+
+        .product-pricing {
+          display: flex;
+          align-items: baseline;
+          gap: 10px;
+          flex-wrap: wrap;
+          margin-bottom: 8px;
+        }
+
+        .product-price-old {
+          font-size: 16px;
+          color: #9b7b6a;
+          text-decoration: line-through;
+        }
+
+        .product-price {
+          font-size: 26px;
+          font-weight: 700;
+          color: #2d1810;
+        }
+
+        .product-save {
+          font-size: 12px;
+          font-weight: 700;
+          color: #15803d;
+          background: #dcfce7;
+          padding: 3px 8px;
+          border-radius: 4px;
+        }
+
+        .product-pack {
+          font-size: 13px;
+          color: #9b7b6a;
+          margin-bottom: 20px;
+        }
+
+        .product-sizes {
+          margin-bottom: 20px;
+        }
+
+        .product-section-label {
+          font-size: 11px;
+          font-weight: 700;
+          letter-spacing: 0.1em;
+          text-transform: uppercase;
+          color: #3d1a10;
+          margin-bottom: 10px;
+        }
+
+        .product-size-options {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 8px;
+        }
+
+        .product-size-btn {
+          padding: 10px 16px;
+          border-radius: 8px;
+          border: 1.5px solid rgba(107, 31, 31, 0.15);
+          background: white;
+          font-size: 13px;
+          font-weight: 600;
+          color: #3d1a10;
+          cursor: pointer;
+          transition: border-color 0.18s, background 0.18s;
+          text-align: left;
+        }
+
+        .product-size-btn--active {
+          border-color: #900c00;
+          background: rgba(144, 12, 0, 0.05);
+          color: #900c00;
+        }
+
+        .product-size-price {
+          display: block;
+          font-size: 11px;
+          font-weight: 500;
+          color: #9b7b6a;
+          margin-top: 2px;
+        }
+
+        .product-stock {
+          font-size: 13px;
+          font-weight: 600;
+          margin-bottom: 16px;
+        }
+
+        .product-stock--out { color: #dc2626; }
+        .product-stock--low { color: #ea580c; }
+
+        .product-actions {
+          margin-bottom: 28px;
+          padding-bottom: 24px;
+          border-bottom: 1px solid rgba(107, 31, 31, 0.1);
+        }
+
+        .product-qty-row {
+          display: flex;
+          align-items: center;
+          gap: 16px;
+          margin-bottom: 14px;
+        }
+
+        .product-qty-label {
+          font-size: 13px;
+          font-weight: 600;
+          color: #3d1a10;
+        }
+
+        .product-qty-control {
+          display: flex;
+          align-items: center;
+          gap: 4px;
+          border: 1.5px solid rgba(107, 31, 31, 0.15);
+          border-radius: 8px;
+          padding: 4px;
+          background: white;
+        }
+
+        .product-qty-btn {
+          width: 32px;
+          height: 32px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border: none;
+          background: transparent;
+          color: #900c00;
+          cursor: pointer;
+          border-radius: 6px;
+        }
+
+        .product-qty-btn:hover {
+          background: rgba(144, 12, 0, 0.06);
+        }
+
+        .product-qty-value {
+          width: 36px;
+          text-align: center;
+          font-size: 15px;
+          font-weight: 600;
+          color: #3d1a10;
+        }
+
+        .product-btn-row {
+          display: flex;
+          gap: 10px;
+          margin-bottom: 10px;
+        }
+
+        .product-add-btn {
+          flex: 1;
+          padding: 16px 20px;
+          background: #900c00;
+          color: white;
+          font-size: 14px;
+          font-weight: 700;
+          letter-spacing: 0.06em;
+          border: none;
+          border-radius: 8px;
+          cursor: pointer;
+          transition: background 0.2s;
+        }
+
+        .product-add-btn:hover:not(:disabled) {
+          background: #6d0900;
+        }
+
+        .product-add-btn--success {
+          background: #16a34a;
+        }
+
+        .product-add-btn:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+        }
+
+        .product-wishlist-btn {
+          width: 52px;
+          height: 52px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border: 1.5px solid rgba(107, 31, 31, 0.15);
+          border-radius: 8px;
+          background: white;
+          color: #900c00;
+          cursor: pointer;
+          flex-shrink: 0;
+          transition: background 0.18s, border-color 0.18s;
+        }
+
+        .product-wishlist-btn--active {
+          background: #900c00;
+          border-color: #900c00;
+          color: white;
+        }
+
+        .product-buynow-btn {
+          width: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
+          padding: 14px;
+          background: #ffa520;
+          color: white;
+          font-size: 14px;
+          font-weight: 600;
+          border: none;
+          border-radius: 8px;
+          cursor: pointer;
+          transition: background 0.2s;
+        }
+
+        .product-buynow-btn:hover:not(:disabled) {
+          background: #e69400;
+        }
+
+        .product-buynow-btn:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+        }
+
+        .product-accordions {
+          margin-top: 4px;
+        }
+
+        @media (min-width: 1024px) {
+          .product-layout {
+            grid-template-columns: 1fr 1fr;
+            gap: 48px;
+            align-items: start;
+          }
+
+          .product-main-image {
+            max-height: 560px;
+          }
+        }
+      `}</style>
     </>
   )
 }
 
-/* ─── Accordion Item Component ─────────────────────────────── */
 function AccordionItem({
   id,
   title,

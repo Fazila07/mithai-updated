@@ -5,10 +5,8 @@ import Navbar from '@/components/Navbar'
 import Hero from '@/components/Hero'
 import CategorySection from '@/components/CategorySection'
 import IngredientsSection from '@/components/IngredientsSection'
-import DifferentOnPurposeSection from '@/components/DifferentOnPurposeSection'
 import BestsellersSection from '@/components/BestsellersSection'
 import GiftsSection from '@/components/GiftsSection'
-import TestimonialsSection from '@/components/TestimonialsSection'
 import Footer from '@/components/Footer'
 import CartDrawer from '@/components/CartDrawer'
 
@@ -39,10 +37,8 @@ export default function Home() {
       </section>
       <CategorySection />
       <IngredientsSection />
-      <DifferentOnPurposeSection />
       <BestsellersSection />
       <GiftsSection />
-      <TestimonialsSection />
       <Footer />
       <CartDrawer />
     </main>

@@ -2,26 +2,20 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useSession, signOut } from 'next-auth/react'
 import { useCartCount } from '@/store/cartStore'
-import { User, LogOut, Package, Heart, MapPin, LayoutDashboard } from 'lucide-react'
+import { User, LogOut, Package, Heart, MapPin, LayoutDashboard, ChevronRight } from 'lucide-react'
+import BrandLogo from '@/components/BrandLogo'
 
-// Fallback menu items used while the API loads or if it fails
-const FALLBACK_NAV_ITEMS = [
+const MOBILE_MENU_ITEMS = [
   { href: '/', label: 'Home' },
   { href: '/shop', label: 'Shop' },
-  { href: '/shop?tags=vegan', label: 'Vegan' },
   { href: '/#bestsellers', label: 'Best Sellers' },
   { href: '/#categories', label: 'Categories' },
-  { href: '/#why-us', label: 'Why Us?' },
+  { href: '/about', label: 'About Us' },
+  { href: '/login', label: 'Login' },
 ]
-
-interface NavItem {
-  _id: string
-  title: string
-  destinationValue: string
-}
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -31,36 +25,8 @@ export default function Navbar() {
   const [userMenuOpen, setUserMenuOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
 
-  // Dynamic navigation items from CMS
-  const [navItems, setNavItems] = useState<{ href: string; label: string }[]>(FALLBACK_NAV_ITEMS)
-  const [navLoaded, setNavLoaded] = useState(false)
-
   useEffect(() => { setMounted(true) }, [])
 
-  // Fetch navigation items from API
-  useEffect(() => {
-    async function fetchNav() {
-      try {
-        const res = await fetch('/api/navigation')
-        const data = await res.json()
-        if (data.items && data.items.length > 0) {
-          setNavItems(
-            data.items.map((item: NavItem) => ({
-              href: item.destinationValue,
-              label: item.title,
-            }))
-          )
-        }
-      } catch {
-        // Keep fallback items on error
-      } finally {
-        setNavLoaded(true)
-      }
-    }
-    fetchNav()
-  }, [])
-
-  // Close user menu on outside click
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
@@ -71,7 +37,6 @@ export default function Navbar() {
     return () => document.removeEventListener('mousedown', handleClick)
   }, [])
 
-  // Close mobile menu on ESC key
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && mobileMenuOpen) {
@@ -82,7 +47,6 @@ export default function Navbar() {
     return () => document.removeEventListener('keydown', handleEsc)
   }, [mobileMenuOpen])
 
-  // Lock body scroll when mobile menu is open
   useEffect(() => {
     if (mobileMenuOpen) {
       document.body.style.overflow = 'hidden'
@@ -92,61 +56,40 @@ export default function Navbar() {
     return () => { document.body.style.overflow = '' }
   }, [mobileMenuOpen])
 
-  // Build full menu list including session-dependent items
-  const getMenuItems = useCallback(() => {
-    const items = [...navItems]
-
-    if (session?.user) {
-      if (session.user.role === 'ADMIN') {
-        items.push({ href: '/admin', label: '🛠️ Admin Panel' })
-      }
-      items.push({ href: '/account', label: '👤 My Account' })
-      items.push({ href: '/account/orders', label: '📦 My Orders' })
-    } else {
-      items.push({ href: '/login', label: '🔑 Login' })
-    }
-
-    return items
-  }, [navItems, session])
-
   return (
     <>
-      <nav className="fixed top-0 left-0 right-0 z-50 h-[60px] bg-white/95 backdrop-blur-[14px] border-b border-[rgba(107,31,31,0.10)] transition-all duration-300">
-        <div className="relative h-full flex items-center justify-between px-[14px]">
+      <nav className="fixed top-0 left-0 right-0 z-[100] h-[60px] bg-white/95 backdrop-blur-[14px] border-b border-[rgba(107,31,31,0.10)] transition-all duration-300">
+        <div className="h-full w-full max-w-[1160px] mx-auto px-3 sm:px-4 flex items-center justify-between gap-2">
 
-          {/* ── Left: hamburger (mobile only) ── */}
-          <div className="flex items-center gap-6">
+          {/* Left: hamburger — always visible below 960px */}
+          <div className="w-10 shrink-0 flex items-center justify-start max-[959px]:flex min-[960px]:hidden">
             <button
-              className="hamburger flex flex-col gap-[5px] p-1 md:hidden"
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              aria-label="Menu"
+              type="button"
+              onClick={() => setMobileMenuOpen(true)}
+              aria-label="Open menu"
               aria-expanded={mobileMenuOpen}
+              className="flex flex-col items-center justify-center gap-[5px] w-10 h-10 p-0 m-0 border-0 bg-transparent cursor-pointer"
             >
-              <span className="block w-[22px] h-[2px] bg-mithai-maroon rounded transition-all duration-200" />
-              <span className="block w-[22px] h-[2px] bg-mithai-maroon rounded transition-all duration-200" />
-              <span className="block w-[22px] h-[2px] bg-mithai-maroon rounded transition-all duration-200" />
+              <span className="block w-[22px] h-[2px] bg-mithai-maroon rounded-sm shrink-0" />
+              <span className="block w-[22px] h-[2px] bg-mithai-maroon rounded-sm shrink-0" />
+              <span className="block w-[22px] h-[2px] bg-mithai-maroon rounded-sm shrink-0" />
             </button>
           </div>
 
-          {/* ── Centre: logo ── */}
-          <Link
-            href="/"
-            className="absolute left-1/2 top-1/2 z-10 flex -translate-x-1/2 -translate-y-1/2 items-center transition-opacity duration-200 hover:opacity-90"
-          >
-            <Image
-              src="/images/mithai-header.png"
-              alt="Mithai 2.0 - Guiltfree Goodies"
-              width={487}
-              height={129}
-              priority
-              unoptimized
-              className="h-[38px] w-auto object-contain"
-            />
-          </Link>
+          {/* Desktop spacer — keeps logo centred when hamburger hidden */}
+          <div className="hidden min-[960px]:block w-10 shrink-0" aria-hidden="true" />
 
-          {/* ── Right: user + cart ── */}
-          <div className="flex items-center gap-2">
-            {/* User icon / account */}
+          {/* Centre: logo */}
+          <div className="flex-1 flex justify-center items-center min-w-0 px-1">
+            <BrandLogo
+              priority
+              height={34}
+              className="h-[30px] sm:h-[34px] md:h-[38px] w-auto max-w-[120px] sm:max-w-[150px] object-contain"
+            />
+          </div>
+
+          {/* Right: user + cart */}
+          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
             <div className="relative" ref={menuRef}>
               {session?.user ? (
                 <button
@@ -168,7 +111,6 @@ export default function Navbar() {
                 </Link>
               )}
 
-              {/* Dropdown menu */}
               {userMenuOpen && session?.user && (
                 <div className="absolute right-0 top-[calc(100%+8px)] w-56 bg-white rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.15)] border border-slate-100 overflow-hidden z-50">
                   <div className="px-4 py-3 border-b border-slate-100">
@@ -206,7 +148,6 @@ export default function Navbar() {
               )}
             </div>
 
-            {/* Cart */}
             <Link href="/cart" className="nav-icon-btn nav-icon-btn--cart" aria-label="Cart">
               <svg width="17" height="17" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
                 <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" />
@@ -221,55 +162,87 @@ export default function Navbar() {
         </div>
       </nav>
 
-      {/* ── Mobile full-screen menu ── */}
+      {/* Mobile menu overlay */}
       <div
-        className={`fixed inset-0 z-[60] bg-white flex flex-col items-center justify-center gap-0 transition-all duration-300 ${
-          mobileMenuOpen ? 'visible opacity-100' : 'invisible opacity-0 pointer-events-none'
-        }`}
+        className={`mobile-menu-overlay ${mobileMenuOpen ? 'mobile-menu-overlay--open' : ''}`}
         role="dialog"
         aria-modal="true"
         aria-label="Navigation menu"
       >
-        <button
-          className="absolute top-[18px] right-[18px] text-2xl text-mithai-maroon leading-none bg-transparent border-none"
-          onClick={() => setMobileMenuOpen(false)}
-          aria-label="Close menu"
-        >
-          ✕
-        </button>
-        <Image
-          src="/images/mithai-header.png"
-          alt="Mithai 2.0 - Guiltfree Goodies"
-          width={487}
-          height={129}
-          unoptimized
-          className="h-[50px] w-auto object-contain mb-8"
-        />
-        {getMenuItems().map(({ href, label }, index) => (
-          <Link
-            key={href + label}
-            href={href}
-            onClick={() => setMobileMenuOpen(false)}
-            className="w-full text-center py-[17px] text-lg font-semibold text-mithai-maroon border-b border-[rgba(107,31,31,0.08)] hover:text-mithai-maroonL transition-colors"
-            style={{
-              animationDelay: mobileMenuOpen ? `${index * 50}ms` : '0ms',
-            }}
-          >
-            {label}
-          </Link>
-        ))}
-        {session?.user && (
+        <div className="mobile-menu-header">
+          <BrandLogo href="/" height={36} className="h-9 w-auto object-contain" />
           <button
-            onClick={() => { setMobileMenuOpen(false); signOut({ callbackUrl: '/' }) }}
-            className="w-full text-center py-[17px] text-lg font-semibold text-red-600 hover:text-red-700 transition-colors"
+            className="mobile-menu-close"
+            onClick={() => setMobileMenuOpen(false)}
+            aria-label="Close menu"
           >
-            🚪 Sign Out
+            ✕
           </button>
-        )}
+        </div>
+
+        <nav className="mobile-menu-nav">
+          {MOBILE_MENU_ITEMS.map(({ href, label }) => {
+            const linkHref = label === 'Login' && session?.user ? '/account' : href
+            return (
+              <Link
+                key={href}
+                href={linkHref}
+                onClick={() => setMobileMenuOpen(false)}
+                className="mobile-menu-link"
+              >
+                <span>{label}</span>
+                <ChevronRight size={18} className="text-mithai-maroon/60" />
+              </Link>
+            )
+          })}
+        </nav>
+
+        <div className="mobile-menu-promo">
+          <Link href="/about" onClick={() => setMobileMenuOpen(false)} className="mobile-menu-founder">
+            <Image
+              src="/images/founder.jpeg"
+              alt="Meet our founder"
+              width={400}
+              height={240}
+              unoptimized
+              className="mobile-menu-founder-img"
+            />
+            <p className="mobile-menu-tagline">
+              So good, you&apos;ll forget it&apos;s <em>good for you</em>
+            </p>
+          </Link>
+        </div>
+
+        <div className="mobile-menu-footer">
+          {session?.user ? (
+            <>
+              <Link
+                href="/account"
+                onClick={() => setMobileMenuOpen(false)}
+                className="mobile-menu-cta"
+              >
+                My Account
+              </Link>
+              <button
+                onClick={() => { setMobileMenuOpen(false); signOut({ callbackUrl: '/' }) }}
+                className="mobile-menu-signout"
+              >
+                Sign Out
+              </button>
+            </>
+          ) : (
+            <Link
+              href="/login"
+              onClick={() => setMobileMenuOpen(false)}
+              className="mobile-menu-cta"
+            >
+              Sign Up / Login
+            </Link>
+          )}
+        </div>
       </div>
 
       <style>{`
-        /* Icon buttons — match the image circles */
         .nav-icon-btn {
           width: 40px;
           height: 40px;
@@ -292,12 +265,7 @@ export default function Navbar() {
           border-color: rgba(144,12,0,0.35);
           transform: translateY(-1px);
         }
-        .nav-icon-btn:active {
-          transform: translateY(0);
-          background: #f0e0e0;
-        }
 
-        /* Cart badge */
         .cart-badge {
           position: absolute;
           top: -4px;
@@ -317,26 +285,138 @@ export default function Navbar() {
           line-height: 1;
         }
 
-        /* Brand logo */
-        .brand-logo { white-space: nowrap; }
-        .brand-logo .brand-name,
-        .brand-logo .brand-suffix {
-          display: inline-block;
-          vertical-align: middle;
-          line-height: 1;
-          font-weight: 400;
+        .mobile-menu-overlay {
+          position: fixed;
+          inset: 0;
+          z-index: 60;
+          background: #fdf8ec;
+          display: flex;
+          flex-direction: column;
+          transform: translateX(-100%);
+          transition: transform 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+          visibility: hidden;
         }
-        .brand-logo .brand-name  { font-size: 2.15rem; color: #900c00; }
-        .brand-logo .brand-suffix {
-          font-size: 2.15rem;
+        .mobile-menu-overlay--open {
+          transform: translateX(0);
+          visibility: visible;
+        }
+
+        .mobile-menu-header {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 16px 18px;
+          border-bottom: 1px solid rgba(107, 31, 31, 0.08);
+          flex-shrink: 0;
+        }
+
+        .mobile-menu-close {
+          width: 40px;
+          height: 40px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 22px;
+          color: #900c00;
+          background: transparent;
+          border: none;
+          cursor: pointer;
+        }
+
+        .mobile-menu-nav {
+          flex: 1;
+          overflow-y: auto;
+          padding: 8px 0;
+        }
+
+        .mobile-menu-link {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 18px 22px;
+          font-family: 'Libre Baskerville', serif;
+          font-size: 17px;
+          font-weight: 600;
+          color: #3d1a10;
+          text-decoration: none;
+          border-bottom: 1px solid rgba(107, 31, 31, 0.08);
+          transition: color 0.18s, background 0.18s;
+        }
+        .mobile-menu-link:hover {
+          color: #900c00;
+          background: rgba(144, 12, 0, 0.03);
+        }
+
+        .mobile-menu-promo {
+          padding: 16px 22px;
+          flex-shrink: 0;
+        }
+
+        .mobile-menu-founder {
+          display: block;
+          text-decoration: none;
+        }
+
+        .mobile-menu-founder-img {
+          width: 100%;
+          height: auto;
+          border-radius: 14px;
+          object-fit: cover;
+          aspect-ratio: 16/10;
+        }
+
+        .mobile-menu-tagline {
+          margin: 12px 0 0;
+          font-family: 'Libre Baskerville', serif;
+          font-size: 15px;
+          color: #3d1a10;
+          line-height: 1.4;
+        }
+        .mobile-menu-tagline em {
           font-style: italic;
-          letter-spacing: 0.18em;
-          margin-left: 0.1em;
-          color: #ffa520;
+          color: #900c00;
+          font-weight: 600;
+        }
+
+        .mobile-menu-footer {
+          padding: 16px 22px 28px;
+          flex-shrink: 0;
+        }
+
+        .mobile-menu-cta {
+          display: block;
+          width: 100%;
+          padding: 16px;
+          text-align: center;
+          background: #900c00;
+          color: white;
+          font-size: 15px;
+          font-weight: 600;
+          border-radius: 8px;
+          text-decoration: none;
+          transition: background 0.2s;
+        }
+        .mobile-menu-cta:hover {
+          background: #6d0900;
+        }
+
+        .mobile-menu-signout {
+          display: block;
+          width: 100%;
+          margin-top: 10px;
+          padding: 12px;
+          text-align: center;
+          background: transparent;
+          color: #900c00;
+          font-size: 14px;
+          font-weight: 600;
+          border: 1px solid rgba(144, 12, 0, 0.2);
+          border-radius: 8px;
+          cursor: pointer;
         }
 
         @media (min-width: 960px) {
-          .hamburger { display: none !important; }
+          .mobile-menu-overlay { display: none !important; }
         }
       `}</style>
     </>

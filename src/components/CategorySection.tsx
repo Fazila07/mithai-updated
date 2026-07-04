@@ -89,7 +89,7 @@ export default function CategorySection() {
     return (
       <section id="categories" className="dive-in-section">
         <div className="dive-in-container">
-          <h2 className="dive-in-title">Dive In</h2>
+          <h2 className="dive-in-title">Shop Categories</h2>
           <div className="dive-in-grid">
             {Array.from({ length: 4 }).map((_, i) => (
               <div key={i} className="dive-card animate-pulse">
@@ -112,7 +112,7 @@ export default function CategorySection() {
   return (
     <section id="categories" className="dive-in-section">
       <div className="dive-in-container">
-        <h2 className="dive-in-title">Dive In</h2>
+        <h2 className="dive-in-title">Shop Categories</h2>
 
         <div className="dive-in-grid">
           {categories.map((cat) => (

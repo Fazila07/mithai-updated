@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
+import BrandLogo from '@/components/BrandLogo'
 
 /* ─── types ─────────────────────────────────────────────────── */
 type StepStatus = 'done' | 'active' | 'pending'
@@ -161,8 +162,8 @@ export default function TrackOrderPage() {
             <div className="track-hero-icon">
               <TruckIcon />
             </div>
-            <div className="text-xs font-semibold tracking-[0.22em] uppercase text-mithai-gold mb-3">
-              Mithai 2.0
+            <div className="flex justify-center mb-3">
+              <BrandLogo href="/" height={32} className="h-8 w-auto object-contain" />
             </div>
             <h1 className="font-medino text-4xl sm:text-5xl text-mithai-maroonD leading-tight mb-3">
               Track Your Order

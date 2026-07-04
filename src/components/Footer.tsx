@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import BrandLogo from '@/components/BrandLogo'
 
 export default function Footer() {
   const currentYear = new Date().getFullYear()
@@ -11,10 +12,9 @@ export default function Footer() {
 
         {/* Brand Section */}
         <div className="text-center mb-9 pb-7 border-b border-[rgba(144,12,0,0.12)]">
-          <h2 className="brand-logo text-center mb-1">
-            <span className="brand-name" style={{ color: '#900c00' }}>Mithai</span>
-            <span className="brand-suffix" style={{ color: '#ffa520' }}>2.0</span>
-          </h2>
+          <div className="flex justify-center mb-4">
+            <BrandLogo href="/" height={48} className="h-12 w-auto object-contain" />
+          </div>
 
           <p className="text-sm text-mithai-warmGray leading-[1.7] mb-5">
             Guilt-free desserts &amp; snacks made with love. No refined sugar, no maida, no compromises.
@@ -36,7 +36,7 @@ export default function Footer() {
           <div>
             <h4 className="text-xs font-bold tracking-widest uppercase text-mithai-maroon mb-3.5">Company</h4>
             <ul className="space-y-2.5">
-              <li><Link href="/" className="text-sm text-mithai-warmGray transition-colors hover:text-mithai-maroon">About Us</Link></li>
+              <li><Link href="/about" className="text-sm text-mithai-warmGray transition-colors hover:text-mithai-maroon">About Us</Link></li>
               <li><Link href="/" className="text-sm text-mithai-warmGray transition-colors hover:text-mithai-maroon">Blog</Link></li>
               <li><Link href="/" className="text-sm text-mithai-warmGray transition-colors hover:text-mithai-maroon">Contact</Link></li>
               <li><Link href="/" className="text-sm text-mithai-warmGray transition-colors hover:text-mithai-maroon">Careers</Link></li>

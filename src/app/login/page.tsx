@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { Suspense } from 'react'
 import { signIn } from 'next-auth/react'
 import { useSearchParams } from 'next/navigation'
@@ -19,9 +20,15 @@ function LoginContent() {
       <div className="w-full max-w-md rounded-[2rem] bg-white/95 p-10 shadow-[0_30px_60px_rgba(0,0,0,0.12)]">
         {/* Logo */}
         <div className="text-center mb-6">
-          <Link href="/" className="inline-block">
-            <span className="font-medino text-3xl text-mithai-maroon">Mithai</span>
-            <span className="font-medino text-3xl text-mithai-gold italic ml-1">2.0</span>
+          <Link href="/" className="inline-block transition-opacity hover:opacity-90">
+            <Image
+              src="/images/mithai-header.png"
+              alt="Guiltfree Goodies"
+              width={487}
+              height={129}
+              unoptimized
+              className="h-12 w-auto object-contain mx-auto"
+            />
           </Link>
         </div>
 
