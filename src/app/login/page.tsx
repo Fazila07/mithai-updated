@@ -25,7 +25,7 @@ function LoginContent() {
           </Link>
         </div>
 
-        <h1 className="text-3xl font-semibold text-mithai-charcoal">Welcome</h1>
+        <h1 className="text-3xl font-semibold text-mithai-maroon">Welcome</h1>
         <p className="mt-3 text-sm text-slate-500">Sign in with your Google account to continue shopping healthy mithai.</p>
 
         {error && (

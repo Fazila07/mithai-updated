@@ -1,10 +1,27 @@
 'use client'
 
 import Link from 'next/link'
-import { useState, useEffect, useRef } from 'react'
+import Image from 'next/image'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { useSession, signOut } from 'next-auth/react'
 import { useCartCount } from '@/store/cartStore'
 import { User, LogOut, Package, Heart, MapPin, LayoutDashboard } from 'lucide-react'
+
+// Fallback menu items used while the API loads or if it fails
+const FALLBACK_NAV_ITEMS = [
+  { href: '/', label: 'Home' },
+  { href: '/shop', label: 'Shop' },
+  { href: '/shop?tags=vegan', label: 'Vegan' },
+  { href: '/#bestsellers', label: 'Best Sellers' },
+  { href: '/#categories', label: 'Categories' },
+  { href: '/#why-us', label: 'Why Us?' },
+]
+
+interface NavItem {
+  _id: string
+  title: string
+  destinationValue: string
+}
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -14,7 +31,34 @@ export default function Navbar() {
   const [userMenuOpen, setUserMenuOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
 
+  // Dynamic navigation items from CMS
+  const [navItems, setNavItems] = useState<{ href: string; label: string }[]>(FALLBACK_NAV_ITEMS)
+  const [navLoaded, setNavLoaded] = useState(false)
+
   useEffect(() => { setMounted(true) }, [])
+
+  // Fetch navigation items from API
+  useEffect(() => {
+    async function fetchNav() {
+      try {
+        const res = await fetch('/api/navigation')
+        const data = await res.json()
+        if (data.items && data.items.length > 0) {
+          setNavItems(
+            data.items.map((item: NavItem) => ({
+              href: item.destinationValue,
+              label: item.title,
+            }))
+          )
+        }
+      } catch {
+        // Keep fallback items on error
+      } finally {
+        setNavLoaded(true)
+      }
+    }
+    fetchNav()
+  }, [])
 
   // Close user menu on outside click
   useEffect(() => {
@@ -27,6 +71,44 @@ export default function Navbar() {
     return () => document.removeEventListener('mousedown', handleClick)
   }, [])
 
+  // Close mobile menu on ESC key
+  useEffect(() => {
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && mobileMenuOpen) {
+        setMobileMenuOpen(false)
+      }
+    }
+    document.addEventListener('keydown', handleEsc)
+    return () => document.removeEventListener('keydown', handleEsc)
+  }, [mobileMenuOpen])
+
+  // Lock body scroll when mobile menu is open
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+    return () => { document.body.style.overflow = '' }
+  }, [mobileMenuOpen])
+
+  // Build full menu list including session-dependent items
+  const getMenuItems = useCallback(() => {
+    const items = [...navItems]
+
+    if (session?.user) {
+      if (session.user.role === 'ADMIN') {
+        items.push({ href: '/admin', label: '🛠️ Admin Panel' })
+      }
+      items.push({ href: '/account', label: '👤 My Account' })
+      items.push({ href: '/account/orders', label: '📦 My Orders' })
+    } else {
+      items.push({ href: '/login', label: '🔑 Login' })
+    }
+
+    return items
+  }, [navItems, session])
+
   return (
     <>
       <nav className="fixed top-0 left-0 right-0 z-50 h-[60px] bg-white/95 backdrop-blur-[14px] border-b border-[rgba(107,31,31,0.10)] transition-all duration-300">
@@ -38,6 +120,7 @@ export default function Navbar() {
               className="hamburger flex flex-col gap-[5px] p-1 md:hidden"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               aria-label="Menu"
+              aria-expanded={mobileMenuOpen}
             >
               <span className="block w-[22px] h-[2px] bg-mithai-maroon rounded transition-all duration-200" />
               <span className="block w-[22px] h-[2px] bg-mithai-maroon rounded transition-all duration-200" />
@@ -50,10 +133,15 @@ export default function Navbar() {
             href="/"
             className="absolute left-1/2 top-1/2 z-10 flex -translate-x-1/2 -translate-y-1/2 items-center transition-opacity duration-200 hover:opacity-90"
           >
-            <div className="brand-logo font-medino text-[#6B1F1A] text-center">
-              <span className="brand-name">Mithai</span>
-              <span className="brand-suffix">2.0</span>
-            </div>
+            <Image
+              src="/images/mithai-header.png"
+              alt="Mithai 2.0 - Guiltfree Goodies"
+              width={487}
+              height={129}
+              priority
+              unoptimized
+              className="h-[38px] w-auto object-contain"
+            />
           </Link>
 
           {/* ── Right: user + cart ── */}
@@ -84,7 +172,7 @@ export default function Navbar() {
               {userMenuOpen && session?.user && (
                 <div className="absolute right-0 top-[calc(100%+8px)] w-56 bg-white rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.15)] border border-slate-100 overflow-hidden z-50">
                   <div className="px-4 py-3 border-b border-slate-100">
-                    <p className="text-sm font-semibold text-mithai-charcoal truncate">{session.user.name}</p>
+                    <p className="text-sm font-semibold text-mithai-maroon truncate">{session.user.name}</p>
                     <p className="text-xs text-slate-400 truncate">{session.user.email}</p>
                   </div>
                   <div className="py-1">
@@ -138,37 +226,34 @@ export default function Navbar() {
         className={`fixed inset-0 z-[60] bg-white flex flex-col items-center justify-center gap-0 transition-all duration-300 ${
           mobileMenuOpen ? 'visible opacity-100' : 'invisible opacity-0 pointer-events-none'
         }`}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Navigation menu"
       >
         <button
           className="absolute top-[18px] right-[18px] text-2xl text-mithai-maroon leading-none bg-transparent border-none"
           onClick={() => setMobileMenuOpen(false)}
+          aria-label="Close menu"
         >
           ✕
         </button>
-        <div className="brand-logo text-[#6B1F1A] text-center mb-8">
-          <span className="brand-name">Mithai</span>
-          <span className="brand-suffix">2.0</span>
-        </div>
-        {[
-          { href: '/', label: 'Home' },
-          { href: '/shop', label: 'Shop' },
-          { href: '/#bestsellers', label: 'Best Sellers' },
-          { href: '/#categories', label: 'Categories' },
-          { href: '/#why-us', label: 'Why Us?' },
-          { href: '/coupons', label: '🎟️ Coupons' },
-          ...(session?.user
-            ? [
-                ...(session.user.role === 'ADMIN' ? [{ href: '/admin', label: '🛠️ Admin Panel' }] : []),
-                { href: '/account', label: '👤 My Account' },
-                { href: '/account/orders', label: '📦 My Orders' },
-              ]
-            : [{ href: '/login', label: '🔑 Login' }]),
-        ].map(({ href, label }) => (
+        <Image
+          src="/images/mithai-header.png"
+          alt="Mithai 2.0 - Guiltfree Goodies"
+          width={487}
+          height={129}
+          unoptimized
+          className="h-[50px] w-auto object-contain mb-8"
+        />
+        {getMenuItems().map(({ href, label }, index) => (
           <Link
             key={href + label}
             href={href}
             onClick={() => setMobileMenuOpen(false)}
-            className="w-full text-center py-[17px] text-lg font-semibold text-mithai-charcoal border-b border-[rgba(107,31,31,0.08)] hover:text-mithai-maroon transition-colors"
+            className="w-full text-center py-[17px] text-lg font-semibold text-mithai-maroon border-b border-[rgba(107,31,31,0.08)] hover:text-mithai-maroonL transition-colors"
+            style={{
+              animationDelay: mobileMenuOpen ? `${index * 50}ms` : '0ms',
+            }}
           >
             {label}
           </Link>

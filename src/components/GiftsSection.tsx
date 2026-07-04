@@ -179,7 +179,7 @@ export default function GiftsSection() {
             font-family: 'Libre Baskerville', serif;
             font-size: 14px;
             font-weight: 700;
-            color: #3d1c1c;
+            color: #900c00;
             margin-bottom: 6px;
             line-height: 1.3;
           }

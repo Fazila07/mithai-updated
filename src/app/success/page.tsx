@@ -12,7 +12,7 @@ function SuccessContent() {
     <main className="min-h-screen flex items-center justify-center bg-mithai-off px-4 py-12">
       <div className="w-full max-w-xl rounded-[2rem] bg-white/95 p-10 text-center shadow-[0_30px_60px_rgba(0,0,0,0.12)]">
         <div className="text-6xl mb-6">🎉</div>
-        <h1 className="text-4xl font-semibold text-mithai-charcoal">Order Confirmed!</h1>
+        <h1 className="text-4xl font-semibold text-mithai-maroon">Order Confirmed!</h1>
         {orderNumber && (
           <div className="mt-4 inline-block bg-mithai-maroonP rounded-2xl px-6 py-3">
             <p className="text-xs text-mithai-gold font-bold uppercase tracking-widest mb-1">Order Number</p>
@@ -35,7 +35,7 @@ function SuccessContent() {
           <Link href="/shop" className="rounded-3xl bg-mithai-maroonP px-6 py-3 text-sm font-semibold text-mithai-maroon transition hover:bg-mithai-maroon hover:text-white">
             Continue Shopping
           </Link>
-          <Link href="/" className="rounded-3xl border border-slate-300 px-6 py-3 text-sm font-semibold text-mithai-charcoal transition hover:bg-slate-100">
+          <Link href="/" className="rounded-3xl border border-slate-300 px-6 py-3 text-sm font-semibold text-mithai-maroon transition hover:bg-slate-100">
             Back to Home
           </Link>
         </div>

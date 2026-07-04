@@ -76,7 +76,7 @@ export default function AddressesPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-semibold text-mithai-charcoal">Saved Addresses</h2>
+        <h2 className="text-xl font-semibold text-mithai-maroon">Saved Addresses</h2>
         <button
           onClick={() => setShowForm(!showForm)}
           className="flex items-center gap-2 bg-mithai-maroon text-white px-4 py-2.5 rounded-2xl text-sm font-semibold transition hover:bg-mithai-maroonL shadow-[0_4px_18px_rgba(144,12,0,0.25)]"
@@ -143,7 +143,7 @@ export default function AddressesPage() {
       {addresses.length === 0 && !showForm ? (
         <div className="bg-white rounded-[28px] border border-[rgba(107,31,31,0.1)] p-16 text-center">
           <MapPin size={48} className="mx-auto mb-4 text-slate-300" />
-          <h3 className="text-lg font-semibold text-mithai-charcoal mb-2">No addresses saved</h3>
+          <h3 className="text-lg font-semibold text-mithai-maroon mb-2">No addresses saved</h3>
           <p className="text-sm text-slate-400">Add an address for faster checkout</p>
         </div>
       ) : (
@@ -156,7 +156,7 @@ export default function AddressesPage() {
                 </span>
               )}
               {addr.label && <p className="text-xs font-bold text-mithai-maroon uppercase tracking-wider mb-2">{addr.label}</p>}
-              <p className="font-semibold text-mithai-charcoal">{addr.name}</p>
+              <p className="font-semibold text-mithai-maroon">{addr.name}</p>
               <p className="text-sm text-slate-500 mt-1">{addr.line1}{addr.line2 ? `, ${addr.line2}` : ''}</p>
               <p className="text-sm text-slate-500">{addr.city}, {addr.state} - {addr.pincode}</p>
               <p className="text-sm text-slate-400 mt-1">📱 {addr.phone}</p>

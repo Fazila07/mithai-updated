@@ -41,7 +41,7 @@ export default function AccountPage() {
   return (
     <div className="space-y-6">
       <div className="bg-white rounded-[28px] border border-[rgba(107,31,31,0.1)] p-8">
-        <h2 className="text-xl font-semibold text-mithai-charcoal mb-6">Profile Information</h2>
+        <h2 className="text-xl font-semibold text-mithai-maroon mb-6">Profile Information</h2>
         <form onSubmit={handleSave} className="space-y-5 max-w-md">
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-2">Full Name</label>

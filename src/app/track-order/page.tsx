@@ -331,7 +331,7 @@ export default function TrackOrderPage() {
                 <ul className="divide-y divide-mithai-off">
                   {result.items.map((item, i) => (
                     <li key={i} className="flex justify-between items-center py-3 text-sm">
-                      <span className="text-mithai-charcoal">
+                      <span className="text-mithai-maroon">
                         {item.name}{' '}
                         <span className="text-mithai-taupe">× {item.qty}</span>
                       </span>
@@ -434,7 +434,7 @@ export default function TrackOrderPage() {
           background: #FAFAF8;
           padding: 13px 20px;
           font-size: 0.9rem;
-          color: #2A1810;
+          color: #900c00;
           outline: none;
           transition: border-color 0.2s, box-shadow 0.2s;
         }

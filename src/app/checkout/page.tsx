@@ -302,7 +302,7 @@ function CheckoutBody() {
                             : 'border-transparent bg-slate-50 hover:border-mithai-maroon/20'
                         }`}
                       >
-                        <p className="text-sm font-semibold text-mithai-charcoal">
+                        <p className="text-sm font-semibold text-mithai-maroon">
                           {addr.name}
                           {addr.label && <span className="ml-2 text-[10px] font-bold uppercase tracking-wider text-mithai-gold bg-mithai-goldP px-2 py-0.5 rounded-full">{addr.label}</span>}
                         </p>

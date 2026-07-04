@@ -257,7 +257,7 @@ export default function ProductPage() {
                         className={`px-4 py-2.5 rounded-2xl border-2 text-sm font-semibold transition-all duration-200 ${
                           selectedPkgIdx === idx
                             ? 'border-mithai-maroon bg-mithai-maroonP text-mithai-maroon shadow-[0_0_0_2px_rgba(144,12,0,0.12)]'
-                            : 'border-mithai-taupe/20 text-mithai-charcoal hover:border-mithai-maroon/40 bg-white'
+                            : 'border-mithai-taupe/20 text-mithai-maroon hover:border-mithai-maroon/40 bg-white'
                         }`}
                       >
                         <span className="block">{pkg.label}</span>
@@ -286,7 +286,7 @@ export default function ProductPage() {
                           className={`px-5 py-3 rounded-2xl border-2 text-sm font-semibold transition-all duration-200 ${
                             isActive
                               ? 'border-mithai-maroon bg-mithai-maroonP text-mithai-maroon shadow-[0_0_0_2px_rgba(144,12,0,0.12)]'
-                              : 'border-mithai-taupe/20 text-mithai-charcoal hover:border-mithai-maroon/40 bg-white'
+                              : 'border-mithai-taupe/20 text-mithai-maroon hover:border-mithai-maroon/40 bg-white'
                           }`}
                         >
                           <span className="block">{variant.weight || 'Standard'}</span>

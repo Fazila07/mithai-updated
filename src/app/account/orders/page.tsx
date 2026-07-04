@@ -86,7 +86,7 @@ export default function OrdersPage() {
     return (
       <div className="bg-white rounded-[28px] border border-[rgba(107,31,31,0.1)] p-16 text-center">
         <Package size={48} className="mx-auto mb-4 text-slate-300" />
-        <h2 className="text-xl font-semibold text-mithai-charcoal mb-2">No orders yet</h2>
+        <h2 className="text-xl font-semibold text-mithai-maroon mb-2">No orders yet</h2>
         <p className="text-sm text-slate-400">Start shopping to see your orders here!</p>
       </div>
     )
@@ -131,7 +131,7 @@ export default function OrdersPage() {
                 {order.items.map((i) => `${i.name} × ${i.quantity}`).join(', ')}
               </div>
               <div className="flex items-center justify-between">
-                <span className="font-semibold text-mithai-charcoal">
+                <span className="font-semibold text-mithai-maroon">
                   ₹{order.total.toLocaleString('en-IN')}
                 </span>
                 <span className="text-xs text-mithai-maroon font-semibold flex items-center gap-1">

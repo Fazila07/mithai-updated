@@ -18,6 +18,7 @@ import {
   Warehouse,
   Settings,
   ArrowLeft,
+  Menu,
 } from 'lucide-react'
 
 const NAV_ITEMS = [
@@ -27,6 +28,7 @@ const NAV_ITEMS = [
   { href: '/admin/coupons', label: 'Coupons', icon: Ticket },
   { href: '/admin/customers', label: 'Customers', icon: Users },
   { href: '/admin/inventory', label: 'Inventory', icon: Warehouse },
+  { href: '/admin/navigation', label: 'Navigation', icon: Menu },
   { href: '/admin/settings', label: 'Settings', icon: Settings },
 ]
 

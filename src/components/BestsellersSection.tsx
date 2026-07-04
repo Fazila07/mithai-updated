@@ -242,7 +242,7 @@ export default function BestsellersSection() {
           .pname {
             font-size: 13px;
             font-weight: 700;
-            color: #2a1810;
+            color: #900c00;
             margin-bottom: 8px;
             display: block;
           }
