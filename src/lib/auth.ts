@@ -15,6 +15,40 @@ const ADMIN_EMAILS = [
 export const authOptions: NextAuthOptions = {
   // No adapter — we handle user creation manually in signIn callback.
   // This avoids conflicts between MongoDBAdapter and JWT strategy.
+
+  // ── Proxy trust: app runs on http://localhost:3001 behind nginx ──
+  // Without this, NextAuth's state/CSRF cookies get mismatched
+  // because the internal request is HTTP but NEXTAUTH_URL is https://
+  useSecureCookies: process.env.NEXTAUTH_URL?.startsWith('https://') ?? false,
+  cookies: {
+    sessionToken: {
+      name: `${process.env.NEXTAUTH_URL?.startsWith('https://') ? '__Secure-' : ''}next-auth.session-token`,
+      options: {
+        httpOnly: true,
+        sameSite: 'lax',
+        path: '/',
+        secure: process.env.NEXTAUTH_URL?.startsWith('https://') ?? false,
+      },
+    },
+    callbackUrl: {
+      name: `${process.env.NEXTAUTH_URL?.startsWith('https://') ? '__Secure-' : ''}next-auth.callback-url`,
+      options: {
+        sameSite: 'lax',
+        path: '/',
+        secure: process.env.NEXTAUTH_URL?.startsWith('https://') ?? false,
+      },
+    },
+    csrfToken: {
+      name: 'next-auth.csrf-token',
+      options: {
+        httpOnly: true,
+        sameSite: 'lax',
+        path: '/',
+        secure: false, // csrf token must be readable by the browser
+      },
+    },
+  },
+
   providers: [
     ...(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET
       ? [
