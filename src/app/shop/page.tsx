@@ -74,7 +74,7 @@ function ProductCard({ product }: { product: IProduct }) {
               ? product.category.name
               : product.foodType || 'Snack'}
           </p>
-          <h3 className="font-runiga text-base font-semibold text-mithai-maroonD mb-1 leading-tight line-clamp-2 group-hover:text-mithai-maroon transition-colors">
+          <h3 className="font-tanpearl text-base font-semibold text-mithai-maroonD mb-1 leading-tight line-clamp-2 group-hover:text-mithai-maroon transition-colors">
             {product.name}
           </h3>
         </Link>
@@ -407,7 +407,7 @@ function ShopBody() {
                 <section key={group.slug} id={group.slug}>
                   {/* Category Header */}
                   <div className="flex items-center gap-4 mb-6">
-                    <h2 className="font-runiga text-2xl font-bold text-mithai-maroonD">{group.name}</h2>
+                    <h2 className="font-tanpearl text-2xl font-bold text-mithai-maroonD">{group.name}</h2>
                     <div className="flex-1 h-px bg-gradient-to-r from-mithai-maroon/20 to-transparent" />
                     <span className="text-xs font-semibold text-mithai-taupe bg-mithai-cream px-3 py-1 rounded-full">
                       {group.products.length} {group.products.length === 1 ? 'item' : 'items'}

@@ -563,7 +563,7 @@ export default function ProductPage() {
         }
 
         .product-name {
-          font-family: 'Libre Baskerville', serif;
+          font-family: 'Tan Pearl', serif;
           font-size: clamp(22px, 5vw, 32px);
           font-weight: 700;
           color: #2d1810;

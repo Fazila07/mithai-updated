@@ -36,6 +36,9 @@ module.exports = {
         cormorant:  ['Cormorant Garamond', 'serif'],
         baskerville:['Libre Baskerville', 'serif'],
         dm:         ['DM Sans', 'sans-serif'],
+        tanpearl:   ['"Tan Pearl"', 'serif'],
+        barlow:     ['Barlow', 'sans-serif'],
+        sans:       ['Barlow', 'sans-serif'],
       },
       animation: {
         'float':     'float 4.5s ease-in-out infinite',

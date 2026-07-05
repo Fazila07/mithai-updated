@@ -175,7 +175,7 @@ const diveInStyles = `
 
   /* ─── Title ───────────────────────────────────── */
   .dive-in-title {
-    font-family: 'Libre Baskerville', serif;
+    font-family: 'Medino', serif;
     font-size: clamp(26px, 6vw, 38px);
     font-weight: 400;
     color: #900c00;
@@ -247,7 +247,7 @@ const diveInStyles = `
   }
   .dive-card-name {
     flex: 1;
-    font-family: 'Libre Baskerville', serif;
+    font-family: 'Tan Pearl', serif;
     font-size: 15px;
     font-weight: 400;
     color: #900c00;

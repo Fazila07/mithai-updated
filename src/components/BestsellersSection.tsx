@@ -240,6 +240,7 @@ export default function BestsellersSection() {
           }
           .pinfo { padding: 13px; }
           .pname {
+            font-family: 'Tan Pearl', serif;
             font-size: 13px;
             font-weight: 700;
             color: #900c00;
