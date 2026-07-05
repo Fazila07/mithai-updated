@@ -197,22 +197,6 @@ export default function Navbar() {
           })}
         </nav>
 
-        <div className="mobile-menu-promo">
-          <Link href="/about" onClick={() => setMobileMenuOpen(false)} className="mobile-menu-founder">
-            <Image
-              src="/images/founder.jpeg"
-              alt="Meet our founder"
-              width={400}
-              height={240}
-              unoptimized
-              className="mobile-menu-founder-img"
-            />
-            <p className="mobile-menu-tagline">
-              So good, you&apos;ll forget it&apos;s <em>good for you</em>
-            </p>
-          </Link>
-        </div>
-
         <div className="mobile-menu-footer">
           {session?.user ? (
             <>
