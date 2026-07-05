@@ -25,14 +25,14 @@ export default function Home() {
       <Hero />
       <section className="marquee-strip">
         <div className="marquee-track">
-          <div className="marquee-item"><span>✨ No Refined Sugar</span><span className="marquee-diamond"></span></div>
-          <div className="marquee-item"><span>🌾 No Maida</span><span className="marquee-diamond"></span></div>
-          <div className="marquee-item"><span>💪 PCOS Friendly</span><span className="marquee-diamond"></span></div>
-          <div className="marquee-item"><span>🌱 Clean Ingredients</span><span className="marquee-diamond"></span></div>
-          <div className="marquee-item"><span>✨ No Refined Sugar</span><span className="marquee-diamond"></span></div>
-          <div className="marquee-item"><span>🌾 No Maida</span><span className="marquee-diamond"></span></div>
-          <div className="marquee-item"><span>💪 PCOS Friendly</span><span className="marquee-diamond"></span></div>
-          <div className="marquee-item"><span>🌱 Clean Ingredients</span><span className="marquee-diamond"></span></div>
+          <div className="marquee-item"><span>No Refined Sugar</span><span className="marquee-diamond"></span></div>
+          <div className="marquee-item"><span>No Maida</span><span className="marquee-diamond"></span></div>
+          <div className="marquee-item"><span>PCOS Friendly</span><span className="marquee-diamond"></span></div>
+          <div className="marquee-item"><span>Clean Ingredients</span><span className="marquee-diamond"></span></div>
+          <div className="marquee-item"><span>No Refined Sugar</span><span className="marquee-diamond"></span></div>
+          <div className="marquee-item"><span>No Maida</span><span className="marquee-diamond"></span></div>
+          <div className="marquee-item"><span>PCOS Friendly</span><span className="marquee-diamond"></span></div>
+          <div className="marquee-item"><span>Clean Ingredients</span><span className="marquee-diamond"></span></div>
         </div>
       </section>
       <CategorySection />
