@@ -112,7 +112,7 @@ export default function CategorySection() {
   return (
     <section id="categories" className="dive-in-section">
       <div className="dive-in-container">
-        <h2 className="dive-in-title">Shop Categories</h2>
+        <h2 className="sec-title text-center mb-8">Shop Categories</h2>
 
         <div className="dive-in-grid">
           {categories.map((cat) => (
@@ -174,16 +174,7 @@ const diveInStyles = `
   }
 
   /* ─── Title ───────────────────────────────────── */
-  .dive-in-title {
-    font-family: 'Medino', serif;
-    font-size: clamp(26px, 6vw, 38px);
-    font-weight: 400;
-    color: #900c00;
-    text-align: center;
-    margin: 0 0 32px;
-    letter-spacing: -0.01em;
-    line-height: 1;
-  }
+  /* Replaced with sec-title */
 
   /* ─── Grid — always 2 columns ─────────────────── */
   .dive-in-grid {
@@ -248,8 +239,8 @@ const diveInStyles = `
   .dive-card-name {
     flex: 1;
     font-family: 'Tan Pearl', serif;
-    font-size: 15px;
-    font-weight: 400;
+    font-size: 13px;
+    font-weight: 700;
     color: #900c00;
     margin: 0;
     line-height: 1.25;
@@ -283,9 +274,6 @@ const diveInStyles = `
     .dive-in-grid {
       gap: 18px;
     }
-    .dive-card-name {
-      font-size: 16px;
-    }
   }
 
   /* ─── Desktop — 3 columns in a row ─────────── */
@@ -305,9 +293,6 @@ const diveInStyles = `
     }
     .dive-card-footer {
       padding: 16px 20px;
-    }
-    .dive-card-name {
-      font-size: 17px;
     }
     .dive-card-arrow {
       width: 38px;
