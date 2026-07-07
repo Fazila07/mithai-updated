@@ -39,7 +39,7 @@ export default function IngredientsSection() {
     <section id="ingredients" className="sec ingredients-section">
       <div className="container">
         <div className="sec-head text-center">
-          <h2 className="sec-title ingredients-title">Why Us?</h2>
+          <h2 className="sec-title ingredients-title">Ingredients that goes in for you</h2>
         </div>
 
         <div className="ring-wrap">
@@ -203,7 +203,7 @@ export default function IngredientsSection() {
         .point-label {
           font-weight: 700;
           letter-spacing: 0.01em;
-          color: #5A1F1F;
+          color: #900c00;
           line-height: 1.2;
           font-size: 0.9rem;
           max-width: 100px;

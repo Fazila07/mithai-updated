@@ -1,0 +1,49 @@
+.marquee {
+  overflow: hidden;
+  background: #ffa520;
+  border-top: 2px solid rgba(144, 12, 0, 0.12);
+  border-bottom: 2px solid rgba(144, 12, 0, 0.12);
+}
+
+.track {
+  display: flex;
+  width: max-content;
+  animation: scroll-left 16s linear infinite;
+}
+
+.group {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 14px 0;
+  flex-shrink: 0;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  color: #900c00;
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding-inline: 20px;
+}
+
+.dot {
+  margin-left: 20px;
+  font-size: 6px;
+  opacity: 0.35;
+}
+
+@keyframes scroll-left {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .track {
+    animation: none;
+  }
+}

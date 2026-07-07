@@ -120,48 +120,6 @@ button {
   @apply bg-[rgba(144,12,0,0.07)] border-[rgba(144,12,0,0.55)];
 }
 
-/* Marquee */
-.marquee-strip {
-  @apply bg-mithai-gold py-[18px] overflow-hidden relative border-t-2 border-b-2 border-[rgba(144,12,0,0.12)];
-}
-
-.marquee-strip::before {
-  content: '';
-  @apply absolute inset-0 pointer-events-none;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.06'/%3E%3C/svg%3E");
-  background-size: 120px;
-}
-
-.marquee-track {
-  @apply flex gap-0 w-max;
-  animation: marquee-scroll 24s linear infinite;
-}
-
-.marquee-track:hover {
-  animation-play-state: paused;
-}
-
-@keyframes marquee-scroll {
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(-50%);
-  }
-}
-
-.marquee-item {
-  @apply inline-flex items-center gap-[14px] px-5 whitespace-nowrap;
-}
-
-.marquee-item span {
-  @apply text-[17px] font-bold tracking-[0.14em] uppercase text-mithai-maroon;
-}
-
-.marquee-diamond {
-  @apply inline-block w-[7px] h-[7px] bg-mithai-maroon flex-shrink-0 opacity-30;
-  transform: rotate(45deg);
-}
 
 /* Cart Drawer */
 .cart-drawer-overlay {

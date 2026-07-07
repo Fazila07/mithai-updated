@@ -8,6 +8,7 @@ import IngredientsSection from '@/components/IngredientsSection'
 import BestsellersSection from '@/components/BestsellersSection'
 import GiftsSection from '@/components/GiftsSection'
 import Footer from '@/components/Footer'
+import MarqueeStrip from '@/components/MarqueeStrip'
 import CartDrawer from '@/components/CartDrawer'
 
 export default function Home() {
@@ -23,18 +24,7 @@ export default function Home() {
     <main className="overflow-x-hidden bg-mithai-off">
       <Navbar />
       <Hero />
-      <section className="marquee-strip">
-        <div className="marquee-track">
-          <div className="marquee-item"><span>Preservative Free</span><span className="marquee-diamond"></span></div>
-          <div className="marquee-item"><span>Vegan Friendly</span><span className="marquee-diamond"></span></div>
-          <div className="marquee-item"><span>Gluten Free</span><span className="marquee-diamond"></span></div>
-          <div className="marquee-item"><span>Refined Sugar Free</span><span className="marquee-diamond"></span></div>
-          <div className="marquee-item"><span>Preservative Free</span><span className="marquee-diamond"></span></div>
-          <div className="marquee-item"><span>Vegan Friendly</span><span className="marquee-diamond"></span></div>
-          <div className="marquee-item"><span>Gluten Free</span><span className="marquee-diamond"></span></div>
-          <div className="marquee-item"><span>Refined Sugar Free</span><span className="marquee-diamond"></span></div>
-        </div>
-      </section>
+      <MarqueeStrip />
       <CategorySection />
       <IngredientsSection />
       <BestsellersSection />
