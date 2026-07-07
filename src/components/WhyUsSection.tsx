@@ -24,7 +24,7 @@ export default function WhyUsSection() {
     <section id="why-us" className="sec bg-white">
       <div className="container">
         <div className="sec-head text-center">
-          <h2 className="sec-title">Why Us?</h2>
+          <h2 className="sec-title">Ingredients that goes in for you</h2>
         </div>
 
         {/* outer scaler keeps the fixed-px layout centred & clipped on narrow viewports */}
