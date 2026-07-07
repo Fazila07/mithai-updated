@@ -16,8 +16,8 @@ export default function BrandLogo({
 }: BrandLogoProps) {
   const img = (
     <Image
-      src="/images/mithai-header.png"
-      alt="Guiltfree Goodies"
+      src="/images/mithai-logo-new.png"
+      alt="Mithai 2.0 — Guiltfree Goodies"
       width={487}
       height={129}
       priority={priority}

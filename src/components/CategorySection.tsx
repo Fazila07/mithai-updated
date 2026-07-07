@@ -169,7 +169,7 @@ const diveInStyles = `
   }
 
   .dive-in-container {
-    max-width: 540px;
+    max-width: 440px;
     margin: 0 auto;
   }
 
@@ -180,14 +180,14 @@ const diveInStyles = `
   .dive-in-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 14px;
+    gap: 12px;
   }
 
   /* ─── Card ────────────────────────────────────── */
   .dive-card {
     display: flex;
     flex-direction: column;
-    border-radius: 16px;
+    border-radius: 12px;
     overflow: hidden;
     background: #faf6f0;
     text-decoration: none;
@@ -206,7 +206,7 @@ const diveInStyles = `
   /* ─── Image Area ──────────────────────────────── */
   .dive-card-image {
     position: relative;
-    aspect-ratio: 1;
+    aspect-ratio: 4 / 3;
     overflow: hidden;
     background: linear-gradient(135deg, #f7f3ee 0%, #ede3d5 100%);
   }
@@ -231,15 +231,15 @@ const diveInStyles = `
 
   /* ─── Footer (Name + Arrow) ───────────────────── */
   .dive-card-footer {
-    padding: 14px 16px;
+    padding: 10px 12px;
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
   }
   .dive-card-name {
     flex: 1;
     font-family: 'Lobster', cursive;
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 400;
     color: #900c00;
     margin: 0;
@@ -249,8 +249,8 @@ const diveInStyles = `
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 34px;
-    height: 34px;
+    width: 28px;
+    height: 28px;
     border-radius: 50%;
     border: 1.5px solid rgba(144, 12, 0, 0.2);
     color: #900c00;
@@ -269,10 +269,10 @@ const diveInStyles = `
       padding: 72px 24px 80px;
     }
     .dive-in-container {
-      max-width: 600px;
+      max-width: 500px;
     }
     .dive-in-grid {
-      gap: 18px;
+      gap: 14px;
     }
   }
 
@@ -282,21 +282,21 @@ const diveInStyles = `
       padding: 80px 40px 96px;
     }
     .dive-in-container {
-      max-width: 1060px;
+      max-width: 820px;
     }
     .dive-in-grid {
       grid-template-columns: repeat(3, 1fr);
-      gap: 24px;
+      gap: 18px;
     }
     .dive-card {
-      border-radius: 18px;
+      border-radius: 14px;
     }
     .dive-card-footer {
-      padding: 16px 20px;
+      padding: 12px 14px;
     }
     .dive-card-arrow {
-      width: 38px;
-      height: 38px;
+      width: 32px;
+      height: 32px;
     }
   }
 `
