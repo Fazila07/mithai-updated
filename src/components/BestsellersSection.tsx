@@ -17,9 +17,6 @@ interface Product {
   description?: string
 }
 
-
-
-
 export default function BestsellersSection() {
   const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
@@ -134,7 +131,7 @@ export default function BestsellersSection() {
                     <Link href={`/shop/${product.slug}`}>
                       <h3 className="pname hover:text-mithai-maroon transition-colors">{product.name}</h3>
                     </Link>
-                    {product.description && <p className="pdesc">{product.description}</p>}
+                    
                     <div className="pfooter">
                       <div className="pprice">
                         ₹{Math.floor(product.price)}
@@ -147,7 +144,7 @@ export default function BestsellersSection() {
                         className="add-btn hover:bg-mithai-maroonL transition-colors"
                         aria-label="Add to cart"
                       >
-                        +
+                        
                       </button>
                     </div>
                   </div>

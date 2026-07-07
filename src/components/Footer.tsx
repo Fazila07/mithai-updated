@@ -13,7 +13,7 @@ export default function Footer() {
         {/* Brand Section */}
         <div className="text-center mb-9 pb-7 border-b border-[rgba(144,12,0,0.18)]">
           <div className="flex justify-center mb-4">
-            <BrandLogo href="/" height={48} className="h-12 w-auto object-contain" />
+            <BrandLogo href="/" height={64} className="h-16 w-auto object-contain" />
           </div>
 
           <p className="text-sm text-mithai-maroonD leading-[1.7] mb-5">

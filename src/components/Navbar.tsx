@@ -83,8 +83,8 @@ export default function Navbar() {
           <div className="flex-1 flex justify-center items-center min-w-0 px-1">
             <BrandLogo
               priority
-              height={34}
-              className="h-[30px] sm:h-[34px] md:h-[38px] w-auto max-w-[120px] sm:max-w-[150px] object-contain"
+              height={48}
+              className="h-[40px] sm:h-[44px] md:h-[48px] w-auto max-w-[160px] sm:max-w-[200px] object-contain"
             />
           </div>
 
@@ -170,7 +170,7 @@ export default function Navbar() {
         aria-label="Navigation menu"
       >
         <div className="mobile-menu-header">
-          <BrandLogo href="/" height={36} className="h-9 w-auto object-contain" />
+          <BrandLogo href="/" height={44} className="h-11 w-auto object-contain" />
           <button
             className="mobile-menu-close"
             onClick={() => setMobileMenuOpen(false)}
