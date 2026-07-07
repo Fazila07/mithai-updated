@@ -137,7 +137,7 @@ export default function WishlistPage() {
         .wl-back:hover { background: #f7eae8; }
         .wl-title {
           flex: 1;
-          font-family: 'Libre Baskerville', serif;
+          font-family: 'Tan Pearl', serif;
           font-size: 1.2rem;
           font-weight: 700;
           color: #5A1F1F;
@@ -172,7 +172,7 @@ export default function WishlistPage() {
         }
         .wl-empty-icon svg { width: 38px; height: 38px; }
         .wl-empty-title {
-          font-family: 'Libre Baskerville', serif;
+          font-family: 'Tan Pearl', serif;
           font-size: 1.3rem;
           font-weight: 700;
           color: #5A1F1F;
@@ -285,7 +285,7 @@ export default function WishlistPage() {
           flex-wrap: wrap;
         }
         .wl-price {
-          font-family: 'Libre Baskerville', serif;
+          font-family: 'Tan Pearl', serif;
           font-size: 16px;
           font-weight: 700;
           color: #900c00;

@@ -248,7 +248,7 @@ function CheckoutBody() {
           <div className="mx-auto max-w-[1160px]">
             <div className="rounded-[28px] bg-white border border-[rgba(107,31,31,0.1)] p-16 text-center">
               <div className="text-6xl mb-6">🛒</div>
-              <h2 className="font-medino text-2xl text-mithai-maroonD mb-4">Your cart is empty</h2>
+              <h2 className="font-tanpearl text-2xl font-bold text-mithai-maroonD mb-4">Your cart is empty</h2>
               <p className="text-mithai-taupe mb-8 max-w-md mx-auto">Add some delicious treats to proceed to checkout.</p>
               <Link href="/shop" className="btn-primary">Start Shopping</Link>
             </div>
@@ -278,7 +278,7 @@ function CheckoutBody() {
               )}
               <span className="text-mithai-taupe">Checkout</span>
             </div>
-            <h1 className="font-medino text-[clamp(28px,5vw,38px)] font-normal text-mithai-maroonD tracking-[-0.01em] leading-[0.95] mb-2">
+            <h1 className="font-tanpearl text-[clamp(28px,5vw,38px)] font-bold text-mithai-maroonD tracking-[0.01em] leading-[1.1] mb-2">
               {isBuyNow ? 'Quick Buy' : 'Checkout'}
             </h1>
             <p className="text-sm text-mithai-taupe">Complete your order for {itemCount} item{itemCount > 1 ? 's' : ''}</p>
@@ -315,7 +315,7 @@ function CheckoutBody() {
 
               {/* Shipping form */}
               <div className="bg-white rounded-[22px] border border-[rgba(107,31,31,0.08)] p-6 sm:p-8">
-                <h2 className="font-runiga text-lg font-semibold text-mithai-maroonD mb-6">Shipping Information</h2>
+                <h2 className="font-lobster text-lg font-normal text-mithai-maroonD mb-6">Shipping Information</h2>
                 <div className="space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
@@ -356,7 +356,7 @@ function CheckoutBody() {
             {/* ─── Order Summary (2/5) ───────────────────── */}
             <div className="lg:col-span-2 space-y-5">
               <div className="bg-white rounded-[22px] border border-[rgba(107,31,31,0.08)] p-6 sm:p-8">
-                <h2 className="font-runiga text-lg font-semibold text-mithai-maroonD mb-5">Order Summary</h2>
+                <h2 className="font-lobster text-lg font-normal text-mithai-maroonD mb-5">Order Summary</h2>
                 <div className="space-y-4 mb-5">
                   {items.map((item) => (
                     <div key={item.product._id || item.product.id} className="flex items-center gap-3">

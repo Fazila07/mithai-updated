@@ -188,7 +188,7 @@ export default function CouponsPage() {
         }
         .cp-back:hover { background: #f7eae8; }
         .cp-title {
-          font-family: 'Libre Baskerville', serif;
+          font-family: 'Tan Pearl', serif;
           font-size: 1.15rem;
           font-weight: 700;
           color: #5A1F1F;
@@ -303,7 +303,7 @@ export default function CouponsPage() {
           max-width: 140px;
         }
         .cp-discount {
-          font-family: 'Libre Baskerville', serif;
+          font-family: 'Tan Pearl', serif;
           font-size: 1.1rem;
           font-weight: 700;
           flex-shrink: 0;

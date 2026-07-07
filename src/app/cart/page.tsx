@@ -27,7 +27,7 @@ export default function CartPage() {
       <div className="mx-auto max-w-[1160px]">
         <div className="mb-10">
           <div className="text-xs font-semibold tracking-[0.2em] uppercase text-mithai-gold mb-3">Your Cart</div>
-          <h1 className="font-medino text-4xl font-normal text-mithai-maroonD mb-2 tracking-[-0.01em] leading-[0.95]">
+          <h1 className="font-tanpearl text-4xl font-bold text-mithai-maroonD mb-2 tracking-[0.01em] leading-[1.1]">
             Shopping Cart
           </h1>
           <p className="text-sm text-mithai-taupe max-w-2xl">
@@ -38,7 +38,7 @@ export default function CartPage() {
         {items.length === 0 ? (
           <div className="rounded-[28px] bg-white border border-[rgba(107,31,31,0.1)] p-16 text-center">
             <div className="text-6xl mb-6">🛒</div>
-            <h2 className="font-runiga text-2xl font-semibold text-mithai-maroonD mb-4">Your cart is empty</h2>
+            <h2 className="font-lobster text-2xl font-normal text-mithai-maroonD mb-4">Your cart is empty</h2>
             <p className="text-mithai-taupe mb-8 max-w-md mx-auto">
               Looks like you haven't added any delicious treats yet. Start exploring our collection!
             </p>
@@ -75,7 +75,7 @@ export default function CartPage() {
                         <div>
                           <Link
                             href={`/shop/${item.product.slug}`}
-                            className="font-runiga text-xl font-semibold text-mithai-maroonD hover:text-mithai-maroonL transition-colors"
+                            className="font-lobster text-xl font-normal text-mithai-maroonD hover:text-mithai-maroonL transition-colors"
                           >
                             {item.product.name}
                           </Link>
@@ -126,7 +126,7 @@ export default function CartPage() {
             {/* Order Summary */}
             <div className="lg:col-span-1">
               <div className="rounded-[28px] bg-white border border-[rgba(107,31,31,0.1)] shadow-[0_14px_32px_rgba(107,31,31,0.06)] p-6 sticky top-6">
-                <h2 className="font-runiga text-xl font-semibold text-mithai-maroonD mb-6">Order Summary</h2>
+                <h2 className="font-lobster text-xl font-normal text-mithai-maroonD mb-6">Order Summary</h2>
 
                 <div className="space-y-4 mb-6">
                   <div className="flex justify-between text-sm">

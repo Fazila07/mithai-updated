@@ -165,7 +165,7 @@ export default function TrackOrderPage() {
             <div className="flex justify-center mb-3">
               <BrandLogo href="/" height={32} className="h-8 w-auto object-contain" />
             </div>
-            <h1 className="font-medino text-4xl sm:text-5xl text-mithai-maroonD leading-tight mb-3">
+            <h1 className="font-tanpearl text-4xl sm:text-5xl font-bold text-mithai-maroonD leading-tight mb-3">
               Track Your Order
             </h1>
             <p className="text-mithai-taupe text-sm sm:text-base max-w-md mx-auto">
@@ -260,7 +260,7 @@ export default function TrackOrderPage() {
                     <div className="text-xs font-semibold tracking-widest uppercase text-mithai-gold mb-1">
                       Order #{result.orderId}
                     </div>
-                    <h2 className="font-medino text-3xl text-mithai-maroonD">{result.status}</h2>
+                    <h2 className="font-tanpearl text-3xl font-bold text-mithai-maroonD">{result.status}</h2>
                     <p className="text-sm text-mithai-taupe mt-1">Placed on {result.placedAt}</p>
                   </div>
                   <div className="track-status-badge">{result.status}</div>
@@ -288,7 +288,7 @@ export default function TrackOrderPage() {
 
               {/* Timeline */}
               <div className="track-card">
-                <h3 className="font-runiga text-lg font-semibold text-mithai-maroonD mb-6">
+                <h3 className="font-lobster text-lg font-normal text-mithai-maroonD mb-6">
                   Shipment Timeline
                 </h3>
                 <ol className="relative">
@@ -325,7 +325,7 @@ export default function TrackOrderPage() {
 
               {/* Order items */}
               <div className="track-card">
-                <h3 className="font-runiga text-lg font-semibold text-mithai-maroonD mb-4 flex items-center gap-2">
+                <h3 className="font-lobster text-lg font-normal text-mithai-maroonD mb-4 flex items-center gap-2">
                   <BoxIcon />
                   Items in Your Box
                 </h3>
@@ -352,7 +352,7 @@ export default function TrackOrderPage() {
 
               {/* Address */}
               <div className="track-card">
-                <h3 className="font-runiga text-lg font-semibold text-mithai-maroonD mb-3">
+                <h3 className="font-lobster text-lg font-normal text-mithai-maroonD mb-3">
                   Delivery Address
                 </h3>
                 <p className="text-sm text-mithai-taupe leading-relaxed">{result.address}</p>

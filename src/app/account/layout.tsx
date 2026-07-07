@@ -25,7 +25,7 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
           {/* Header */}
           <div className="mb-8">
             <div className="text-xs font-semibold tracking-[0.2em] uppercase text-mithai-gold mb-3">My Account</div>
-            <h1 className="font-medino text-3xl sm:text-4xl font-normal text-mithai-maroonD tracking-[-0.01em] leading-[0.95]">
+            <h1 className="font-tanpearl text-3xl sm:text-4xl font-bold text-mithai-maroonD tracking-[0.01em] leading-[1.1]">
               Welcome, {session?.user?.name?.split(' ')[0] || 'there'}
             </h1>
           </div>

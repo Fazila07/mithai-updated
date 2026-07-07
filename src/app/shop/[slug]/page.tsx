@@ -97,7 +97,7 @@ export default function ProductPage() {
         <main className="min-h-screen bg-mithai-off px-4 py-10 sm:px-7 lg:px-10 pt-[88px]">
           <div className="mx-auto max-w-[1160px] text-center">
             <Package size={64} className="mx-auto mb-4 text-mithai-taupe/30" />
-            <h1 className="font-medino text-3xl text-mithai-maroonD mb-3">Product Not Found</h1>
+            <h1 className="font-tanpearl text-3xl font-bold text-mithai-maroonD mb-3">Product Not Found</h1>
             <p className="text-mithai-taupe mb-8">The product you&apos;re looking for doesn&apos;t exist or has been removed.</p>
             <Link href="/shop" className="btn-primary">
               Back to Shop
@@ -555,7 +555,7 @@ export default function ProductPage() {
         }
 
         .product-tagline {
-          font-family: 'Libre Baskerville', serif;
+          font-family: 'Tan Pearl', serif;
           font-style: italic;
           font-size: 14px;
           color: #900c00;
@@ -563,9 +563,9 @@ export default function ProductPage() {
         }
 
         .product-name {
-          font-family: 'Tan Pearl', serif;
+          font-family: 'Lobster', cursive;
           font-size: clamp(22px, 5vw, 32px);
-          font-weight: 700;
+          font-weight: 400;
           color: #2d1810;
           line-height: 1.15;
           margin-bottom: 12px;

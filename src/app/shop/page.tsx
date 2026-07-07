@@ -74,7 +74,7 @@ function ProductCard({ product }: { product: IProduct }) {
               ? product.category.name
               : product.foodType || 'Snack'}
           </p>
-          <h3 className="font-tanpearl text-base font-semibold text-mithai-maroonD mb-1 leading-tight line-clamp-2 group-hover:text-mithai-maroon transition-colors">
+          <h3 className="font-lobster text-base font-normal text-mithai-maroonD mb-1 leading-tight line-clamp-2 group-hover:text-mithai-maroon transition-colors">
             {product.name}
           </h3>
         </Link>
@@ -272,7 +272,7 @@ function ShopBody() {
           {/* Header */}
           <div className="mb-8">
             <div className="text-[10px] font-bold tracking-[0.16em] uppercase text-mithai-gold mb-2">Shop All Products</div>
-            <h1 className="font-medino text-[clamp(28px,5vw,42px)] font-normal text-mithai-maroonD tracking-[-0.01em] leading-[0.95] mb-3">
+            <h1 className="font-tanpearl text-[clamp(28px,5vw,42px)] font-bold text-mithai-maroonD tracking-[0.01em] leading-[1.1] mb-3">
               Our Treats
             </h1>
             <p className="text-sm text-mithai-taupe max-w-xl">
@@ -376,7 +376,7 @@ function ShopBody() {
               <div className="w-16 h-16 rounded-full bg-red-50 flex items-center justify-center mx-auto mb-4">
                 <ShoppingBag size={32} className="text-red-400" />
               </div>
-              <h3 className="font-runiga text-xl font-semibold text-mithai-maroonD mb-2">Something went wrong</h3>
+              <h3 className="font-lobster text-xl font-normal text-mithai-maroonD mb-2">Something went wrong</h3>
               <p className="text-sm text-mithai-taupe mb-6 max-w-md mx-auto">{error}</p>
               <button
                 onClick={() => fetchProducts()}
@@ -389,7 +389,7 @@ function ShopBody() {
             /* No products in this category */
             <div className="rounded-[22px] bg-white border border-[rgba(107,31,31,0.08)] p-16 text-center">
               <ShoppingBag size={48} className="mx-auto mb-4 text-mithai-taupe/30" />
-              <h3 className="font-runiga text-xl font-semibold text-mithai-maroonD mb-2">No products available in this category.</h3>
+              <h3 className="font-lobster text-xl font-normal text-mithai-maroonD mb-2">No products available in this category.</h3>
               <p className="text-sm text-mithai-taupe mb-6 max-w-md mx-auto">
                 We&apos;re working on adding products here. Check back soon!
               </p>
@@ -407,7 +407,7 @@ function ShopBody() {
                 <section key={group.slug} id={group.slug}>
                   {/* Category Header */}
                   <div className="flex items-center gap-4 mb-6">
-                    <h2 className="font-tanpearl text-2xl font-bold text-mithai-maroonD">{group.name}</h2>
+                    <h2 className="font-lobster text-2xl font-normal text-mithai-maroonD">{group.name}</h2>
                     <div className="flex-1 h-px bg-gradient-to-r from-mithai-maroon/20 to-transparent" />
                     <span className="text-xs font-semibold text-mithai-taupe bg-mithai-cream px-3 py-1 rounded-full">
                       {group.products.length} {group.products.length === 1 ? 'item' : 'items'}

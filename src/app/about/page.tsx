@@ -99,7 +99,7 @@ export default function AboutPage() {
           }
 
           .about-heading {
-            font-family: 'Libre Baskerville', serif;
+            font-family: 'Tan Pearl', serif;
             font-size: clamp(1.75rem, 5vw, 2.4rem);
             font-weight: 700;
             color: #900c00;
@@ -124,7 +124,7 @@ export default function AboutPage() {
             margin-bottom: 32px !important;
           }
           .about-closing {
-            font-family: 'Libre Baskerville', serif;
+            font-family: 'Tan Pearl', serif;
             font-size: 1.2rem !important;
             font-weight: 600;
             color: #900c00 !important;

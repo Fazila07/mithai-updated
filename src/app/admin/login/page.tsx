@@ -81,7 +81,7 @@ export default function AdminLoginPage() {
                 <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#ffa520] to-[#900c00] flex items-center justify-center shadow-xl shadow-[#900c00]/30">
                   <span
                     className="text-white text-2xl"
-                    style={{ fontFamily: "'Playfair Display', serif", fontWeight: 700 }}
+                    style={{ fontFamily: "'Tan Pearl', serif", fontWeight: 700 }}
                   >
                     M
                   </span>
@@ -94,7 +94,7 @@ export default function AdminLoginPage() {
 
               <h1
                 className="text-2xl text-[#1a0a0a] mb-1"
-                style={{ fontFamily: "'Playfair Display', serif", fontWeight: 700 }}
+                style={{ fontFamily: "'Tan Pearl', serif", fontWeight: 700 }}
               >
                 Admin Portal
               </h1>
