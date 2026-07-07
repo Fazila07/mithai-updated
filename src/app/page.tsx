@@ -11,6 +11,7 @@ import FounderNote from '@/components/FounderNote'
 import Footer from '@/components/Footer'
 import MarqueeStrip from '@/components/MarqueeStrip'
 import CartDrawer from '@/components/CartDrawer'
+import OurStory from '@/components/OurStory'
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true)
@@ -31,6 +32,7 @@ export default function Home() {
       <BestsellersSection />
       <GiftsSection />
       <FounderNote />
+      <OurStory />
       <Footer />
       <CartDrawer />
     </main>

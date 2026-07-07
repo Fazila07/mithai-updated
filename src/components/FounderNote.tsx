@@ -38,7 +38,7 @@ export default function FounderNote() {
             Mithai 2.0 is more than a dessert brand. It is a celebration of conscious indulgence, Indian heritage, honest ingredients, and craftsmanship. My hope is that every bite reminds you that the best things are often the ones that bring us back to our roots.
           </p>
           <p className="founder-closing">
-            Welcome to Mithai 2.0—where tradition meets mindful indulgence.
+            where tradition meets mindful indulgence.
           </p>
         </div>
       </div>
