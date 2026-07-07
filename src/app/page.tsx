@@ -29,6 +29,10 @@ export default function Home() {
           <div className="marquee-item"><span>Vegan Friendly</span><span className="marquee-diamond"></span></div>
           <div className="marquee-item"><span>Gluten Free</span><span className="marquee-diamond"></span></div>
           <div className="marquee-item"><span>Refined Sugar Free</span><span className="marquee-diamond"></span></div>
+          <div className="marquee-item"><span>Preservative Free</span><span className="marquee-diamond"></span></div>
+          <div className="marquee-item"><span>Vegan Friendly</span><span className="marquee-diamond"></span></div>
+          <div className="marquee-item"><span>Gluten Free</span><span className="marquee-diamond"></span></div>
+          <div className="marquee-item"><span>Refined Sugar Free</span><span className="marquee-diamond"></span></div>
         </div>
       </section>
       <CategorySection />

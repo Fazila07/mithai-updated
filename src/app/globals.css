@@ -151,7 +151,7 @@ button {
 }
 
 .marquee-item {
-  @apply inline-flex items-center gap-[28px] px-10 whitespace-nowrap;
+  @apply inline-flex items-center gap-[14px] px-5 whitespace-nowrap;
 }
 
 .marquee-item span {
