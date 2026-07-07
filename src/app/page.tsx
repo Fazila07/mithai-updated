@@ -7,6 +7,7 @@ import CategorySection from '@/components/CategorySection'
 import IngredientsSection from '@/components/IngredientsSection'
 import BestsellersSection from '@/components/BestsellersSection'
 import GiftsSection from '@/components/GiftsSection'
+import FounderNote from '@/components/FounderNote'
 import Footer from '@/components/Footer'
 import MarqueeStrip from '@/components/MarqueeStrip'
 import CartDrawer from '@/components/CartDrawer'
@@ -29,6 +30,7 @@ export default function Home() {
       <IngredientsSection />
       <BestsellersSection />
       <GiftsSection />
+      <FounderNote />
       <Footer />
       <CartDrawer />
     </main>
