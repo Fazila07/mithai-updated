@@ -426,25 +426,33 @@ export default function ProductPage() {
                   </AccordionItem>
                 )}
 
-                {(!product.highlights || product.highlights.length === 0) && product.benefits && product.benefits.length > 0 && (
-                  <AccordionItem
-                    id="benefits"
-                    title="Benefits"
-                    open={openAccordion === 'benefits'}
-                    onToggle={() => setOpenAccordion(openAccordion === 'benefits' ? '' : 'benefits')}
+                <AccordionItem
+                    id="allergens-info"
+                    title="Allergen Information"
+                    open={openAccordion === 'allergens-info'}
+                    onToggle={() => setOpenAccordion(openAccordion === 'allergens-info' ? '' : 'allergens-info')}
                   >
-                    <div className="flex flex-wrap gap-2">
-                      {product.benefits.map((benefit, idx) => (
-                        <span
-                          key={idx}
-                          className="inline-flex items-center gap-1 bg-green-50 text-green-700 px-3.5 py-1.5 rounded-full text-xs font-medium"
-                        >
-                          <span className="text-green-500">✓</span> {benefit}
-                        </span>
-                      ))}
+                    <p className="text-sm text-mithai-taupe leading-relaxed">
+                      Contains nuts and milk.
+                    </p>
+                  </AccordionItem>
+
+                <AccordionItem
+                    id="shelf-life"
+                    title="Shelf Life"
+                    open={openAccordion === 'shelf-life'}
+                    onToggle={() => setOpenAccordion(openAccordion === 'shelf-life' ? '' : 'shelf-life')}
+                  >
+                    <div className="text-sm text-mithai-taupe leading-relaxed space-y-2">
+                      <p className="font-semibold text-mithai-maroonD">Cookie Care</p>
+                      <ul className="list-disc list-inside space-y-1">
+                        <li>Store in an airtight container at room temperature.</li>
+                        <li>Best consumed within 15 days of delivery.</li>
+                        <li>Keep away from direct sunlight and moisture.</li>
+                        <li>Do not refrigerate — it may alter the texture.</li>
+                      </ul>
                     </div>
                   </AccordionItem>
-                )}
               </div>
             </div>
           </div>
