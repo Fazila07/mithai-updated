@@ -103,9 +103,7 @@ export default function BestsellersSection() {
     <section id="bestsellers" className="sec bg-mithai-goldP">
       <div className="container">
         <div className="sec-head">
-          <span className="sec-label">Customer Favorites</span>
-          <h2 className="sec-title">Best Sellers</h2>
-          <p className="sec-sub">Loved by hundreds. Join the happy customers.</p>
+          <h2 className="sec-title">Cult Favorites</h2>
         </div>
 
         {!loading && products.length > 0 && (
