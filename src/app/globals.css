@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Barlow:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Barlow:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Lobster&display=swap');
 
 @font-face {
   font-family: 'Runiga';
@@ -11,6 +11,14 @@
 @font-face {
   font-family: 'Medino';
   src: url('/fonts/Medino-Regular.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Tan Pearl';
+  src: url('/fonts/TanPearl.otf') format('opentype');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -60,7 +68,7 @@ button {
 }
 
 .sec-title {
-  @apply font-medino text-[clamp(24px,6vw,42px)] font-normal text-[#900c00] leading-[0.95] mb-2.5 tracking-[-0.01em];
+  @apply font-tanpearl text-[clamp(24px,6vw,42px)] font-bold text-[#900c00] leading-[1.1] mb-2.5 tracking-[0.01em];
 }
 
 .sec-sub {

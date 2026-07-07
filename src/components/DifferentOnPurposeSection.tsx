@@ -178,8 +178,9 @@ export default function DifferentOnPurposeSection() {
           border: 1px solid rgba(144, 12, 0, 0.08);
         }
         .feature-card h3 {
-          font-size: 1.05rem;
-          font-weight: 700;
+          font-family: 'Lobster', cursive;
+          font-size: 1.15rem;
+          font-weight: 400;
           color: #900c00;
           margin: 0;
         }
@@ -254,7 +255,7 @@ export default function DifferentOnPurposeSection() {
           font-size: 1.5rem;
           font-weight: 700;
           margin-bottom: 10px;
-          font-family: 'Libre Baskerville', serif;
+          font-family: 'Tan Pearl', serif;
         }
         .content-body {
           font-size: 1rem;

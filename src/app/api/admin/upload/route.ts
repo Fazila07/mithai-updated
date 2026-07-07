@@ -9,10 +9,10 @@ cloudinary.config({
 })
 
 export async function POST(req: NextRequest) {
-  const { error } = await requireAdmin()
-  if (error) return error
-
   try {
+    const { error } = await requireAdmin()
+    if (error) return error
+
     const formData = await req.formData()
     const files = formData.getAll('files') as File[]
 

@@ -100,10 +100,10 @@ export default function TestimonialsSection() {
             display: block;
           }
           .sec-title {
-            font-family: 'Playfair Display', serif;
+            font-family: 'Tan Pearl', serif;
             font-size: clamp(24px, 6vw, 42px);
             font-weight: 700;
-            color: #6d0900;
+            color: #900c00;
             line-height: 1.18;
             margin-bottom: 10px;
           }

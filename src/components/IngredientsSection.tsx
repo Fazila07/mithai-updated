@@ -94,7 +94,7 @@ export default function IngredientsSection() {
         }
 
         .ingredients-title {
-          font-family: 'Libre Baskerville', serif;
+          font-family: 'Tan Pearl', serif;
           font-size: 2.2rem;
           font-weight: 700;
           color: #900c00;

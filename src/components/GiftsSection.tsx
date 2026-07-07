@@ -117,7 +117,7 @@ export default function GiftsSection() {
             z-index: 1;
           }
           .banner-title {
-            font-family: 'Libre Baskerville', serif;
+            font-family: 'Tan Pearl', serif;
             font-size: clamp(24px, 5vw, 38px);
             color: white;
             font-weight: 700;
@@ -176,9 +176,9 @@ export default function GiftsSection() {
           }
 
           .hamper-name {
-            font-family: 'Tan Pearl', serif;
-            font-size: 14px;
-            font-weight: 700;
+            font-family: 'Lobster', cursive;
+            font-size: 16px;
+            font-weight: 400;
             color: #900c00;
             margin-bottom: 6px;
             line-height: 1.3;

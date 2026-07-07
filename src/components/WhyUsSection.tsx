@@ -130,7 +130,7 @@ export default function WhyUsSection() {
 
         .center-card strong {
           display: block;
-          font-family: 'Libre Baskerville', serif;
+          font-family: 'Tan Pearl', serif;
           font-size: 1.1rem;
           line-height: 1.5;
           font-weight: 700;

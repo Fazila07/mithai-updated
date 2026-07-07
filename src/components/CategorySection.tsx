@@ -89,7 +89,7 @@ export default function CategorySection() {
     return (
       <section id="categories" className="dive-in-section">
         <div className="dive-in-container">
-          <h2 className="dive-in-title">Shop Categories</h2>
+          <h2 className="sec-title text-center mb-8">Shop Categories</h2>
           <div className="dive-in-grid">
             {Array.from({ length: 4 }).map((_, i) => (
               <div key={i} className="dive-card animate-pulse">
@@ -238,9 +238,9 @@ const diveInStyles = `
   }
   .dive-card-name {
     flex: 1;
-    font-family: 'Tan Pearl', serif;
-    font-size: 13px;
-    font-weight: 700;
+    font-family: 'Lobster', cursive;
+    font-size: 15px;
+    font-weight: 400;
     color: #900c00;
     margin: 0;
     line-height: 1.25;

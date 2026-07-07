@@ -92,7 +92,7 @@ export default function ProductReviewsSection({ productId }: ProductReviewsSecti
           border-top: 1px solid rgba(107, 31, 31, 0.1);
         }
         .product-reviews-title {
-          font-family: 'Libre Baskerville', serif;
+          font-family: 'Tan Pearl', serif;
           font-size: clamp(22px, 4vw, 28px);
           font-weight: 700;
           color: #900c00;

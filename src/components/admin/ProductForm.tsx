@@ -148,8 +148,16 @@ export default function ProductForm({ initialData, mode }: Props) {
       const fd = new FormData()
       Array.from(files).forEach((f) => fd.append('files', f))
       const res = await fetch('/api/admin/upload', { method: 'POST', body: fd })
-      const data = await res.json()
-      if (!res.ok) throw new Error(data.error)
+      
+      let data;
+      const text = await res.text();
+      try {
+        data = JSON.parse(text);
+      } catch (e) {
+        throw new Error(`Server returned error ${res.status}: ${res.statusText}`);
+      }
+      
+      if (!res.ok) throw new Error(data.error || 'Upload failed')
       const newUrls: string[] = data.urls
       setForm((f) => ({
         ...f,
@@ -402,7 +410,7 @@ export default function ProductForm({ initialData, mode }: Props) {
               onDragLeave={() => setDragOver(false)}
               onDrop={(e) => { e.preventDefault(); setDragOver(false); uploadImages(e.dataTransfer.files) }}
             >
-              <input type="file" multiple accept="image/*" className="sr-only" onChange={(e) => uploadImages(e.target.files)} />
+              <input type="file" multiple accept="image/*" className="sr-only" onChange={(e) => { uploadImages(e.target.files); e.currentTarget.value = '' }} />
               {uploading ? (
                 <Loader2 size={24} className="animate-spin text-[#900c00]" />
               ) : (

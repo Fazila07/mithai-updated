@@ -318,7 +318,7 @@ export default function Navbar() {
           align-items: center;
           justify-content: space-between;
           padding: 18px 22px;
-          font-family: 'Libre Baskerville', serif;
+          font-family: 'Tan Pearl', serif;
           font-size: 17px;
           font-weight: 600;
           color: #3d1a10;
@@ -351,7 +351,7 @@ export default function Navbar() {
 
         .mobile-menu-tagline {
           margin: 12px 0 0;
-          font-family: 'Libre Baskerville', serif;
+          font-family: 'Tan Pearl', serif;
           font-size: 15px;
           color: #3d1a10;
           line-height: 1.4;
