@@ -433,7 +433,7 @@ export default function ProductPage() {
                     onToggle={() => setOpenAccordion(openAccordion === 'allergens-info' ? '' : 'allergens-info')}
                   >
                     <p className="text-sm text-mithai-taupe leading-relaxed">
-                      Contains nuts and milk.
+                      Contains nuts and milk. Contains Egg.
                     </p>
                   </AccordionItem>
 
