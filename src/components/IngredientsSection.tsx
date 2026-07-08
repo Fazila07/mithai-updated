@@ -200,11 +200,12 @@ export default function IngredientsSection() {
         }
 
         .point-label {
-          font-weight: 700;
+          font-family: 'Lobster', cursive;
+          font-weight: 400;
           letter-spacing: 0.01em;
           color: #900c00;
           line-height: 1.2;
-          font-size: 0.9rem;
+          font-size: 0.95rem;
           max-width: 100px;
         }
 

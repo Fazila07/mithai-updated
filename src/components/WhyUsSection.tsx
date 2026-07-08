@@ -156,8 +156,9 @@ export default function WhyUsSection() {
           align-items: center;
           justify-content: center;
           gap: 8px;
-          font-size: 0.78rem;
-          font-weight: 700;
+          font-family: 'Lobster', cursive;
+          font-size: 0.82rem;
+          font-weight: 400;
           color: #900c00;
           text-align: center;
           letter-spacing: 0.01em;

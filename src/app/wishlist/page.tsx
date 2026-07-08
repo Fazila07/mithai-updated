@@ -104,7 +104,7 @@ export default function WishlistPage() {
       <style>{`
         .wl-main {
           min-height: 100vh;
-          background: #fdf8ec;
+          background: #ffffff;
           padding-bottom: 100px;
         }
 

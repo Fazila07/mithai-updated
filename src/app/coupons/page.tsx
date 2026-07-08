@@ -156,7 +156,7 @@ export default function CouponsPage() {
       <style>{`
         .cp-main {
           min-height: 100vh;
-          background: #fdf8ec;
+          background: #ffffff;
           padding-bottom: 100px;
         }
 
