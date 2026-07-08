@@ -182,7 +182,7 @@ export default function BestsellersSection() {
           }
           .product-img {
             width: 100%;
-            aspect-ratio: 1;
+            aspect-ratio: 4 / 5;
             background: linear-gradient(135deg, #f7f3ee, #ede3d5);
             display: flex;
             align-items: center;
@@ -301,6 +301,7 @@ export default function BestsellersSection() {
           }
           @media (min-width: 640px) {
             .products-grid { grid-template-columns: repeat(3, 1fr); }
+            .product-img { aspect-ratio: 1; }
           }
           @media (min-width: 960px) {
             .products-grid { grid-template-columns: repeat(4, 1fr); }

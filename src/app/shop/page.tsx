@@ -27,7 +27,7 @@ function ProductCard({ product }: { product: IProduct }) {
   return (
     <div className="group rounded-[22px] bg-white border border-[rgba(107,31,31,0.08)] shadow-[0_4px_20px_rgba(107,31,31,0.04)] overflow-hidden transition-all duration-300 hover:shadow-[0_14px_40px_rgba(107,31,31,0.1)] hover:-translate-y-1">
       {/* Image */}
-      <div className="relative h-52 overflow-hidden bg-mithai-cream">
+      <div className="relative h-64 md:h-52 overflow-hidden bg-mithai-cream">
         <Link href={`/shop/${product.slug}`} className="block h-full w-full">
           {product.images?.[0] ? (
             <img src={product.images[0]} alt={product.name} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />

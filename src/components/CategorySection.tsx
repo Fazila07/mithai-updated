@@ -169,7 +169,7 @@ const diveInStyles = `
   }
 
   .dive-in-container {
-    max-width: 440px;
+    max-width: 100%;
     margin: 0 auto;
   }
 
@@ -267,9 +267,6 @@ const diveInStyles = `
   @media (min-width: 640px) {
     .dive-in-section {
       padding: 72px 24px 80px;
-    }
-    .dive-in-container {
-      max-width: 500px;
     }
     .dive-in-grid {
       gap: 14px;
