@@ -90,7 +90,7 @@ export default function IngredientsSection() {
       <style jsx>{`
         .ingredients-section {
           background: #ffffff;
-          padding: 60px 20px;
+          padding: 2px 2px;
         }
 
         .ingredients-title {
@@ -110,7 +110,7 @@ export default function IngredientsSection() {
           margin: 0 auto;
           display: grid;
           place-items: center;
-          padding: 40px 28px;
+          padding: 20px 2px;
         }
 
         /* ── dotted ring: inset = (50 - ORBIT_PCT)% = ${RING_INSET}%
@@ -222,25 +222,25 @@ export default function IngredientsSection() {
 
         /* ── responsive ──────────────────────────────────────────────── */
         @media (max-width: 768px) {
-          .ingredients-title { font-size: 1.8rem; margin-bottom: 40px; }
+          .ingredients-title { font-size: 1.8rem; margin-bottom: 30px; }
 
-          .ring-wrap { width: min(600px, 100%); padding: 30px 20px; }
+          .ring-wrap { width: min(600px, 100%); padding: 10px 4px; }
 
           .center-card { width: 200px; height: 200px; }
 
-          .point-badge { width: 70px; height: 70px; }
+          .point-badge { width: 75px; height: 75px; }
 
           .point-label { font-size: 0.75rem; }
         }
 
         @media (max-width: 480px) {
-          .ingredients-title { font-size: 1.5rem; margin-bottom: 30px; }
+          .ingredients-title { font-size: 1.5rem; margin-bottom: 20px; }
 
-          .ring-wrap { width: 100%; padding: 20px 15px; }
+          .ring-wrap { width: 100%; padding: 4px 0; }
 
-          .center-card { width: 150px; height: 150px; }
+          .center-card { width: 140px; height: 140px; }
 
-          .point-badge { width: 56px; height: 56px; }
+          .point-badge { width: 60px; height: 60px; }
 
           .point-label { font-size: 0.68rem; max-width: 72px; }
         }
