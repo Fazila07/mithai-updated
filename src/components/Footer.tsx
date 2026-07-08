@@ -15,10 +15,6 @@ export default function Footer() {
           <div className="flex justify-center mb-4">
             <BrandLogo href="/" height={64} className="h-16 w-auto object-contain" />
           </div>
-
-          <p className="text-sm text-mithai-warmGray leading-[1.7] mb-5">
-            Bites that make you forget that they are actually healthy.
-          </p>
         </div>
 
         {/* Links Grid */}

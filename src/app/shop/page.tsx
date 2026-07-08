@@ -27,7 +27,7 @@ function ProductCard({ product }: { product: IProduct }) {
   return (
     <div className="group rounded-[22px] bg-white border border-[rgba(107,31,31,0.08)] shadow-[0_4px_20px_rgba(107,31,31,0.04)] overflow-hidden transition-all duration-300 hover:shadow-[0_14px_40px_rgba(107,31,31,0.1)] hover:-translate-y-1">
       {/* Image */}
-      <div className="relative h-64 md:h-52 overflow-hidden bg-mithai-cream">
+      <div className="relative aspect-square overflow-hidden bg-mithai-cream">
         <Link href={`/shop/${product.slug}`} className="block h-full w-full">
           {product.images?.[0] ? (
             <img src={product.images[0]} alt={product.name} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
@@ -298,7 +298,7 @@ function ShopBody() {
             <select
               value={activeSort}
               onChange={(e) => handleSortChange(e.target.value)}
-              className="px-4 py-3 bg-white border border-mithai-taupe/20 rounded-2xl text-sm text-mithai-maroonD font-medium focus:outline-none focus:ring-2 focus:ring-mithai-gold/40 focus:border-mithai-gold transition-all cursor-pointer"
+              className="px-4 py-3 bg-white border border-mithai-taupe/20 rounded-2xl text-sm text-mithai-maroonD font-medium focus:outline-none focus:ring-2 focus:ring-mithai-gold/40 focus:border-mithai-gold transition-all cursor-pointer font-lobster"
             >
               <option value="recommended">Recommended</option>
               <option value="newest">Newest</option>
@@ -314,7 +314,7 @@ function ShopBody() {
               {/* "All" tab */}
               <button
                 onClick={() => handleCategoryClick('all')}
-                className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold transition-all duration-200 whitespace-nowrap ${
+                className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold transition-all duration-200 whitespace-nowrap font-lobster ${
                   activeCategory === 'all'
                     ? 'bg-mithai-maroon text-white shadow-[0_4px_16px_rgba(144,12,0,0.25)]'
                     : 'bg-white text-mithai-maroonD border border-mithai-taupe/20 hover:border-mithai-maroon/30 hover:bg-mithai-maroonP'
@@ -329,7 +329,7 @@ function ShopBody() {
                 <button
                   key={cat.id || cat._id}
                   onClick={() => handleCategoryClick(cat.slug)}
-                  className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold transition-all duration-200 whitespace-nowrap ${
+                  className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold transition-all duration-200 whitespace-nowrap font-lobster ${
                     activeCategory === cat.slug
                       ? 'bg-mithai-maroon text-white shadow-[0_4px_16px_rgba(144,12,0,0.25)]'
                       : 'bg-white text-mithai-maroonD border border-mithai-taupe/20 hover:border-mithai-maroon/30 hover:bg-mithai-maroonP'
