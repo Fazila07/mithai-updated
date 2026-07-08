@@ -38,7 +38,8 @@ html {
 }
 
 body {
-  @apply bg-mithai-off text-mithai-maroon overflow-x-hidden font-sans;
+  @apply bg-mithai-off text-mithai-maroon overflow-x-hidden;
+  font-family: 'Lobster', cursive;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -52,6 +53,11 @@ a {
 
 button {
   @apply cursor-pointer;
+  font: inherit;
+}
+
+input, select, textarea {
+  font: inherit;
 }
 
 /* Sections */
