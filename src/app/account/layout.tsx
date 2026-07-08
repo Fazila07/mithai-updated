@@ -24,7 +24,6 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
         <div className="max-w-[1160px] mx-auto px-4 sm:px-7 lg:px-10 py-8">
           {/* Header */}
           <div className="mb-8">
-            <div className="text-xs font-semibold tracking-[0.2em] uppercase text-mithai-gold mb-3">My Account</div>
             <h1 className="font-tanpearl text-3xl sm:text-4xl font-bold text-mithai-maroonD tracking-[0.01em] leading-[1.1]">
               Welcome, {session?.user?.name?.split(' ')[0] || 'there'}
             </h1>
@@ -39,7 +38,7 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
                   <Link
                     key={href}
                     href={href}
-                    className={`flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium whitespace-nowrap transition-all ${
+                    className={`flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium whitespace-nowrap transition-all font-lobster ${
                       active
                         ? 'bg-mithai-maroon text-white shadow-[0_4px_18px_rgba(144,12,0,0.25)]'
                         : 'bg-white text-mithai-warmGray hover:bg-mithai-maroonP border border-transparent hover:border-mithai-maroon/10'
