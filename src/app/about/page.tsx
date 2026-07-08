@@ -111,7 +111,7 @@ export default function AboutPage() {
           .about-body p {
             font-size: 1.05rem;
             line-height: 1.85;
-            color: #3d1a10;
+            color: #900c00;
             margin-bottom: 24px;
           }
           .about-lead {
@@ -160,7 +160,7 @@ export default function AboutPage() {
           .about-highlight-label {
             font-size: 0.85rem;
             font-weight: 600;
-            color: #3d1a10;
+            color: #900c00;
             letter-spacing: 0.01em;
           }
 

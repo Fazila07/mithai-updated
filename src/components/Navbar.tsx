@@ -115,7 +115,7 @@ export default function Navbar() {
                 <div className="absolute right-0 top-[calc(100%+8px)] w-56 bg-white rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.15)] border border-slate-100 overflow-hidden z-50">
                   <div className="px-4 py-3 border-b border-slate-100">
                     <p className="text-sm font-semibold text-mithai-maroon truncate">{session.user.name}</p>
-                    <p className="text-xs text-slate-400 truncate">{session.user.email}</p>
+                    <p className="text-xs text-mithai-taupe truncate">{session.user.email}</p>
                   </div>
                   <div className="py-1">
                     {session.user.role === 'ADMIN' && (
@@ -321,7 +321,7 @@ export default function Navbar() {
           font-family: 'Tan Pearl', serif;
           font-size: 17px;
           font-weight: 600;
-          color: #3d1a10;
+          color: #900c00;
           text-decoration: none;
           border-bottom: 1px solid rgba(107, 31, 31, 0.08);
           transition: color 0.18s, background 0.18s;
@@ -353,7 +353,7 @@ export default function Navbar() {
           margin: 12px 0 0;
           font-family: 'Tan Pearl', serif;
           font-size: 15px;
-          color: #3d1a10;
+          color: #900c00;
           line-height: 1.4;
         }
         .mobile-menu-tagline em {

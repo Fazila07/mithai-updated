@@ -19,7 +19,7 @@ function SuccessContent() {
             <p className="text-xl font-mono font-bold text-mithai-maroon">#{orderNumber}</p>
           </div>
         )}
-        <p className="mt-6 text-sm text-slate-500 max-w-md mx-auto">
+        <p className="mt-6 text-sm text-mithai-taupe max-w-md mx-auto">
           Thank you for choosing Mithai 2.0!
         </p>
 
@@ -35,7 +35,7 @@ function SuccessContent() {
           <Link href="/shop" className="rounded-3xl bg-mithai-maroonP px-6 py-3 text-sm font-semibold text-mithai-maroon transition hover:bg-mithai-maroon hover:text-white">
             Continue Shopping
           </Link>
-          <Link href="/" className="rounded-3xl border border-slate-300 px-6 py-3 text-sm font-semibold text-mithai-maroon transition hover:bg-slate-100">
+          <Link href="/" className="rounded-3xl border border-mithai-taupe/20 px-6 py-3 text-sm font-semibold text-mithai-maroon transition hover:bg-mithai-maroonP">
             Back to Home
           </Link>
         </div>

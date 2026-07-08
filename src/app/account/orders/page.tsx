@@ -85,9 +85,9 @@ export default function OrdersPage() {
   if (orders.length === 0) {
     return (
       <div className="bg-white rounded-[28px] border border-[rgba(107,31,31,0.1)] p-16 text-center">
-        <Package size={48} className="mx-auto mb-4 text-slate-300" />
+        <Package size={48} className="mx-auto mb-4 text-mithai-taupe/40" />
         <h2 className="text-xl font-semibold text-mithai-maroon mb-2">No orders yet</h2>
-        <p className="text-sm text-slate-400">Start shopping to see your orders here!</p>
+        <p className="text-sm text-mithai-taupe">Start shopping to see your orders here!</p>
       </div>
     )
   }
@@ -111,7 +111,7 @@ export default function OrdersPage() {
                   <span className="font-mono text-sm font-bold text-mithai-maroon">
                     #{order.orderNumber}
                   </span>
-                  <span className="text-xs text-slate-400 ml-3">
+                  <span className="text-xs text-mithai-taupe ml-3">
                     {new Date(order.createdAt).toLocaleDateString('en-IN', {
                       day: 'numeric',
                       month: 'short',
@@ -121,13 +121,13 @@ export default function OrdersPage() {
                 </div>
                 <span
                   className={`px-3 py-1 rounded-full text-[11px] font-bold ${
-                    STATUS_COLORS[order.status] ?? 'bg-gray-100 text-gray-600'
+                    STATUS_COLORS[order.status] ?? 'bg-mithai-cream text-mithai-taupe'
                   }`}
                 >
                   {order.status.replace(/_/g, ' ')}
                 </span>
               </div>
-              <div className="text-sm text-slate-500 mb-3">
+              <div className="text-sm text-mithai-taupe mb-3">
                 {order.items.map((i) => `${i.name} × ${i.quantity}`).join(', ')}
               </div>
               <div className="flex items-center justify-between">
@@ -149,7 +149,7 @@ export default function OrdersPage() {
               <div className="border-t border-[rgba(107,31,31,0.08)] bg-[#fdfaf5]">
                 {/* Items List */}
                 <div className="p-5 sm:p-6 space-y-3">
-                  <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">
+                  <h4 className="text-xs font-bold text-mithai-maroon uppercase tracking-wider mb-3">
                     Items
                   </h4>
                   {order.items.map((item, idx) => (
@@ -161,17 +161,17 @@ export default function OrdersPage() {
                           className="w-12 h-12 rounded-xl object-cover flex-shrink-0 border border-[rgba(107,31,31,0.08)]"
                         />
                       ) : (
-                        <div className="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center flex-shrink-0">
-                          <Package size={16} className="text-slate-400" />
+                        <div className="w-12 h-12 rounded-xl bg-mithai-cream flex items-center justify-center flex-shrink-0">
+                          <Package size={16} className="text-mithai-taupe" />
                         </div>
                       )}
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-slate-800 truncate">{item.name}</p>
-                        <p className="text-xs text-slate-400">
+                        <p className="text-sm font-medium text-mithai-maroonD truncate">{item.name}</p>
+                        <p className="text-xs text-mithai-taupe">
                           Qty: {item.quantity} × ₹{item.price?.toLocaleString('en-IN')}
                         </p>
                       </div>
-                      <span className="text-sm font-semibold text-slate-700 flex-shrink-0">
+                      <span className="text-sm font-semibold text-mithai-maroon flex-shrink-0">
                         ₹{((item.price || 0) * item.quantity).toLocaleString('en-IN')}
                       </span>
                     </div>
@@ -182,21 +182,21 @@ export default function OrdersPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-0 sm:gap-4 border-t border-[rgba(107,31,31,0.06)]">
                   {/* Price Breakdown */}
                   <div className="p-5 sm:p-6 space-y-2">
-                    <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">
+                    <h4 className="text-xs font-bold text-mithai-maroon uppercase tracking-wider mb-3">
                       Price Breakdown
                     </h4>
-                    <div className="flex justify-between text-sm text-slate-600">
+                    <div className="flex justify-between text-sm text-mithai-taupe">
                       <span>Subtotal</span>
                       <span>₹{(order.subtotal || 0).toLocaleString('en-IN')}</span>
                     </div>
                     {(order.shippingCharge || 0) > 0 && (
-                      <div className="flex justify-between text-sm text-slate-600">
+                      <div className="flex justify-between text-sm text-mithai-taupe">
                         <span>Shipping</span>
                         <span>₹{order.shippingCharge.toLocaleString('en-IN')}</span>
                       </div>
                     )}
                     {(order.tax || 0) > 0 && (
-                      <div className="flex justify-between text-sm text-slate-600">
+                      <div className="flex justify-between text-sm text-mithai-taupe">
                         <span>Tax</span>
                         <span>₹{order.tax.toLocaleString('en-IN')}</span>
                       </div>
@@ -214,7 +214,7 @@ export default function OrdersPage() {
                         <span>-₹{order.discount.toLocaleString('en-IN')}</span>
                       </div>
                     )}
-                    <div className="flex justify-between text-sm font-bold text-slate-800 pt-2 border-t border-dashed border-slate-200">
+                    <div className="flex justify-between text-sm font-bold text-mithai-maroonD pt-2 border-t border-dashed border-mithai-taupe/20">
                       <span>Total</span>
                       <span>₹{order.total.toLocaleString('en-IN')}</span>
                     </div>
@@ -224,10 +224,10 @@ export default function OrdersPage() {
                   <div className="p-5 sm:p-6 space-y-4 border-t sm:border-t-0 sm:border-l border-[rgba(107,31,31,0.06)]">
                     {order.shippingAddress && (
                       <div>
-                        <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                        <h4 className="text-xs font-bold text-mithai-maroon uppercase tracking-wider mb-2 flex items-center gap-1.5">
                           <MapPin size={12} /> Shipping Address
                         </h4>
-                        <p className="text-sm text-slate-600 leading-relaxed">
+                        <p className="text-sm text-mithai-taupe leading-relaxed">
                           {order.shippingAddress.street}
                           <br />
                           {order.shippingAddress.city}, {order.shippingAddress.state}{' '}
@@ -236,16 +236,16 @@ export default function OrdersPage() {
                       </div>
                     )}
                     <div>
-                      <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                      <h4 className="text-xs font-bold text-mithai-maroon uppercase tracking-wider mb-2 flex items-center gap-1.5">
                         <CreditCard size={12} /> Payment
                       </h4>
                       <div className="flex items-center gap-2">
-                        <span className="text-sm text-slate-600 capitalize">
+                        <span className="text-sm text-mithai-taupe capitalize">
                           {order.paymentMethod || 'Online'}
                         </span>
                         <span
                           className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
-                            PAYMENT_COLORS[order.paymentStatus] ?? 'bg-gray-100 text-gray-600'
+                            PAYMENT_COLORS[order.paymentStatus] ?? 'bg-mithai-cream text-mithai-taupe'
                           }`}
                         >
                           {order.paymentStatus}
@@ -254,10 +254,10 @@ export default function OrdersPage() {
                     </div>
                     {order.notes && (
                       <div>
-                        <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">
+                        <h4 className="text-xs font-bold text-mithai-maroon uppercase tracking-wider mb-1">
                           Notes
                         </h4>
-                        <p className="text-sm text-slate-500 italic">{order.notes}</p>
+                        <p className="text-sm text-mithai-taupe italic">{order.notes}</p>
                       </div>
                     )}
                   </div>

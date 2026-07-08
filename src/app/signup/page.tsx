@@ -14,7 +14,7 @@ export default function SignupPage() {
 
   return (
     <main className="min-h-screen flex items-center justify-center bg-mithai-off">
-      <p className="text-sm text-slate-500">Redirecting to sign in…</p>
+      <p className="text-sm text-mithai-taupe">Redirecting to sign in…</p>
     </main>
   )
 }

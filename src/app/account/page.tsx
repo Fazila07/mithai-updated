@@ -44,22 +44,22 @@ export default function AccountPage() {
         <h2 className="text-xl font-semibold text-mithai-maroon mb-6" style={{ fontFamily: "'Tan Pearl', serif" }}>Profile Information</h2>
         <form onSubmit={handleSave} className="space-y-5 max-w-md">
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">Full Name</label>
+            <label className="block text-sm font-medium text-mithai-maroonD mb-2 font-lobster">Full Name</label>
             <input
               type="text" value={name} onChange={(e) => setName(e.target.value)}
               className="w-full px-4 py-3 border border-slate-200 rounded-2xl text-sm outline-none focus:border-mithai-maroon focus:ring-1 focus:ring-mithai-maroon/20 transition"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">Email</label>
+            <label className="block text-sm font-medium text-mithai-maroonD mb-2 font-lobster">Email</label>
             <input
               type="email" value={session?.user?.email ?? ''} disabled
-              className="w-full px-4 py-3 border border-slate-200 rounded-2xl text-sm bg-slate-50 text-slate-400 cursor-not-allowed"
+              className="w-full px-4 py-3 border border-mithai-taupe/20 rounded-2xl text-sm bg-mithai-cream text-mithai-taupe cursor-not-allowed"
             />
-            <p className="text-xs text-slate-400 mt-1">Email cannot be changed</p>
+            <p className="text-xs text-mithai-taupe mt-1">Email cannot be changed</p>
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">Phone</label>
+            <label className="block text-sm font-medium text-mithai-maroonD mb-2 font-lobster">Phone</label>
             <input
               type="tel" value={phone} onChange={(e) => setPhone(e.target.value)}
               className="w-full px-4 py-3 border border-slate-200 rounded-2xl text-sm outline-none focus:border-mithai-maroon focus:ring-1 focus:ring-mithai-maroon/20 transition"

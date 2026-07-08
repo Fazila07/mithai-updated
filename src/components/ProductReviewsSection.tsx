@@ -116,7 +116,7 @@ export default function ProductReviewsSection({ productId }: ProductReviewsSecti
         }
         .review-text {
           font-size: 14px;
-          color: #3d1a10;
+          color: #900c00;
           line-height: 1.65;
           font-style: italic;
           margin-bottom: 12px;

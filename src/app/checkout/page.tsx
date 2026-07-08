@@ -306,7 +306,7 @@ function CheckoutBody() {
                           {addr.name}
                           {addr.label && <span className="ml-2 text-[10px] font-bold uppercase tracking-wider text-mithai-gold bg-mithai-goldP px-2 py-0.5 rounded-full">{addr.label}</span>}
                         </p>
-                        <p className="text-xs text-slate-500 mt-1 line-clamp-1">{addr.line1}, {addr.city} - {addr.pincode}</p>
+                        <p className="text-xs text-mithai-taupe mt-1 line-clamp-1">{addr.line1}, {addr.city} - {addr.pincode}</p>
                       </button>
                     ))}
                   </div>
@@ -430,7 +430,7 @@ function CheckoutBody() {
 
                 {/* ─── Totals ────────────────────────────── */}
                 <div className="border-t border-mithai-taupe/10 pt-4 space-y-2.5">
-                  <div className="flex justify-between text-sm text-slate-500">
+                  <div className="flex justify-between text-sm text-mithai-taupe">
                     <span>Subtotal</span>
                     <span>₹{subtotal.toLocaleString('en-IN')}</span>
                   </div>
@@ -440,7 +440,7 @@ function CheckoutBody() {
                       <span>-₹{discount.toLocaleString('en-IN')}</span>
                     </div>
                   )}
-                  <div className="flex justify-between text-sm text-slate-500">
+                  <div className="flex justify-between text-sm text-mithai-taupe">
                     <span>Shipping</span>
                     <span>{shippingCharge === 0 ? <span className="text-green-600 font-medium">FREE</span> : `₹${shippingCharge}`}</span>
                   </div>
@@ -465,7 +465,7 @@ function CheckoutBody() {
                 {loading ? <><Loader2 size={16} className="animate-spin" /> Processing…</> : `Pay ₹${grandTotal.toLocaleString('en-IN')}`}
               </button>
 
-              <div className="flex items-center justify-center gap-2 text-xs text-slate-400">
+              <div className="flex items-center justify-center gap-2 text-xs text-mithai-taupe">
                 <ShieldCheck size={14} />
                 <span>Secured by Razorpay. Your payment info is safe.</span>
               </div>

@@ -310,7 +310,7 @@ export default function CouponsPage() {
         }
         .cp-desc {
           font-size: 0.82rem;
-          color: #3a2010;
+          color: #900c00;
           font-weight: 600;
           margin: 0 0 5px;
         }

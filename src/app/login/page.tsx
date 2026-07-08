@@ -33,7 +33,7 @@ function LoginContent() {
         </div>
 
         <h1 className="text-3xl font-semibold text-mithai-maroon" style={{ fontFamily: "'Tan Pearl', serif" }}>Welcome</h1>
-        <p className="mt-3 text-sm text-slate-500" style={{ fontFamily: "'Lobster', cursive" }}>Sign in with your Google account to continue shopping healthy mithai.</p>
+        <p className="mt-3 text-sm text-mithai-warmGray" style={{ fontFamily: "'Lobster', cursive" }}>Sign in with your Google account to continue shopping healthy mithai.</p>
 
         {error && (
           <div className="mt-4 rounded-xl bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-600">
@@ -45,7 +45,7 @@ function LoginContent() {
         <button
           onClick={handleGoogle}
           type="button"
-          className="mt-8 w-full flex items-center justify-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-4 text-base font-medium text-slate-700 transition hover:bg-slate-50 hover:border-slate-300 hover:shadow-md"
+          className="mt-8 w-full flex items-center justify-center gap-3 rounded-2xl border border-mithai-taupe/20 bg-white px-4 py-4 text-base font-medium text-mithai-maroonD transition hover:bg-mithai-maroonP hover:border-mithai-maroon/30 hover:shadow-md"
         >
           <svg width="20" height="20" viewBox="0 0 18 18">
             <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 01-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/>
@@ -56,7 +56,7 @@ function LoginContent() {
           Continue with Google
         </button>
 
-        <p className="mt-8 text-center text-xs text-slate-400">
+        <p className="mt-8 text-center text-xs text-mithai-taupe">
           By signing in, you agree to our terms of service and privacy policy.
         </p>
       </div>

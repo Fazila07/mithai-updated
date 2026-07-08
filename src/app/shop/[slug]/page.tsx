@@ -581,7 +581,7 @@ export default function ProductPage() {
           font-family: 'Lobster', cursive;
           font-size: clamp(22px, 5vw, 32px);
           font-weight: 400;
-          color: #2d1810;
+          color: #900c00;
           line-height: 1.15;
           margin-bottom: 12px;
         }
@@ -610,7 +610,7 @@ export default function ProductPage() {
         .product-price {
           font-size: 26px;
           font-weight: 700;
-          color: #2d1810;
+          color: #900c00;
         }
 
         .product-save {
@@ -637,7 +637,7 @@ export default function ProductPage() {
           font-weight: 700;
           letter-spacing: 0.1em;
           text-transform: uppercase;
-          color: #3d1a10;
+          color: #900c00;
           margin-bottom: 10px;
         }
 
@@ -654,7 +654,7 @@ export default function ProductPage() {
           background: white;
           font-size: 13px;
           font-weight: 600;
-          color: #3d1a10;
+          color: #900c00;
           cursor: pointer;
           transition: border-color 0.18s, background 0.18s;
           text-align: left;
@@ -699,7 +699,7 @@ export default function ProductPage() {
         .product-qty-label {
           font-size: 13px;
           font-weight: 600;
-          color: #3d1a10;
+          color: #900c00;
         }
 
         .product-qty-control {
@@ -734,7 +734,7 @@ export default function ProductPage() {
           text-align: center;
           font-size: 15px;
           font-weight: 600;
-          color: #3d1a10;
+          color: #900c00;
         }
 
         .product-btn-row {
@@ -898,7 +898,7 @@ function AccordionItem({
         .acc-title {
           font-size: 14px;
           font-weight: 600;
-          color: #3d1a10;
+          color: #900c00;
           letter-spacing: 0.01em;
         }
         .acc-trigger:hover .acc-title {
