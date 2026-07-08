@@ -144,7 +144,9 @@ export default function BestsellersSection() {
                         className="add-btn hover:bg-mithai-maroonL transition-colors"
                         aria-label="Add to cart"
                       >
-                        
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round">
+                          <path d="M12 5v14M5 12h14" />
+                        </svg>
                       </button>
                     </div>
                   </div>

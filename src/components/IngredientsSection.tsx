@@ -4,19 +4,18 @@ import { useState, useEffect } from 'react'
 
 const HIGHLIGHTS = [
   { label: 'Almond Flour', image: '/images/almond flour.jpg' },
-  { label: 'Ragi', image: '/images/ragiii.jpg' },
+  { label: 'Ragi Flour', image: '/images/ragiii.jpg' },
   { label: 'Walnuts', image: '/images/walnuts.jpg' },
-  { label: 'Coconut Sugar', image: '/images/coconut.jpg' },
+  { label: 'Cranberry', image: '/images/cranberry.jpeg' },
   { label: 'Flax Seeds', image: '/images/flaxseeds.jpg' },
-  { label: 'Vegan Chocolate', image: '/images/cocoa.jpeg' },
-  { label: 'Jowar', image: '/images/jowar.jpg' },
-  { label: 'Desi Khandsari', image: '/images/sugarcane.jpg' },
+  { label: 'Vegan Chocolate sweetened with Khandsari', image: '/images/cocoa.jpeg' },
+  { label: 'Jowar Flour', image: '/images/jowar.jpg' },
+  { label: 'Jaggery', image: '/images/sugarcane.jpg' },
 ]
 
 const SLIDESHOW_IMAGES = [
   '/images/ragiladdu.jpg',
   '/images/redvelvet cookies.jpg',
-  '/images/chocochip cookies.jpg',
   '/images/walnut brownie.jpg',
 ]
 

@@ -22,8 +22,8 @@ function LoginContent() {
         <div className="text-center mb-6">
           <Link href="/" className="inline-block transition-opacity hover:opacity-90">
             <Image
-              src="/images/mithai-header.png"
-              alt="Guiltfree Goodies"
+              src="/images/mithai-logo-new.png"
+              alt="Mithai 2.0 — Guiltfree Goodies"
               width={487}
               height={129}
               unoptimized
@@ -32,8 +32,8 @@ function LoginContent() {
           </Link>
         </div>
 
-        <h1 className="text-3xl font-semibold text-mithai-maroon">Welcome</h1>
-        <p className="mt-3 text-sm text-slate-500">Sign in with your Google account to continue shopping healthy mithai.</p>
+        <h1 className="text-3xl font-semibold text-mithai-maroon" style={{ fontFamily: "'Tan Pearl', serif" }}>Welcome</h1>
+        <p className="mt-3 text-sm text-slate-500" style={{ fontFamily: "'Lobster', cursive" }}>Sign in with your Google account to continue shopping healthy mithai.</p>
 
         {error && (
           <div className="mt-4 rounded-xl bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-600">
