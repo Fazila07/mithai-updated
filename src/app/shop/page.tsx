@@ -271,13 +271,9 @@ function ShopBody() {
         <div className="mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8 py-8">
           {/* Header */}
           <div className="mb-8">
-            <div className="text-[10px] font-bold tracking-[0.16em] uppercase text-mithai-gold mb-2">Shop All Products</div>
             <h1 className="font-tanpearl text-[clamp(28px,5vw,42px)] font-bold text-mithai-maroonD tracking-[0.01em] leading-[1.1] mb-3">
               Our Treats
             </h1>
-            <p className="text-sm text-mithai-taupe max-w-xl">
-              Explore our handcrafted collection of delicious treats.
-            </p>
           </div>
 
           {/* Search + Sort */}
