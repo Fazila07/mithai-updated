@@ -374,8 +374,9 @@ export default function Navbar() {
           text-align: center;
           background: #900c00;
           color: white;
-          font-size: 15px;
-          font-weight: 600;
+          font-family: 'Lobster', cursive;
+          font-size: 17px;
+          font-weight: 400;
           border-radius: 8px;
           text-decoration: none;
           transition: background 0.2s;
@@ -392,8 +393,9 @@ export default function Navbar() {
           text-align: center;
           background: transparent;
           color: #900c00;
-          font-size: 14px;
-          font-weight: 600;
+          font-family: 'Lobster', cursive;
+          font-size: 16px;
+          font-weight: 400;
           border: 1px solid rgba(144, 12, 0, 0.2);
           border-radius: 8px;
           cursor: pointer;
