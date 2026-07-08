@@ -143,8 +143,9 @@ export default function WishlistPage() {
           color: #5A1F1F;
         }
         .wl-count {
+          font-family: 'Lobster', cursive;
           font-size: 0.8rem;
-          font-weight: 600;
+          font-weight: 400;
           color: #900c00;
           background: rgba(144,12,0,0.09);
           padding: 3px 10px;
@@ -178,6 +179,7 @@ export default function WishlistPage() {
           color: #5A1F1F;
         }
         .wl-empty-sub {
+          font-family: 'Lobster', cursive;
           font-size: 0.9rem;
           color: #9B7B6A;
           max-width: 280px;
@@ -190,8 +192,9 @@ export default function WishlistPage() {
           color: #fff;
           padding: 12px 26px;
           border-radius: 100px;
-          font-size: 14px;
-          font-weight: 600;
+          font-family: 'Lobster', cursive;
+          font-size: 15px;
+          font-weight: 400;
           text-decoration: none;
           box-shadow: 0 4px 18px rgba(144,12,0,0.28);
           transition: all 0.2s;
@@ -263,8 +266,9 @@ export default function WishlistPage() {
 
         .wl-info { padding: 12px; }
         .wl-name {
-          font-size: 13px;
-          font-weight: 700;
+          font-family: 'Lobster', cursive;
+          font-size: 14px;
+          font-weight: 400;
           color: #900c00;
           margin-bottom: 6px;
           display: block;
@@ -272,6 +276,7 @@ export default function WishlistPage() {
         }
         .wl-name:hover { color: #900c00; }
         .wl-desc {
+          font-family: 'Lobster', cursive;
           font-size: 11px;
           color: #6d0900;
           line-height: 1.5;
@@ -306,8 +311,9 @@ export default function WishlistPage() {
           border: none;
           border-radius: 100px;
           padding: 7px 13px;
-          font-size: 11px;
-          font-weight: 700;
+          font-family: 'Lobster', cursive;
+          font-size: 12px;
+          font-weight: 400;
           cursor: pointer;
           transition: background 0.18s, transform 0.15s;
           flex-shrink: 0;

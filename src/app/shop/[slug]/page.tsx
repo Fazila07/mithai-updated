@@ -488,14 +488,12 @@ export default function ProductPage() {
           border-radius: 16px;
           overflow: hidden;
           aspect-ratio: 1;
-          max-height: 520px;
         }
 
         .product-image {
           width: 100%;
           height: 100%;
-          object-fit: contain;
-          padding: 24px;
+          object-fit: cover;
         }
 
         .product-image-placeholder {

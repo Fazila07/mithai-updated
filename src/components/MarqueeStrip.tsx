@@ -7,6 +7,8 @@ const ITEMS = [
   "Vegan Friendly",
   "Gluten Free",
   "Refined Sugar Free",
+  "Eggless",
+  "PCOS Friendly"
 ];
 
 export default function MarqueeStrip() {

@@ -249,7 +249,7 @@ function CheckoutBody() {
             <div className="rounded-[28px] bg-white border border-[rgba(107,31,31,0.1)] p-16 text-center">
               <div className="text-6xl mb-6">🛒</div>
               <h2 className="font-tanpearl text-2xl font-bold text-mithai-maroonD mb-4">Your cart is empty</h2>
-              <p className="text-mithai-taupe mb-8 max-w-md mx-auto">Add some delicious treats to proceed to checkout.</p>
+              <p className="text-mithai-taupe mb-8 max-w-md mx-auto font-lobster">Add some delicious treats to proceed to checkout.</p>
               <Link href="/shop" className="btn-primary">Start Shopping</Link>
             </div>
           </div>
@@ -258,7 +258,7 @@ function CheckoutBody() {
     )
   }
 
-  const inputCls = "w-full px-4 py-3 border border-mithai-taupe/20 rounded-2xl focus:outline-none focus:ring-2 focus:ring-mithai-gold/40 focus:border-mithai-gold text-sm transition-all bg-white"
+  const inputCls = "w-full px-4 py-3 border border-mithai-taupe/20 rounded-2xl focus:outline-none focus:ring-2 focus:ring-mithai-gold/40 focus:border-mithai-gold text-sm transition-all bg-white font-lobster"
 
   return (
     <>
@@ -281,7 +281,7 @@ function CheckoutBody() {
             <h1 className="font-tanpearl text-[clamp(28px,5vw,38px)] font-bold text-mithai-maroonD tracking-[0.01em] leading-[1.1] mb-2">
               {isBuyNow ? 'Quick Buy' : 'Checkout'}
             </h1>
-            <p className="text-sm text-mithai-taupe">Complete your order for {itemCount} item{itemCount > 1 ? 's' : ''}</p>
+            <p className="text-sm text-mithai-taupe font-lobster">Complete your order for {itemCount} item{itemCount > 1 ? 's' : ''}</p>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
@@ -290,7 +290,7 @@ function CheckoutBody() {
               {/* Saved addresses */}
               {addresses.length > 0 && (
                 <div className="bg-white rounded-[22px] border border-[rgba(107,31,31,0.08)] p-6">
-                  <h3 className="text-xs font-bold uppercase tracking-[0.12em] text-mithai-maroonD mb-4">Saved Addresses</h3>
+                  <h3 className="text-xs font-bold uppercase tracking-[0.12em] text-mithai-maroonD mb-4 font-lobster">Saved Addresses</h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     {addresses.map((addr) => (
                       <button
@@ -319,33 +319,33 @@ function CheckoutBody() {
                 <div className="space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-xs font-semibold text-mithai-maroonD mb-2">Full Name *</label>
+                      <label className="block text-xs font-semibold text-mithai-maroonD mb-2 font-lobster">Full Name *</label>
                       <input type="text" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className={inputCls} placeholder="Full name" />
                     </div>
                     <div>
-                      <label className="block text-xs font-semibold text-mithai-maroonD mb-2">Phone *</label>
+                      <label className="block text-xs font-semibold text-mithai-maroonD mb-2 font-lobster">Phone *</label>
                       <input type="tel" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} className={inputCls} placeholder="+91 98765 43210" />
                     </div>
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-mithai-maroonD mb-2">Email *</label>
+                    <label className="block text-xs font-semibold text-mithai-maroonD mb-2 font-lobster">Email *</label>
                     <input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className={inputCls} placeholder="you@example.com" />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-mithai-maroonD mb-2">Address *</label>
+                    <label className="block text-xs font-semibold text-mithai-maroonD mb-2 font-lobster">Address *</label>
                     <textarea rows={2} value={form.street} onChange={(e) => setForm({ ...form, street: e.target.value })} className={inputCls} placeholder="Street address, apartment, building" />
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
-                      <label className="block text-xs font-semibold text-mithai-maroonD mb-2">City *</label>
+                      <label className="block text-xs font-semibold text-mithai-maroonD mb-2 font-lobster">City *</label>
                       <input type="text" value={form.city} onChange={(e) => setForm({ ...form, city: e.target.value })} className={inputCls} />
                     </div>
                     <div>
-                      <label className="block text-xs font-semibold text-mithai-maroonD mb-2">State</label>
+                      <label className="block text-xs font-semibold text-mithai-maroonD mb-2 font-lobster">State</label>
                       <input type="text" value={form.state} onChange={(e) => setForm({ ...form, state: e.target.value })} className={inputCls} />
                     </div>
                     <div>
-                      <label className="block text-xs font-semibold text-mithai-maroonD mb-2">PIN Code *</label>
+                      <label className="block text-xs font-semibold text-mithai-maroonD mb-2 font-lobster">PIN Code *</label>
                       <input type="text" value={form.pincode} onChange={(e) => setForm({ ...form, pincode: e.target.value })} className={inputCls} />
                     </div>
                   </div>
@@ -460,7 +460,7 @@ function CheckoutBody() {
               <button
                 onClick={handlePayment}
                 disabled={loading}
-                className="w-full bg-mithai-maroon text-white py-4 rounded-full font-semibold text-sm transition-all hover:bg-mithai-maroonL disabled:opacity-60 shadow-[0_4px_18px_rgba(144,12,0,0.32)] hover:shadow-[0_8px_28px_rgba(144,12,0,0.4)] flex items-center justify-center gap-2"
+                className="w-full bg-mithai-maroon text-white py-4 rounded-full font-semibold text-sm transition-all hover:bg-mithai-maroonL disabled:opacity-60 shadow-[0_4px_18px_rgba(144,12,0,0.32)] hover:shadow-[0_8px_28px_rgba(144,12,0,0.4)] flex items-center justify-center gap-2 font-lobster"
               >
                 {loading ? <><Loader2 size={16} className="animate-spin" /> Processing…</> : `Pay ₹${grandTotal.toLocaleString('en-IN')}`}
               </button>
