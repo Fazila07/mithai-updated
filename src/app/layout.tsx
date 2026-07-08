@@ -14,25 +14,25 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'en_IN',
-    url: 'https://mithai2.0',
+    url: 'https://mithai20.in',
     siteName: 'Mithai 2.0',
     title: 'Mithai 2.0 — Modern Mithai. Honest Ingredients.',
     description: 'Healthy desserts & snacks made without refined sugar, maida, or preservatives.',
     images: [
       {
-        url: 'https://mithai2.0/og-image.jpg',
+        url: 'https://mithai20.in/og-image.jpg',
         width: 1200,
         height: 630,
-        alt: 'Mithai 2.0',
+        alt: 'Mithai 2.0 — Guiltfree Goodies',
         type: 'image/jpeg',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Mithai 2.0',
+    title: 'Mithai 2.0 — Modern Mithai. Honest Ingredients.',
     description: 'Healthy desserts & snacks made without refined sugar, maida, or preservatives.',
-    images: ['https://mithai2.0/og-image.jpg'],
+    images: ['https://mithai20.in/og-image.jpg'],
     creator: '@mithai2.0',
   },
 }
