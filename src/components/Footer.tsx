@@ -7,7 +7,7 @@ export default function Footer() {
   const currentYear = new Date().getFullYear()
 
   return (
-    <footer className="bg-mithai-parchment text-mithai-maroon px-[18px] py-12 md:px-7 md:py-12 lg:px-10 lg:py-7">
+    <footer className="bg-white text-mithai-maroon px-[18px] py-12 md:px-7 md:py-12 lg:px-10 lg:py-7" style={{ fontFamily: "'Lobster', cursive" }}>
       <div className="max-w-[1160px] mx-auto">
 
         {/* Brand Section */}
@@ -24,7 +24,7 @@ export default function Footer() {
         {/* Links Grid */}
         <div className="grid grid-cols-2 gap-7 mb-8 md:grid-cols-4">
           <div>
-            <h4 className="text-xs font-bold tracking-widest uppercase text-mithai-maroon mb-3.5">Shop</h4>
+            <h4 className="text-sm tracking-wide text-mithai-maroon mb-3.5" style={{ fontFamily: "'Tan Pearl', serif", fontWeight: 700 }}>Shop</h4>
             <ul className="space-y-2.5">
               <li><Link href="/shop" className="text-sm text-mithai-warmGray transition-colors hover:text-mithai-maroon">All Products</Link></li>
               <li><Link href="/shop?category=cookies" className="text-sm text-mithai-warmGray transition-colors hover:text-mithai-maroon">Cookies</Link></li>
@@ -34,7 +34,7 @@ export default function Footer() {
           </div>
 
           <div>
-            <h4 className="text-xs font-bold tracking-widest uppercase text-mithai-maroon mb-3.5">Company</h4>
+            <h4 className="text-sm tracking-wide text-mithai-maroon mb-3.5" style={{ fontFamily: "'Tan Pearl', serif", fontWeight: 700 }}>Company</h4>
             <ul className="space-y-2.5">
               <li><Link href="/about" className="text-sm text-mithai-warmGray transition-colors hover:text-mithai-maroon">About Us</Link></li>
               <li><Link href="/" className="text-sm text-mithai-warmGray transition-colors hover:text-mithai-maroon">Blog</Link></li>
@@ -43,7 +43,7 @@ export default function Footer() {
           </div>
 
           <div>
-            <h4 className="text-xs font-bold tracking-widest uppercase text-mithai-maroon mb-3.5">Policies</h4>
+            <h4 className="text-sm tracking-wide text-mithai-maroon mb-3.5" style={{ fontFamily: "'Tan Pearl', serif", fontWeight: 700 }}>Policies</h4>
             <ul className="space-y-2.5">
               <li><Link href="/" className="text-sm text-mithai-warmGray transition-colors hover:text-mithai-maroon">Shipping Policy</Link></li>
               <li><Link href="/" className="text-sm text-mithai-warmGray transition-colors hover:text-mithai-maroon">Refund Policy</Link></li>
@@ -53,11 +53,11 @@ export default function Footer() {
           </div>
 
           <div>
-            <h4 className="text-xs font-bold tracking-widest uppercase text-mithai-maroon mb-3.5">Contact</h4>
+            <h4 className="text-sm tracking-wide text-mithai-maroon mb-3.5" style={{ fontFamily: "'Tan Pearl', serif", fontWeight: 700 }}>Contact</h4>
             <ul className="space-y-2.5">
               <li className="text-sm text-mithai-warmGray">📍 Hyderabad, India</li>
-              <li className="text-sm text-mithai-warmGray">📧 [EMAIL_ADDRESS]</li>
               <li className="text-sm text-mithai-warmGray">📱 +91 9032538773</li>
+              <li><a href="https://www.instagram.com/mithai2.0guiltfreegoodies/" target="_blank" rel="noopener noreferrer" className="text-sm text-mithai-warmGray transition-colors hover:text-mithai-maroon">📸 @mithai2.0guiltfreegoodies</a></li>
             </ul>
           </div>
         </div>

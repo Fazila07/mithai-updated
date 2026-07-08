@@ -52,8 +52,9 @@ export default function GiftsSection() {
             color: #ffa520;
           }
           .banner-subtitle {
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 14px;
+            font-family: 'Lobster', cursive;
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 16px;
             line-height: 1.65;
             max-width: 460px;
             margin: 0 auto;
