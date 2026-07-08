@@ -9,6 +9,10 @@ export default function FounderNote() {
 
         <div className="founder-divider" />
 
+        <div className="founder-photo">
+          <img src="/images/founder.jpg" alt="Founder of Mithai 2.0" />
+        </div>
+
         <div className="founder-body">
           <p>
             I've always believed that the things we consume should be made with honesty.
@@ -45,7 +49,7 @@ export default function FounderNote() {
 
       <style jsx>{`
         .founder-section {
-          background: #F5E8D0;
+          background: #ffffff;
           padding: 64px 20px 72px;
         }
 
@@ -79,6 +83,22 @@ export default function FounderNote() {
           background: linear-gradient(90deg, #ffa520, #900c00);
           border-radius: 2px;
           margin: 0 auto 32px;
+        }
+
+        .founder-photo {
+          width: 100%;
+          max-width: 520px;
+          border-radius: 20px;
+          overflow: hidden;
+          margin: 0 auto 32px;
+          border: 3px solid rgba(255, 165, 32, 0.25);
+          box-shadow: 0 16px 48px rgba(144, 12, 0, 0.12);
+        }
+
+        .founder-photo img {
+          width: 100%;
+          height: auto;
+          display: block;
         }
 
         .founder-body {

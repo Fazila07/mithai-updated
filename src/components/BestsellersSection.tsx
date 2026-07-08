@@ -97,7 +97,7 @@ export default function BestsellersSection() {
   })
 
   return (
-    <section id="bestsellers" className="sec bg-mithai-goldP">
+    <section id="bestsellers" className="sec bg-white">
       <div className="container">
         <div className="sec-head">
           <h2 className="sec-title">Cult Favorites</h2>

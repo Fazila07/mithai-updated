@@ -164,7 +164,7 @@ function getCategoryEmoji(name: string): string {
 const diveInStyles = `
   /* ─── Section ─────────────────────────────────── */
   .dive-in-section {
-    background: #F5E8D0;
+    background: #ffffff;
     padding: 56px 16px 64px;
   }
 

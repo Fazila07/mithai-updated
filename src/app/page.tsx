@@ -32,7 +32,6 @@ export default function Home() {
       <BestsellersSection />
       <GiftsSection />
       <FounderNote />
-      <OurStory />
       <Footer />
       <CartDrawer />
     </main>

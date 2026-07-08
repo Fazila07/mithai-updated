@@ -458,6 +458,15 @@ export default function ProductPage() {
           </div>
 
           <ProductReviewsSection productId={product._id || product.id} />
+
+          {/* Trust Badges */}
+          <div className="trust-badges">
+            <img
+              src="/images/trust-badges.png"
+              alt="Refined Sugar Free · Gluten Free · PCOS Friendly · Preservative Free · Made With Millet"
+              className="trust-badges-img"
+            />
+          </div>
         </div>
       </main>
       <CartDrawer />
@@ -922,6 +931,33 @@ function AccordionItem({
         }
         .acc-content {
           padding: 0 2px 18px;
+        }
+
+        .trust-badges {
+          margin-top: 40px;
+          padding: 32px 0;
+          border-top: 1px solid rgba(144, 12, 0, 0.08);
+          text-align: center;
+        }
+
+        .trust-badges-img {
+          max-width: 520px;
+          width: 100%;
+          height: auto;
+          margin: 0 auto;
+          display: block;
+          opacity: 0.85;
+        }
+
+        @media (max-width: 640px) {
+          .trust-badges {
+            margin-top: 28px;
+            padding: 24px 0;
+          }
+          .trust-badges-img {
+            max-width: 100%;
+            padding: 0 12px;
+          }
         }
       `}</style>
     </div>

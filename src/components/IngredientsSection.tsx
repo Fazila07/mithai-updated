@@ -89,7 +89,7 @@ export default function IngredientsSection() {
 
       <style jsx>{`
         .ingredients-section {
-          background: #F5E8D0;
+          background: #ffffff;
           padding: 60px 20px;
         }
 
